@@ -3,5 +3,10 @@
   margin: 0;
 }
 
-
+/* ログイン画面 */
+.base-color {
+  background-color: #5DA7FF;
+  height: 100vh;
+  width: 100vw;
+}
 

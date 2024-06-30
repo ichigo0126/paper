@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 import Auth from "./components/Auth";
 import Dashboard from "./components/Dashbord";
 import "./App.css";
+import { Text } from "@chakra-ui/react";
 
 function App() {
   const [user, setUser] = useState(null);
