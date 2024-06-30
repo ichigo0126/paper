@@ -1,4 +1,3 @@
-import React from 'react'
 import { supabase } from '../supabase'
 
 export default function Dashboard({ user }) {

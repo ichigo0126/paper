@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { supabase } from "../supabase";
-import { Box, Button, Image, Text, Flex, VStack } from "@chakra-ui/react";
+import { Box, Button, Image, Text, Flex } from "@chakra-ui/react";
 
 type GoogleLoginButtonProps = {
   text: string;
