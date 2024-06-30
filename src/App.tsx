@@ -1,29 +1,33 @@
-import React, { useState, useEffect } from 'react'
-import { supabase } from './supabase'
-import Auth from './components/Auth'
-import Dashboard from './components/Dashbord'
+import React, { useState, useEffect } from "react";
+import { supabase } from "./supabase";
+import Auth from "./components/Auth";
+import Dashboard from "./components/Dashbord";
+import "./App.css";
+import { Text } from "@chakra-ui/react";
 
 function App() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-    })
+      setUser(session?.user ?? null);
+    });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
 
-    return () => subscription.unsubscribe()
-  }, [])
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
-    <div>
-      <h1>My App</h1>
+    <div className="base-color">
+
       {user ? <Dashboard user={user} /> : <Auth />}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
