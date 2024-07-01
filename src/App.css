@@ -10,38 +10,3 @@
   width: 100vw;
 }
 
-.title-login {
-  font-family: "Jomhuria", serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 300px;
-  text-align: center;
-  padding-top: 30px;
-  user-select: none;
-  color: white;
-
-}
-
-.position {
-  text-align: center;
-}
-
-.login-sentence {
-  font-weight: bold;
-  font-size: 30px;
-}
-
-.login-button-position {
-  padding-top: 200px;
-}
-
-.google_auth {
-  width: 500px;
-  transition: all 0.3s;
-}
-
-.google_auth:hover {
-  background-color: black;
-  opacity: .5;
-  color: azure;
-}
