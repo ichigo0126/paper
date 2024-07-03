@@ -4,6 +4,8 @@ import Auth from "./components/Auth";
 import Dashboard from "./components/Dashbord";
 import "./App.css";
 import { Text } from "@chakra-ui/react";
+import FollowPage from "./components/FollowPage";
+import {Route, Routes} from 'react-router-dom'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -24,7 +26,9 @@ function App() {
 
   return (
     <div className="base-color">
-
+      <Routes>
+        <Route path="/FollowPage" element={<FollowPage />} />
+      </Routes>
       {user ? <Dashboard user={user} /> : <Auth />}
     </div>
   );
