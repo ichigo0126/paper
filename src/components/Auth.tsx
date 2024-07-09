@@ -1,10 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "../supabase";
 import { Box, Button, Image, Text, Flex } from "@chakra-ui/react";
 
 type GoogleLoginButtonProps = {
   text: string;
   onClick: () => void;
+};
+
+interface TypingAnimationProps {
+  text: string;
+  speed: number;
+}
+
+const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, speed }) => {
+  const [displayedText, setDisplayedText] = useState('');
+
+  useEffect(() => {
+    let currentIndex = 0;
+
+    const typeCharacter = () => {
+      if (currentIndex < text.length) {
+        setDisplayedText((prev) => prev + text[currentIndex]);
+        currentIndex += 1;
+        setTimeout(typeCharacter, speed);
+      }
+    };
+
+    typeCharacter();
+
+    // クリーンアップ関数を追加
+    return () => {
+      setDisplayedText(''); // コンポーネントがアンマウントされた場合に状態をリセット
+    };
+  }, [text, speed]);
+
+  return <div>{displayedText}</div>;
 };
 
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
@@ -38,6 +68,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 
 export default function Auth() {
   const [error, setError] = useState(null);
+  const [isDisplayMessage, setIsDisplayMessage] = useState<string>("")
 
   async function signInWithGoogle() {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -45,6 +76,15 @@ export default function Auth() {
     });
     if (error) setError(error.message);
   }
+
+  const displayLogoutMessage = [
+    "この文章カチカチやね", "君のことカチカチにしてあげよか", "もうだめみたいやね", "だめみたいですね(杉本ボイス)", "この胸と文章ってどっちがカチカチかな", "この銃口はすでに杉本先生に向いている", "今日が終わるということは君が私の前から消えることだ", "カチカチ四天王やね"
+  ]
+
+  useEffect(() => {
+    const index = Math.floor(Math.random() * displayLogoutMessage.length)
+    setIsDisplayMessage(displayLogoutMessage[index])
+  }, [])
 
   return (
     <Box
@@ -74,8 +114,9 @@ export default function Auth() {
           PAPER
         </Text>
         <Text fontWeight="bold" fontSize="30px">
-          この文章カチカチやね
-        </Text>{" "}
+          {/* この文章カチカチやね */}
+          <TypingAnimation text={isDisplayMessage} speed={100}/>
+        </Text>
 
       <Flex
         as="section"

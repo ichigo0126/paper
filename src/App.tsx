@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { supabase } from "./supabase";
+import React, { useEffect, useState } from "react";
 import Auth from "./components/Auth";
-import Dashboard from "./components/Dashbord";
+import Dashboard from "./components/Dashborad";
 import "./App.css";
-import { Text } from "@chakra-ui/react";
 import FollowPage from "./components/FollowPage";
-import {Route, Routes} from 'react-router-dom'
+import { Route, Routes } from "react-router-dom";
+import { supabase } from "./supabase";
+import Comments from "./components/detail_area/Comments";
 
-function App() {
-  const [user, setUser] = useState(null);
+const App: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -28,10 +28,11 @@ function App() {
     <div className="base-color">
       <Routes>
         <Route path="/FollowPage" element={<FollowPage />} />
+        <Route path="/" element={user ? <Dashboard user={user} /> : <Auth />} />
+        <Route path="/review/:id" element={<Comments />} />
       </Routes>
-      {user ? <Dashboard user={user} /> : <Auth />}
     </div>
   );
-}
+};
 
 export default App;
