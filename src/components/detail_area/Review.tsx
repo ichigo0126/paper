@@ -10,7 +10,7 @@ import {
   Container,
   Stack,
 } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 type ContentType = {
   name: string;
@@ -29,10 +29,9 @@ export default function Review({
   description,
   id,
 }: ContentType) {
-  const navigate = useNavigate();
   return (
     <Container centerContent>
-      <Box w="1200px" bg="gray.50">
+      <Box w="1000px" bg="gray.50">
         {/* ヘッダー */}
         <Flex alignItems="center" justifyContent="space-between" padding="20px">
           <Box>

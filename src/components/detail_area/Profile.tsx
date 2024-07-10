@@ -1,13 +1,11 @@
 import {
   Box,
-  Flex,
   Image,
   Text,
   Button,
   Divider,
   VStack,
   HStack,
-  Container,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { CloseButton } from "@chakra-ui/react";
