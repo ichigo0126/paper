@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { User } from "firebase/auth";
-import { auth, signInWithGoogle, initializeUserCollections } from "./firebase";
+import { onAuthStateChange, signInWithGoogle, createUser } from "./firebase";
 import Auth from "./components/Auth";
 import Dashboard from "./components/Dashboard";
 import "./App.css";
@@ -10,16 +10,26 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+    const unsubscribe = onAuthStateChange((currentUser: User | null) => {
       console.log("Auth state changed", currentUser);
       
       if (currentUser) {
         setUser(currentUser);
-        try {
-          await initializeUserCollections(currentUser.uid, currentUser.email || '', currentUser.displayName || '');
-          console.log("User collections initialized or checked");
-        } catch (error) {
-          console.error("Error initializing user collections:", error);
+        if (currentUser.email) {
+          try {
+            createUser({
+              username: currentUser.displayName || '',
+              email: currentUser.email,
+            }).then(() => {
+              console.log("User document checked/initialized");
+            }).catch((error) => {
+              console.error("Error checking/initializing user document:", error);
+            });
+          } catch (error) {
+            console.error("Error in createUser:", error);
+          }
+        } else {
+          console.error("User email is null");
         }
       } else {
         setUser(null);
@@ -45,7 +55,7 @@ function App() {
 
   return (
     <div className="base-color">
-      {user ? <Dashboard user={user} /> : <Auth onSignIn={handleSignIn} />}
+      {(user && user.email) ? <Dashboard user={user as {email: string}} /> : <Auth onSignIn={handleSignIn} />}
     </div>
   );
 }
