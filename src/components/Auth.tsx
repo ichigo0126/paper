@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../firebase"; // Firebaseの初期化ファイルからauthをインポート
-import React, { useEffect, useState, useRef } from "react";
-import { supabase } from "../supabase";
 import { Box, Button, Image, Text, Flex } from "@chakra-ui/react";
 
 type GoogleLoginButtonProps = {
@@ -71,7 +69,6 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 
 export default function Auth() {
   const [error, setError] = useState<string | null>(null);
-  const [error, setError] = useState(null);
   const [isDisplayMessage, setIsDisplayMessage] = useState<string>("")
 
   async function signInWithGoogle() {

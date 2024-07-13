@@ -18,7 +18,6 @@ const postContent = [
     title: "次世代プログラミング: 未来のコードを書く",
     id: 1,
     valueCount: 2000,
-
   },
   {
     name: "祖父江君",
@@ -47,6 +46,7 @@ function Home() {
 
   return (
     <Box pb={4} bg="gray.100" borderRadius="normal">
+      <Header />
       <Container centerContent>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <Box w={isMobile ? "full" : "69%"}>
