@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { supabase } from "../supabase";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase"; // Firebaseの初期化ファイルからauthをインポート
 import { Box, Button, Image, Text, Flex } from "@chakra-ui/react";
 
 type GoogleLoginButtonProps = {
@@ -37,13 +38,16 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 );
 
 export default function Auth() {
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function signInWithGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-    if (error) setError(error.message);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      // ログイン成功時の処理はここに追加（必要に応じて）
+    } catch (error) {
+      setError((error as Error).message);
+    }
   }
 
   return (
@@ -63,20 +67,19 @@ export default function Auth() {
       gap={20}
       padding={20}
     >
-        <Text
-          fontFamily="Jomhuria, serif"
-          fontWeight={400}
-          fontSize="200px"
-          color="white"
-          pt="30px"
-          userSelect="none"
-        >
-          PAPER
-        </Text>
-        <Text fontWeight="bold" fontSize="30px">
-          この文章カチカチやね
-        </Text>{" "}
-
+      <Text
+        fontFamily="Jomhuria, serif"
+        fontWeight={400}
+        fontSize="200px"
+        color="white"
+        pt="30px"
+        userSelect="none"
+      >
+        PAPER
+      </Text>
+      <Text fontWeight="bold" fontSize="30px">
+        この文章カチカチやね
+      </Text>{" "}
       <Flex
         as="section"
         justifyContent="center"
@@ -91,6 +94,7 @@ export default function Auth() {
           onClick={signInWithGoogle}
         />
       </Flex>
+      {error && <Text color="red.500">{error}</Text>}
     </Box>
   );
 }

@@ -1,30 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { supabase } from "./supabase";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "./firebase";
 import Auth from "./components/Auth";
 import Dashboard from "./components/Dashbord";
 import "./App.css";
-import { Text } from "@chakra-ui/react";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("Auth state changed", currentUser);
+      setUser(currentUser);
+      setLoading(false);
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, []);
 
   return (
     <div className="base-color">
-
       {user ? <Dashboard user={user} /> : <Auth />}
     </div>
   );
