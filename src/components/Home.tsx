@@ -46,7 +46,6 @@ function Home() {
 
   return (
     <Box pb={4} bg="gray.100" borderRadius="normal">
-      <Header />
       <Container centerContent>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <Box w={isMobile ? "full" : "69%"}>
