@@ -9,7 +9,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../supabase";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase"; // firebaseの初期化ファイルからauthをインポート
 import { GrLogout } from "react-icons/gr";
 import { FaHeart } from "react-icons/fa";
 import { IoBookmarks } from "react-icons/io5";
@@ -27,9 +28,13 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen }: ModalProp) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   async function handleSignOut() {
-    const { error } = await supabase.auth.signOut();
-    navigate("/");
-    if (error) console.error("Error signing out:", error);
+    try {
+      await signOut(auth);
+      // ログアウト後の処理（例：ログインページへのリダイレクト）をここに追加
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   }
 
   return (
@@ -101,7 +106,7 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen }: ModalProp) => {
                 p="5px"
                 border="1px"
                 borderColor="whiteAlpha.900"
-                onClick={handleSignOut}
+                // onClick={handleSignOut}
               >
                 <IoBookmarks />
               </Button>
