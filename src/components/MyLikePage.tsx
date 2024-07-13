@@ -31,6 +31,7 @@ const postContent = [
     title: "次世代プログラミング: 未来のコードを書く",
     id: 1,
     valueCount: 2000,
+    bookmarkCount: 300,
   },
   {
     name: "祖父江君",
@@ -41,6 +42,8 @@ const postContent = [
     year: "YYYY/MM/dd",
     tilte: "カチカチ概論",
     id: 2,
+    valueCount: 2000,
+    bookmarkCount: 300,
   },
   {
     name: "祖父江君",
@@ -51,6 +54,8 @@ const postContent = [
     year: "YYYY/MM/dd",
     tilte: "カチカチ概論",
     id: 3,
+    valueCount: 2000,
+    bookmarkCount: 300,
   },
 ];
 
@@ -130,7 +135,7 @@ function FollowPage() {
               <Divider my={2} borderWidth="2px" borderColor="gray.500" />
               <VStack spacing={6} align="stretch">
                 {postContent.map(
-                  ({ name, username, year, title, description, id }) => (
+                  ({ name, username, year, title, description, id, valueCount, bookmarkCount }) => (
                     <Review
                       name={name}
                       username={username}
@@ -138,6 +143,8 @@ function FollowPage() {
                       title={title}
                       description={description}
                       id={id}
+                      valueCount={valueCount}
+                      bookmarkCount={bookmarkCount}
                     />
                   )
                 )}
