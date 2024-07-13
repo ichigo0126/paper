@@ -1,14 +1,6 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
-
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 
 // Firebaseの設定
 const firebaseConfig = {
@@ -25,101 +17,68 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Firestoreの取得
-
 const db = getFirestore(app);
 
-export const auth = getAuth(app);
+// 認証の取得
+const auth = getAuth(app);
 
-async function createCollections() {
+// Google認証プロバイダーの作成
+const googleProvider = new GoogleAuthProvider();
+
+async function initializeUserCollections(userId, userEmail, displayName) {
+  const userRef = doc(db, 'users', userId);
+  
   try {
-    // 1. users コレクション
-    await addDoc(collection(db, 'users'), {
-      username: 'sampleUser',
-      email: 'sample@example.com',
-      bio: 'This is a sample user',
-      website_url: 'https://example.com',
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp()
-    });
+    // ユーザードキュメントの存在確認
+    const userDoc = await getDoc(userRef);
+    
+    if (!userDoc.exists()) {
+      // ユーザーが存在しない場合、新規作成
+      await setDoc(userRef, {
+        username: displayName || userEmail.split('@')[0],
+        email: userEmail,
+        bio: '',
+        website_url: '',
+        created_at: serverTimestamp(),
+        updated_at: serverTimestamp()
+      });
 
-    // 2. books コレクション
-    await addDoc(collection(db, 'books'), {
-      image_path: '/images/sample-book.jpg',
-      title: 'Sample Book',
-      author: 'John Doe',
-      publication_date: serverTimestamp(),
-      language: 'Japanese',
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp()
-    });
+      // ユーザー固有のサブコレクションを作成
+      const collections = ['books', 'articles', 'reviews', 'comments', 'bookmarks', 'notifications'];
+      for (const collectionName of collections) {
+        const collectionRef = doc(db, `users/${userId}/${collectionName}`, 'initial');
+        await setDoc(collectionRef, {
+          created_at: serverTimestamp(),
+          // 各コレクションに応じた初期データをここに追加
+        });
+      }
 
-    // 3. articles コレクション
-    await addDoc(collection(db, 'articles'), {
-      image_path: '/images/sample-article.jpg',
-      title: 'Sample Article',
-      author: 'Jane Smith',
-      publication_date: serverTimestamp(),
-      language: 'English',
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp()
-    });
-
-    // 4. reviews コレクション
-    await addDoc(collection(db, 'reviews'), {
-      user_id: 'sampleUserId',
-      description: 'This is a sample review',
-      stars: 4,
-      target_type: 'BOOK',
-      book_id: 'sampleBookId',
-      engineer_skill_level: 'INTERMEDIATE',
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp(),
-      tags: ['sample', 'review']
-    });
-
-    // 5. comments コレクション
-    await addDoc(collection(db, 'comments'), {
-      user_id: 'sampleUserId',
-      review_id: 'sampleReviewId',
-      description: 'This is a sample comment',
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp()
-    });
-
-    // 6. tags コレクション
-    await addDoc(collection(db, 'tags'), {
-      name: 'sample tag'
-    });
-
-    // 7. notifications コレクション
-    await addDoc(collection(db, 'notifications'), {
-      user_id: 'sampleUserId',
-      type: 'LIKE',
-      is_read: false,
-      content: 'You received a new like',
-      created_at: serverTimestamp(),
-      review_id: 'sampleReviewId'
-    });
-
-    // 8. bookmarks コレクション
-    await addDoc(collection(db, 'bookmarks'), {
-      user_id: 'sampleUserId',
-      target_type: 'BOOK',
-      target_id: 'sampleBookId',
-      created_at: serverTimestamp()
-    });
-
-    // 9. follows コレクション
-    await addDoc(collection(db, 'follows'), {
-      follower_user_id: 'sampleFollowerId',
-      followed_user_id: 'sampleFollowedId',
-      created_at: serverTimestamp()
-    });
-
-    console.log('All collections created successfully');
+      console.log('User collections initialized successfully');
+    } else {
+      console.log('User already exists, skipping collection initialization');
+    }
   } catch (error) {
-    console.error('Error creating collections:', error);
+    console.error('Error initializing user collections:', error);
   }
 }
 
-export { db, createCollections };
+// Google認証でサインイン
+async function signInWithGoogle() {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    await initializeUserCollections(user.uid, user.email, user.displayName);
+    console.log("User signed in with Google and collections checked/initialized");
+    return user;
+  } catch (error) {
+    console.error("Error signing in with Google:", error);
+    throw error;
+  }
+}
+
+// 認証状態の監視
+function onAuthStateChange(callback) {
+  return onAuthStateChanged(auth, callback);
+}
+
+export { db, auth, signInWithGoogle, onAuthStateChange,initializeUserCollections };
