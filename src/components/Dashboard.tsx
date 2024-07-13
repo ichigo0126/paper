@@ -1,16 +1,15 @@
+import { Route, Routes } from "react-router-dom";
 import Home from "./Home";
+import FollowPage from "./FollowPage";
 
-interface DashBoardProps {
-  user: {
-    email: string;
-  } | null;
-}
-
-const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
+const Dashboard = () => {
   return (
-    <div>
-      <Home />
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/followpage" element={<FollowPage />} />
+      </Routes>
+    </>
   );
 };
 export default Dashboard;

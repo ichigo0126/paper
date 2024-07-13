@@ -4,6 +4,11 @@ import { auth, createCollections } from "./firebase";
 import Auth from "./components/Auth";
 import Dashboard from "./components/Dashboard";
 import "./App.css";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Home from "./components/Home";
+import FollowPage from "./components/FollowPage";
+import MyLikePage from "./components/MyLikePage";
+import Header from "./components/detail_area/Header";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -15,7 +20,7 @@ function App() {
       setUser(currentUser);
 
       // 開発環境でのみ、ユーザーが認証された後にコレクションを作成
-      if (process.env.NODE_ENV === 'development' && currentUser) {
+      if (process.env.NODE_ENV === "development" && currentUser) {
         try {
           await createCollections();
           console.log("Collections created successfully");
@@ -32,7 +37,18 @@ function App() {
 
   return (
     <div className="base-color">
-      {user ? <Dashboard user={user} /> : <Auth />}
+      <>
+        {user ? <Header /> : <></>}
+        <Routes>
+          <Route
+            path="/"
+            element={user ? <Navigate to="/mypage" replace /> : <Auth />}
+          />
+          <Route path="/mypage" element={<Home />} />
+          <Route path="/mypage/followpage" element={<FollowPage />} />
+          <Route path="/mypage/mylikepage" element={<MyLikePage />} />
+        </Routes>
+      </>
     </div>
   );
 }

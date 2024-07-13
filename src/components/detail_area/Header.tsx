@@ -110,7 +110,7 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen }: ModalProp) => {
               >
                 <IoBookmarks />
               </Button>
-              <Link to="Mypage/MyLikePage">
+              <Link to="./mypage/mylikepage">
                 <Button
                   w="40px"
                   h="40px"
@@ -132,7 +132,7 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen }: ModalProp) => {
                 <GrLogout />
               </Button>
             </HStack>
-            <Link to="Mypage/FollowPage">
+            <Link to="./mypage/followpage">
               <Image
                 src="https://via.placeholder.com/65"
                 w="65px"
