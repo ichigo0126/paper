@@ -58,9 +58,15 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={user ? <Navigate to="/mypage" replace /> : <Auth onSignIn={handleSignIn} />}
+          element={
+            user ? (
+              <Navigate to="/home" replace />
+            ) : (
+              <Auth onSignIn={handleSignIn} />
+            )
+          }
         />
-        <Route path="/mypage/*" element={<Dashboard />} />
+        <Route path="/home/*" element={<Dashboard />} />
       </Routes>
     </div>
   );
