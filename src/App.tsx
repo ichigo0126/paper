@@ -4,6 +4,11 @@ import { auth, signInWithGoogle, initializeUserCollections } from "./firebase";
 import Auth from "./components/Auth";
 import Dashboard from "./components/Dashboard";
 import "./App.css";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Home from "./components/Home";
+import FollowPage from "./components/FollowPage";
+import MyLikePage from "./components/MyLikePage";
+import Header from "./components/detail_area/Header";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -15,6 +20,7 @@ function App() {
       
       if (currentUser) {
         setUser(currentUser);
+        
         try {
           await initializeUserCollections(currentUser.uid, currentUser.email || '', currentUser.displayName || '');
           console.log("User collections initialized or checked");
@@ -45,7 +51,20 @@ function App() {
 
   return (
     <div className="base-color">
-      {user ? <Dashboard user={user} /> : <Auth onSignIn={handleSignIn} />}
+
+      <>
+        {user ? <Header /> : <></>}
+        <Routes>
+          <Route
+            path="/"
+            element={user ? <Navigate to="/mypage" replace /> : <Auth onSignIn={handleSignIn} />}
+          />
+          <Route path="/mypage" element={<Home />} />
+          <Route path="/mypage/followpage" element={<FollowPage />} />
+          <Route path="/mypage/mylikepage" element={<MyLikePage />} />
+        </Routes>
+      </>
+
     </div>
   );
 }
