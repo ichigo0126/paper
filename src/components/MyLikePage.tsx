@@ -11,8 +11,8 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { CloseButton } from "@chakra-ui/react";
-import Header from "./detail_area/Header";
 import Profile from "./detail_area/Profile";
+import Review from "./detail_area/Review";
 
 type ContentType = {
   name: string;
@@ -21,32 +21,38 @@ type ContentType = {
   isFollowing: boolean;
 };
 
-function UserCard({ name, username, description, isFollowing }: ContentType) {
-  return (
-    <HStack spacing={5} alignItems="flex-start">
-      <Image
-        src="https://via.placeholder.com/68"
-        w="68px"
-        border="1px"
-        borderColor="gray.400"
-        borderRadius="md"
-      />
-      <VStack align="stretch" flex={1}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Text fontSize="lg" fontWeight="semibold">
-            {name} ({username})
-          </Text>
-          <Button size="sm" colorScheme={isFollowing ? "gray" : "green"}>
-            {isFollowing ? "フォロー済" : "フォロー"}
-          </Button>
-        </Flex>
-        <Text fontSize="md" fontWeight="light">
-          {description}
-        </Text>
-      </VStack>
-    </HStack>
-  );
-}
+const postContent = [
+  {
+    name: "秋田君",
+    username: "katikati_yane",
+    description:
+      "技術書として非常に優れています。著者の田中一郎は、最新のプログラミング技術とトレンドを網羅し、読者に分かりやすく解説しています。特に、AIやブロックチェーン、量子コンピューティングといった先端技術に関する章は必見です。実際のプロジェクトで使える具体例が豊富で、すぐに実践に移せる点も魅力です。また、各章末には練習問題が用意されており、学習内容の定着を助けます。初心者から上級者まで幅広く対応した、未来志向の技術書として一読の価値があります。",
+    year: "YYYY/MM/dd",
+    title: "次世代プログラミング: 未来のコードを書く",
+    id: 1,
+    valueCount: 2000,
+  },
+  {
+    name: "祖父江君",
+    username: "katikati_yane_2",
+    description:
+      "技術書として非常に優れています。著者の田中一郎は、最新のプログラミング技術とトレンドを網羅し、読者に分かりやすく解説しています。特に、AIやブロックチェーン、量子コンピューティングといった先端技術に関する章は必見です。実際のプロジェクトで使える具体例が豊富で、すぐに実践に移せる点も魅力です。また、各章末には練習問題が用意されており、学習内容の定着を助けます。初心者から上級者まで幅広く対応した、未来志向の技術書として一読の価値があります。",
+    title: "あああああああ",
+    year: "YYYY/MM/dd",
+    tilte: "カチカチ概論",
+    id: 2,
+  },
+  {
+    name: "祖父江君",
+    username: "katikati_yane_2",
+    description:
+      "技術書として非常に優れています。著者の田中一郎は、最新のプログラミング技術とトレンドを網羅し、読者に分かりやすく解説しています。特に、AIやブロックチェーン、量子コンピューティングといった先端技術に関する章は必見です。実際のプロジェクトで使える具体例が豊富で、すぐに実践に移せる点も魅力です。また、各章末には練習問題が用意されており、学習内容の定着を助けます。初心者から上級者まで幅広く対応した、未来志向の技術書として一読の価値があります。",
+    title: "ああああ",
+    year: "YYYY/MM/dd",
+    tilte: "カチカチ概論",
+    id: 3,
+  },
+];
 
 const postContents = [
   {
@@ -96,12 +102,12 @@ const postContents = [
 const profile = {
   name: "杉本大志",
   username: "kachikachichinko",
-  reviewCount: 2.000,
-  valueCount: 10.000,
+  reviewCount: 2.0,
+  valueCount: 10.0,
   description: "かちかちちんこ",
-  followCount: 2.000,
-  followedCount: 3.000
-}
+  followCount: 2.0,
+  followedCount: 3.0,
+};
 
 function FollowPage() {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -121,34 +127,18 @@ function FollowPage() {
           />
           <Box w={isMobile ? "full" : "69%"}>
             <Box p={4} pb={20} bg="gray.50" borderRadius="3xl" shadow="sm">
-              <Flex justifyContent="space-between" alignItems="center">
-                <Text fontSize="lg" fontWeight="light">
-                  フォロー 1,301
-                </Text>
-                <CloseButton />
-              </Flex>
-
               <Divider my={2} borderWidth="2px" borderColor="gray.500" />
               <VStack spacing={6} align="stretch">
-                {postContents.map(
-                  ({ name, username, description, isFollowing }, index) => (
-                    <div>
-                      <UserCard
-                        name={name}
-                        username={username}
-                        description={description}
-                        isFollowing={isFollowing}
-                      />
-                      {index === postContents.length - 1 ? (
-                        <></>
-                      ) : (
-                        <Divider
-                          mt={6}
-                          borderWidth="1px"
-                          borderColor="gray.400"
-                        />
-                      )}
-                    </div>
+                {postContent.map(
+                  ({ name, username, year, title, description, id }) => (
+                    <Review
+                      name={name}
+                      username={username}
+                      year={year}
+                      title={title}
+                      description={description}
+                      id={id}
+                    />
                   )
                 )}
               </VStack>

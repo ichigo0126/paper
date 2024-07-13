@@ -30,10 +30,6 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="base-color">
       {user ? <Dashboard user={user} /> : <Auth />}
