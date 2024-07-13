@@ -10,12 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@prisma/client": "^5.16.1",
+    "@supabase/supabase-js": "^2.44.2",
+    "firebase": "^10.12.3",
     "framer-motion": "^11.2.12",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "supabase": "^1.178.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

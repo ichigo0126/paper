@@ -46,6 +46,10 @@ function MyComponent() {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
+    <div className="base-color">
+      {user ? <Dashboard user={user} /> : <Auth />}
+    </div>
+  );
     <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal">
       <Box pb={7} w="full" borderRadius="normal">
         <Flex
@@ -246,5 +250,7 @@ function MyComponent() {
     </Box>
   );
 }
+
+export default App;
 
 export default MyComponent;
