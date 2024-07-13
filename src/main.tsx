@@ -1,13 +1,22 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { ChakraProvider } from '@chakra-ui/react'
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import { createRoot } from "react-dom/client";
+import { ChakraProvider } from "@chakra-ui/react";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+
+const Root = () => {
+  return (
     <ChakraProvider>
-      <App />
+      <BrowserRouter>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      </BrowserRouter>
     </ChakraProvider>
-  </React.StrictMode>
-);
+  );
+};
+
+const container = document.getElementById("root");
+const root = createRoot(container!); // 非nullアサーションを使用してnullチェックを回避
+root.render(<Root />);
