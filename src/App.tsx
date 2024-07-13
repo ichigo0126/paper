@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { auth, createCollections } from "./firebase";
+import { User } from "firebase/auth";
+import { auth, signInWithGoogle, initializeUserCollections } from "./firebase";
 import Auth from "./components/Auth";
 import Dashboard from "./components/Dashboard";
 import "./App.css";
@@ -10,18 +10,19 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       console.log("Auth state changed", currentUser);
-      setUser(currentUser);
-
-      // 開発環境でのみ、ユーザーが認証された後にコレクションを作成
-      if (process.env.NODE_ENV === 'development' && currentUser) {
+      
+      if (currentUser) {
+        setUser(currentUser);
         try {
-          await createCollections();
-          console.log("Collections created successfully");
+          await initializeUserCollections(currentUser.uid, currentUser.email || '', currentUser.displayName || '');
+          console.log("User collections initialized or checked");
         } catch (error) {
-          console.error("Error creating collections:", error);
+          console.error("Error initializing user collections:", error);
         }
+      } else {
+        setUser(null);
       }
 
       setLoading(false);
@@ -30,9 +31,21 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  const handleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="base-color">
-      {user ? <Dashboard user={user} /> : <Auth />}
+      {user ? <Dashboard user={user} /> : <Auth onSignIn={handleSignIn} />}
     </div>
   );
 }
