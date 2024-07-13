@@ -7,7 +7,14 @@ import Header from "./detail_area/Header";
 import SearchModal from "./SearchModal";
 import ReviewModal from "./ReviewModal";
 
-const Dashboard = () => {
+ 
+interface DashBoardProps {
+  user: {
+    email: string;
+  }
+}
+
+const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 

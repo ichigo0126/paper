@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { User } from "firebase/auth";
-import { auth, signInWithGoogle, initializeUserCollections } from "./firebase";
+import { onAuthStateChange, signInWithGoogle, createUser } from "./firebase";
 import Auth from "./components/Auth";
 import Dashboard from "./components/Dashboard";
 import "./App.css";
@@ -15,7 +15,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+    const unsubscribe = onAuthStateChange((currentUser: User | null) => {
       console.log("Auth state changed", currentUser);
 
       if (currentUser) {
