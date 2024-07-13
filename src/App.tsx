@@ -17,12 +17,16 @@ function App() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       console.log("Auth state changed", currentUser);
-      
+
       if (currentUser) {
         setUser(currentUser);
-        
+
         try {
-          await initializeUserCollections(currentUser.uid, currentUser.email || '', currentUser.displayName || '');
+          await initializeUserCollections(
+            currentUser.uid,
+            currentUser.email || "",
+            currentUser.displayName || ""
+          );
           console.log("User collections initialized or checked");
         } catch (error) {
           console.error("Error initializing user collections:", error);
@@ -51,20 +55,13 @@ function App() {
 
   return (
     <div className="base-color">
-
-      <>
-        {user ? <Header /> : <></>}
-        <Routes>
-          <Route
-            path="/"
-            element={user ? <Navigate to="/mypage" replace /> : <Auth onSignIn={handleSignIn} />}
-          />
-          <Route path="/mypage" element={<Home />} />
-          <Route path="/mypage/followpage" element={<FollowPage />} />
-          <Route path="/mypage/mylikepage" element={<MyLikePage />} />
-        </Routes>
-      </>
-
+      <Routes>
+        <Route
+          path="/"
+          element={user ? <Navigate to="/mypage" replace /> : <Auth onSignIn={handleSignIn} />}
+        />
+        <Route path="/mypage/*" element={<Dashboard />} />
+      </Routes>
     </div>
   );
 }

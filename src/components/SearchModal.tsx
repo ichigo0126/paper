@@ -21,7 +21,7 @@ type ModalProp = {
   setIsSearchOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ReviewModal = ({ isSearchOpen, setIsSearchOpen }: ModalProp) => {
+const SearchModal = ({ isSearchOpen, setIsSearchOpen }: ModalProp) => {
   return (
     <>
       <Modal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)}>
@@ -69,4 +69,4 @@ const ReviewModal = ({ isSearchOpen, setIsSearchOpen }: ModalProp) => {
   );
 };
 
-export default ReviewModal;
+export default SearchModal;
