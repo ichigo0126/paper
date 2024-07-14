@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 type ReviewProps = {
   userId: string;
   description: string;
-  stars: number;
   targetType: string;
   bookId: string;
   engineerSkillLevel: string;
@@ -25,7 +24,6 @@ type ReviewProps = {
 export default function Review({
   userId,
   description,
-  stars,
   targetType,
   bookId,
   engineerSkillLevel,
@@ -46,7 +44,6 @@ export default function Review({
                 />
                 <Stack pl="20px">
                   <Text>ユーザーID: {userId}</Text>
-                  <Text>星: {stars}</Text>
                 </Stack>
               </HStack>
               <Stack pl="30px">
