@@ -34,6 +34,7 @@ type ReviewProps = {
     toDate: () => Date;
   };
   username: string;
+  currentUsername: string;
 };
 
 export default function Review({

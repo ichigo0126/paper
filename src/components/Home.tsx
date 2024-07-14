@@ -25,11 +25,9 @@ function Home({ currentUserId }: HomeProps) {
         reviewsData.map(async (review) => {
           const bookDetails = await getBookDetails(review.bookId);
           let username = "Unknown User";
-          if (review.userId === currentUserId) {
-            const userData = await getUserById(review.userId);
-            if (userData) {
-              username = userData.username;
-            }
+          const userData = await getUserById(review.userId);
+          if (userData) {
+            username = userData.username;
           }
           console.log("Review object:", review);
           console.log("User ID from review:", review.userId);
@@ -82,11 +80,11 @@ function Home({ currentUserId }: HomeProps) {
                     bookDetails,
                     createdAt,
                     username,
-                    review
                   }) => (
                     <Review
-                      key={review}
-                      name={name}
+                      key={id}
+                      currentUsername={currentUserId} // 現在のユーザーIDを渡す
+                      username={username} // 投稿者のユーザー名を渡す
                       description={description}
                       id={id}
                       valueCount={valueCount}
@@ -96,7 +94,6 @@ function Home({ currentUserId }: HomeProps) {
                       engineerSkillLevel={engineerSkillLevel}
                       bookDetails={bookDetails}
                       createdAt={createdAt}
-                      username={username} // Add this line
                     />
                   )
                 )}
