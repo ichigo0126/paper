@@ -1,110 +1,104 @@
 import {
   Box,
   Flex,
-  Image,
-  Text,
-  Button,
-  Divider,
   VStack,
-  HStack,
   Container,
   useBreakpointValue,
+  Text,
+  Divider,
 } from "@chakra-ui/react";
-import { CloseButton } from "@chakra-ui/react";
-import Header from "./detail_area/Header";
+import { useEffect, useState } from "react";
 import Profile from "./detail_area/Profile";
+import Review from "./detail_area/Review"; // Reviewコンポーネントをインポート
+import { getReviews, getUserById } from "../firebase"; // レビューを取得するための関数をインポート
 
-type ContentType = {
-  name: string;
-  username: string;
-  description: string;
-  isFollowing: boolean;
-};
-
-function UserCard({ name, username, description, isFollowing }: ContentType) {
-  return (
-    <HStack spacing={5} alignItems="flex-start">
-      <Image
-        src="https://via.placeholder.com/68"
-        w="68px"
-        border="1px"
-        borderColor="gray.400"
-        borderRadius="md"
-      />
-      <VStack align="stretch" flex={1}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Text fontSize="lg" fontWeight="semibold">
-            {name} ({username})
-          </Text>
-          <Button size="sm" colorScheme={isFollowing ? "gray" : "green"}>
-            {isFollowing ? "フォロー済" : "フォロー"}
-          </Button>
-        </Flex>
-        <Text fontSize="md" fontWeight="light">
-          {description}
-        </Text>
-      </VStack>
-    </HStack>
-  );
+interface MyPageProps {
+  currentUserId: string | null;
 }
 
-const postContents = [
-  {
-    name: "秋田君",
-    username: "katikati_yane",
-    description:
-      "本と記事のレビューが大好きな人、集まれ！新しい作品を発見し、レビューして、いいね＆ブックマークで応援しよう！",
-    isFollowing: true,
-  },
-  {
-    name: "秋田君_1",
-    username: "katikati_yan",
-    description:
-      "読書好きの集まる場所でレビューを書いてシェアしましょう！面白い作品に出会ったら、いいね＆ブックマークもよろしく！",
-    isFollowing: false,
-  },
-  {
-    name: "秋田君_2",
-    username: "katikati",
-    description:
-      "本と記事のレビューを通じて、読書仲間とつながる場所です。あなたのおすすめ作品をレビューして共有し、他のユーザーと感想を交換しょう。気に入った作品にはいいねを、また読みたい作品にはブックマークを！一緒に読書の楽しさを広げましょう。",
-    isFollowing: false,
-  },
-  {
-    name: "秋田君_3",
-    username: "katikati",
-    description:
-      "本と記事のレビューが大好きな人、集まれ！新しい作品を発見し、レビューして、いいね＆ブックマークで応援しよう！",
-    isFollowing: true,
-  },
-  {
-    name: "秋田君_4",
-    username: "katikati",
-    description:
-      "本と記事が大好きな読書家。レビューを書いて、他の読書好きとつながろう！お気に入りの作品を見つけて、いいね＆ブックマークも忘れずに。",
-    isFollowing: true,
-  },
-  {
-    name: "秋田君_5",
-    username: "katikati",
-    description:
-      "読書コミュニティの一員として、レビューを投稿して感想を共有しましょう。みんなのおすすめ作品にいいねとブックマークを！",
-    isFollowing: false,
-  },
-];
+interface ReviewData {
+  userId: string;
+  name: string;
+  description: string;
+  targetType: string;
+  bookId: string;
+  engineerSkillLevel: string;
+  id: number;
+  valueCount: number;
+  bookmarkCount: number;
+  bookDetails: {
+    title: string;
+    thumbnail: string;
+  };
+  createdAt: {
+    toDate: () => Date;
+  };
+  username: string;
+}
 
 const profile = {
   name: "杉本大志",
   username: "kachikachichinko",
-  reviewCount: 2.000,
-  valueCount: 10.000,
+  reviewCount: 2.0,
+  valueCount: 10.0,
   description: "かちかちちんこ",
-  followCount: 2.000,
-  followedCount: 3.000
-}
+  followCount: 2.0,
+  followedCount: 3.0,
+};
 
-function FollowPage() {
+function MyPage({ currentUserId }: MyPageProps) {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const reviewsData = await getReviews();
+      console.log("Fetched reviews:", reviewsData); // デバッグ用ログ
+      const reviewsWithUsernames = await Promise.all(
+        reviewsData.map(async (review) => {
+          const bookDetails = await getBookDetails(review.bookId);
+          let username = "Unknown User";
+          const userData = await getUserById(review.userId);
+          if (userData) {
+            username = userData.username;
+          }
+          return {
+            ...review,
+            bookDetails: bookDetails,
+            username,
+          };
+        })
+      );
+      setReviews(reviewsWithUsernames);
+      console.log("Reviews with usernames:", reviewsWithUsernames); // デバッグ用ログ
+    };
+
+    fetchReviews();
+  }, [currentUserId]);
+
+  const getBookDetails = async (bookId: string) => {
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/books/v1/volumes/${bookId}`
+      );
+      const data = await response.json();
+      return {
+        title: data.volumeInfo.title,
+        thumbnail: data.volumeInfo.imageLinks?.thumbnail || "",
+      };
+    } catch (error) {
+      console.error("Error fetching book details:", error);
+      return null;
+    }
+  };
+
+  // 自分の投稿だけをフィルタリング
+  console.log("Current User ID:", currentUserId); // currentUserIdをログに出力
+  const myPosts = reviews.filter((post) => {
+    console.log("Post User ID:", post.userId); // 各レビューのuserIdをログに出力
+    return post.userId === currentUserId;
+  });
+  console.log("Filtered my posts:", myPosts); // デバッグ用ログ
 
   return (
     <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal">
@@ -123,33 +117,59 @@ function FollowPage() {
             <Box p={4} pb={20} bg="gray.50" borderRadius="3xl" shadow="sm">
               <Flex justifyContent="space-between" alignItems="center">
                 <Text fontSize="lg" fontWeight="light">
-                  フォロー 1,301
+                  フォロー 13
                 </Text>
-                <CloseButton />
               </Flex>
 
               <Divider my={2} borderWidth="2px" borderColor="gray.500" />
               <VStack spacing={6} align="stretch">
-                {postContents.map(
-                  ({ name, username, description, isFollowing }, index) => (
-                    <div>
-                      <UserCard
-                        name={name}
-                        username={username}
-                        description={description}
-                        isFollowing={isFollowing}
-                      />
-                      {index === postContents.length - 1 ? (
-                        <></>
-                      ) : (
-                        <Divider
-                          mt={6}
-                          borderWidth="1px"
-                          borderColor="gray.400"
+                {myPosts.length > 0 ? (
+                  myPosts.map(
+                    (
+                      {
+                        name,
+                        description,
+                        id,
+                        valueCount,
+                        bookmarkCount,
+                        targetType,
+                        bookId,
+                        engineerSkillLevel,
+                        bookDetails,
+                        createdAt,
+                        username,
+                      },
+                      index
+                    ) => (
+                      <Box key={id} width="100%" bg="white" borderRadius="md" p={4} shadow="md">
+                        <Review
+                          currentUsername={currentUserId || ""} // 現在のユーザーIDを渡す
+                          username={username} // 投稿者のユーザー名を渡す
+                          description={description}
+                          id={id}
+                          valueCount={valueCount}
+                          bookmarkCount={bookmarkCount}
+                          targetType={targetType}
+                          bookId={bookId}
+                          engineerSkillLevel={engineerSkillLevel}
+                          bookDetails={bookDetails}
+                          createdAt={createdAt}
+                          name={name}
                         />
-                      )}
-                    </div>
+                        {index === myPosts.length - 1 ? (
+                          <></>
+                        ) : (
+                          <Divider
+                            mt={6}
+                            borderWidth="1px"
+                            borderColor="gray.400"
+                          />
+                        )}
+                      </Box>
+                    )
                   )
+                ) : (
+                  <Text>自分のレビューが見つかりませんでした。</Text>
                 )}
               </VStack>
             </Box>
@@ -160,4 +180,4 @@ function FollowPage() {
   );
 }
 
-export default FollowPage;
+export default MyPage;

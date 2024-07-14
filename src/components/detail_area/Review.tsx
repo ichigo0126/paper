@@ -10,6 +10,7 @@ import {
   Container,
   Stack,
   IconButton,
+  useBreakpointValue,
   Menu,
   MenuButton,
   MenuList,
@@ -71,10 +72,24 @@ export default function Review({
     return `${year}/${month}/${day} ${hour}:${minute}`;
   };
 
+  // ブレークポイントに応じて幅を動的に設定
+  const boxWidth = useBreakpointValue({
+    base: "90%", // モバイルデバイス
+    md: "80%", // タブレットデバイス
+    lg: "80%", // デスクトップデバイスのデフォルト
+  });
+
+  // 特定のパスに基づいて幅を変更
+  const specificBoxWidth = () => {
+    if (pathname.includes("/mypage")) return "150%";
+    if (pathname.includes("/")) return "500%";
+    return boxWidth; // デフォルトの幅
+  };
+
   return (
     <Container centerContent>
       <Box
-        w={pathname.includes("mylikepage") ? "1000px" : "1180px"}
+        w={specificBoxWidth()}
         bg="gray.50"
         border="1px"
         borderColor="gray.300"

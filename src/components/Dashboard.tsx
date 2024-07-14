@@ -57,7 +57,7 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
       />
       <Routes>
         <Route path="" element={<Home currentUserId={currentUserId} />} />
-        <Route path="mypage" element={<Mypage />} />
+        <Route path="mypage" element={<Mypage currentUserId={currentUserId}/>} />
         <Route path="mypage/setting" element={<ProfileSetting />} />
         <Route path="mypage/followpage" element={<FollowPage />} />
         <Route path="mypage/followedpage" element={<FollowedPage />} />
