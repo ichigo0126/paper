@@ -12,23 +12,25 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-type ContentType = {
-  name: string;
-  username: string;
+type ReviewProps = {
+  userId: string;
   description: string;
-  year: string;
-  title: string;
-  id: number;
+  stars: number;
+  targetType: string;
+  bookId: string;
+  engineerSkillLevel: string;
+  id: string;
 };
 
 export default function Review({
-  name,
-  username,
-  title,
-  year,
+  userId,
   description,
+  stars,
+  targetType,
+  bookId,
+  engineerSkillLevel,
   id,
-}: ContentType) {
+}: ReviewProps) {
   return (
     <Container centerContent>
       <Box w="1000px" bg="gray.50">
@@ -43,23 +45,21 @@ export default function Review({
                   borderRadius="full"
                 />
                 <Stack pl="20px">
-                  <Text>
-                    {name} ({username})
-                  </Text>
-                  <Text>{year}</Text>
+                  <Text>ユーザーID: {userId}</Text>
+                  <Text>星: {stars}</Text>
                 </Stack>
               </HStack>
               <Stack pl="30px">
                 <HStack>
-                  <Button>記事</Button>
-                  <Button>G</Button>
+                  <Button>{targetType}</Button>
+                  <Button>{engineerSkillLevel}</Button>
                 </HStack>
               </Stack>
             </VStack>
           </Box>
 
           <VStack align="end">
-            <Text as="p">{title}</Text>
+            {/* <Text as="p">書籍ID: {bookId}</Text> */}
             <Image src="https://via.placeholder.com/65" w="80px" h="100px" />
           </VStack>
         </Flex>
@@ -72,7 +72,7 @@ export default function Review({
           {description}
         </Text>
 
-        {/* 購入ボタン */}
+        {/* 返信ボタン */}
         <Box padding="20px">
           <Link to={`/review/${id}`}>
             <Button mt="2">返信</Button>

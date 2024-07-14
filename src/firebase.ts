@@ -522,7 +522,6 @@
   export const createReview = async (reviewData: {
     userId: string;
     description: string;
-    stars: number;
     targetType: "BOOK" | "ARTICLE";
     bookId?: string;
     articleId?: string;
@@ -544,6 +543,24 @@
     // 新しく作成されたレビューのIDを返します。
     return newReviewDoc.id;
   };
+
+  /**
+ * すべてのレビューを取得する
+ * @returns レビューデータを含むオブジェクトのリスト
+ */
+export const getReviews = async () => {
+  // 'reviews'コレクションへの参照を取得します。
+  const reviewsRef = collection(db, "reviews");
+
+  // コレクション内のすべてのドキュメントのスナップショットを取得します。
+  const reviewsSnapshot = await getDocs(reviewsRef);
+
+  // 各ドキュメントからレビューデータを抽出し、リストとして返します。
+  return reviewsSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+};
 
   /**
    * IDでレビューを取得する

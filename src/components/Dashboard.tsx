@@ -6,12 +6,14 @@ import { SetStateAction, useEffect, useState } from "react";
 import Header from "./detail_area/Header";
 import SearchModal from "./SearchModal";
 import ReviewModal from "./ReviewModal";
+import { User } from "firebase/auth";
 
- 
+interface UserData {
+  email: string;
+}
+
 interface DashBoardProps {
-  user: {
-    email: string;
-  }
+  user: User & UserData;
 }
 
 const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
@@ -27,6 +29,7 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
       <ReviewModal
         isReviewOpen={isReviewOpen}
         setIsReviewOpen={setIsReviewOpen}
+        currentUser={user}
       />
       <Header
         setIsReviewOpen={setIsReviewOpen}
