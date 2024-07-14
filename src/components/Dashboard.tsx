@@ -7,6 +7,9 @@ import Header from "./detail_area/Header";
 import SearchModal from "./SearchModal";
 import ReviewModal from "./ReviewModal";
 import { User } from "firebase/auth";
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase';
+
 
 interface UserData {
   email: string;
@@ -21,6 +24,20 @@ interface DashBoardProps {
 const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUserId(user.uid);
+      } else {
+        setCurrentUserId(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <>
       <SearchModal
@@ -37,7 +54,7 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
         setIsSearchOpen={setIsSearchOpen}
       />
       <Routes>
-        <Route path="" element={<Home />} />
+        <Route path="" element={<Home currentUserId={currentUserId} />} />
         <Route path="mypage/followpage" element={<FollowPage />} />
         <Route path="mypage/mylikepage" element={<MyLikePage />} />
         <Route path="comment/:id" element={<Comments />} />
