@@ -50,6 +50,7 @@ export default function Review({
   bookDetails,
   createdAt,
 }: ReviewProps) {
+  const location = useLocation();
   const pathname = useLocation().pathname;
 
   const [isLike, setIsLike] = useState(false);
@@ -73,9 +74,10 @@ export default function Review({
 
   // 特定のパスに基づいて幅を変更
   const specificBoxWidth = () => {
-    if (pathname.includes("/mypage")) return "150%";
-    if (pathname.includes("/")) return "500%";
-    return boxWidth; // デフォルトの幅
+    if (/^\/home\/[^/]+/.test(location.pathname)) return "150%";
+    if (/^\/mypage/.test(location.pathname)) return "150%";
+    if (location.pathname === "/home") return "500%";
+    return boxWidth;
   };
 
   return (
@@ -97,13 +99,18 @@ export default function Review({
           <Box>
             <VStack>
               <HStack>
-                <Image
-                  src="https://via.placeholder.com/65"
-                  w="65px"
-                  borderRadius="full"
-                />
+                <Link to={`/home/${username}`}>
+                  <Image
+                    src="https://via.placeholder.com/65"
+                    w="65px"
+                    borderRadius="full"
+                  />
+                </Link>
                 <Stack pl="16px">
-                  <Text>{username}</Text>
+                  <Link to={`/home/${username}`}>
+                    <Text>{username} (ユーザ名)</Text>
+                  </Link>{" "}
+                  <Text>{formatDate(createdAt)}</Text>
                 </Stack>
               </HStack>
               <Stack pl="30px">
