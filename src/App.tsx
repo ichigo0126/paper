@@ -67,13 +67,13 @@ function App() {
           path="/"
           element={
             user ? (
-              <Navigate to="/mypage" replace />
+              <Navigate to="/home" replace />
             ) : (
               <Auth onSignIn={handleSignIn} />
             )
           }
         />
-        <Route path="/mypage/*" element={<Dashboard user={user as {email: string}}/>} />
+        <Route path="/home/*" element={<Dashboard user={user as {email: string}}/>} />
       </Routes>
     </div>
   );
