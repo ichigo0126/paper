@@ -26,10 +26,18 @@ type ReviewProps = {
   id: number;
   valueCount: number;
   bookmarkCount: number;
+  bookDetails: {
+    title: string;
+    thumbnail: string;
+  };
+  createdAt: {
+    toDate: () => Date;
+  };
+  username: string;
 };
 
 export default function Review({
-  name,
+  username,
   description,
   targetType,
   bookId,
@@ -37,11 +45,22 @@ export default function Review({
   id,
   valueCount,
   bookmarkCount,
+  bookDetails,
+  createdAt,
 }: ReviewProps) {
   const pathname = useLocation().pathname;
 
   const [isLike, setIsLike] = useState(false);
   const [isbookmark, setIsBookmark] = useState(false);
+
+  // タイムスタンプを日付文字列に変換する関数
+  const formatDate = (timestamp: { toDate: () => Date }) => {
+    const date = timestamp.toDate();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}/${month}/${day}`;
+  };
 
   return (
     <Container centerContent>
@@ -68,7 +87,7 @@ export default function Review({
                   borderRadius="full"
                 />
                 <Stack pl="16px">
-                  <Text>{id}</Text>
+                  <Text>{username}</Text> {/* Change this line */}
                 </Stack>
               </HStack>
               <Stack pl="30px">
@@ -80,10 +99,24 @@ export default function Review({
             </VStack>
           </Box>
 
-          <VStack align="end">
-            {/* <Text as="p">書籍ID: {bookId}</Text> */}
-            <Image src="https://via.placeholder.com/65" w="80px" h="100px" />
-          </VStack>
+          <HStack align="end">
+            <VStack>
+              <Text>{formatDate(createdAt)}</Text>
+              {bookDetails && <Text as="p">{bookDetails.title}</Text>}
+            </VStack>
+
+            {bookDetails && (
+              <>
+                <Image
+                  src={bookDetails.thumbnail}
+                  alt={bookDetails.title}
+                  w="80px"
+                  h="100px"
+                />
+                {/* <Text as="p">{bookDetails.title}</Text> */}
+              </>
+            )}
+          </HStack>
         </Flex>
         <Divider mb="8px" />
         <Text px="20px">{description}</Text>

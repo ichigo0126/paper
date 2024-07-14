@@ -1,10 +1,16 @@
-import { Box, Flex, VStack, Container, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  VStack,
+  Container,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { getReviews, getUserById } from "../firebase";
 import Review from "./detail_area/Review";
 import { CiBookmark } from "react-icons/ci";
 
-function Home() {
+function Home({ currentUserId }: HomeProps) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [reviews, setReviews] = useState([]);
 
@@ -13,10 +19,20 @@ function Home() {
       const reviewsData = await getReviews();
       const reviewsWithUsernames = await Promise.all(
         reviewsData.map(async (review) => {
-          const user = await getUserById(review.userId);
+          const bookDetails = await getBookDetails(review.bookId);
+          let username = "Unknown User";
+          if (review.userId === currentUserId) {
+            const userData = await getUserById(review.userId);
+            if (userData) {
+              username = userData.username;
+            }
+          }
+          console.log("Review object:", review);
+          console.log("User ID from review:", review.userId);
           return {
             ...review,
-            username: user ? user.name : "",
+            bookDetails: bookDetails,
+            username
           };
         })
       );
@@ -24,7 +40,23 @@ function Home() {
     };
 
     fetchReviews();
-  }, []);
+  }, [currentUserId]);
+
+  const getBookDetails = async (bookId: any) => {
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/books/v1/volumes/${bookId}`
+      );
+      const data = await response.json();
+      return {
+        title: data.volumeInfo.title,
+        thumbnail: data.volumeInfo.imageLinks?.thumbnail || "",
+      };
+    } catch (error) {
+      console.error("Error fetching book details:", error);
+      return null;
+    }
+  };
 
   return (
     <Box pb={4} bg="gray.100" borderRadius="normal">
@@ -43,9 +75,13 @@ function Home() {
                     targetType,
                     bookId,
                     engineerSkillLevel,
+                    bookDetails,
+                    createdAt,
+                    username,
+                    review
                   }) => (
                     <Review
-                      key={id}
+                      key={review}
                       name={name}
                       description={description}
                       id={id}
@@ -54,6 +90,9 @@ function Home() {
                       targetType={targetType}
                       bookId={bookId}
                       engineerSkillLevel={engineerSkillLevel}
+                      bookDetails={bookDetails}
+                      createdAt={createdAt}
+                      username={username} // Add this line
                     />
                   )
                 )}

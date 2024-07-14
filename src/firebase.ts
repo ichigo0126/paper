@@ -53,30 +53,48 @@
     bio?: string;
     websiteUrl?: string;
   }) => {
-    // 'users'コレクションへの参照を取得します。
-    // Firestoreでは、データはコレクションに保存され、
-    // コレクションはドキュメントのグループです。
-    const usersRef = collection(db, "users");
-
-    // 新しいユーザーデータを使用して新しいドキュメントを`users`コレクションに追加します。
-    // serverTimestamp()は、Firestoreサーバーのタイムスタンプを使用して、
-    // データの作成日時と更新日時を自動的に設定します。
-    const newUserDoc = await addDoc(usersRef, {
-      ...userData,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-
-    // 新しく作成されたユーザーのIDを返します。
-    return newUserDoc.id;
+    const auth = getAuth();
+    const user = auth.currentUser;
+  
+    if (!user) {
+      console.error("No authenticated user found");
+      return null;
+    }
+  
+    // ユーザーのuidを使用してドキュメント参照を作成
+    const userDocRef = doc(db, "users", user.uid);
+  
+    // ドキュメントが既に存在するかチェック
+    const userDocSnap = await getDoc(userDocRef);
+  
+    if (!userDocSnap.exists()) {
+      // ドキュメントが存在しない場合、新しく作成
+      await setDoc(userDocRef, {
+        ...userData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      console.log("New user document created with ID:", user.uid);
+    } else {
+      // ドキュメントが既に存在する場合、更新
+      await setDoc(userDocRef, {
+        ...userData,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+      console.log("Existing user document updated with ID:", user.uid);
+    }
+  
+    // ユーザーのuidを返す
+    return user.uid;
   };
-
+  
   /**
    * IDでユーザーを取得する
    * @param userId - 取得するユーザーのID
    * @returns ユーザーデータを含むオブジェクト、ユーザーが存在しない場合はnull
    */
   export const getUserById = async (userId: string) => {
+    console.log("Fetching user with ID:", userId);
     // `users`コレクション内の特定のユーザーのドキュメントへの参照を取得します。
     const userDocRef = doc(db, "users", userId);
 
@@ -87,7 +105,7 @@
     // ドキュメントが存在するかどうかを確認します。
     if (userDocSnap.exists()) {
       // ドキュメントが存在する場合は、ドキュメントのデータを取得して返します。
-      return userDocSnap.data();
+      return { id: userDocSnap.id, ...userDocSnap.data() };
     } else {
       // ドキュメントが存在しない場合は、nullを返します。
       return null;
