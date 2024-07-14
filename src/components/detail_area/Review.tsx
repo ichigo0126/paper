@@ -11,6 +11,8 @@ import {
   Stack,
   IconButton,
   useBreakpointValue,
+  Tag,
+  TagLabel,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { CiBookmark, CiHeart } from "react-icons/ci";
@@ -36,6 +38,7 @@ type ReviewProps = {
   };
   username: string;
   currentUsername: string;
+  tags: string[]; // タグを追加
 };
 
 export default function Review({
@@ -49,6 +52,7 @@ export default function Review({
   bookmarkCount,
   bookDetails,
   createdAt,
+  tags, // タグを追加
 }: ReviewProps) {
   const location = useLocation();
   const pathname = useLocation().pathname;
@@ -171,6 +175,13 @@ export default function Review({
               <Button mt="2">返信</Button>
             </Link>
           </Flex>
+          <HStack mt="4">
+            {tags.map((tag) => (
+              <Tag key={tag}>
+                <TagLabel>{tag}</TagLabel>
+              </Tag>
+            ))}
+          </HStack>
         </Box>
       </Box>
     </Container>

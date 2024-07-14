@@ -23,6 +23,7 @@ interface ReviewData {
   id: number;
   valueCount: number;
   bookmarkCount: number;
+  tags: string[]; // タグフィールドを追加
   bookDetails: {
     title: string;
     thumbnail: string;
@@ -97,11 +98,12 @@ function Home({ currentUserId }: HomeProps) {
                     bookDetails,
                     createdAt,
                     username,
+                    tags, // タグを追加
                   }) => (
                     <Review
                       key={id}
-                      currentUsername={currentUserId || ""} // 現在のユーザーIDを渡す
-                      username={username} // 投稿者のユーザー名を渡す
+                      currentUsername={currentUserId || ""}
+                      username={username}
                       description={description}
                       id={id}
                       valueCount={valueCount}
@@ -111,6 +113,7 @@ function Home({ currentUserId }: HomeProps) {
                       engineerSkillLevel={engineerSkillLevel}
                       bookDetails={bookDetails}
                       createdAt={createdAt}
+                      tags={tags} // タグを渡す
                       name={""}
                     />
                   )
