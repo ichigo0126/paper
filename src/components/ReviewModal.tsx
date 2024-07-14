@@ -101,6 +101,28 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
       return;
     }
 
+    if (reviewContent.length === 0) {
+      toast({
+        title: "エラー",
+        description: "レビュー内容を入力してください。",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (reviewContent.length > 200) {
+      toast({
+        title: "エラー",
+        description: "レビューは200文字以内で入力してください。",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     try {
       const reviewData = {
         userId: currentUser.uid,
@@ -201,10 +223,13 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
             <Stack>
               <Text>評価内容：</Text>
               <Textarea
-                placeholder="250文字以内"
+                placeholder="200文字以内"
                 value={reviewContent}
                 onChange={(e) => setReviewContent(e.target.value)}
               />
+              <Text fontSize="sm" color={reviewContent.length > 200 ? "red.500" : "gray.500"}>
+                {reviewContent.length}/200文字
+              </Text>
             </Stack>
             <HStack>
               <Text>難易度：</Text>
