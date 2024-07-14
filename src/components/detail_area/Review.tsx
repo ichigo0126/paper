@@ -18,22 +18,19 @@ import { IoBookmarks } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 
 type ReviewProps = {
-  userId: string;
+  name: string;
   description: string;
   targetType: string;
   bookId: string;
   engineerSkillLevel: string;
-  year: string;
-  title: string;
   id: number;
   valueCount: number;
   bookmarkCount: number;
 };
 
 export default function Review({
-  userId,
+  name,
   description,
-  year,
   targetType,
   bookId,
   engineerSkillLevel,
@@ -71,10 +68,7 @@ export default function Review({
                   borderRadius="full"
                 />
                 <Stack pl="16px">
-                  <Text>
-                    ({userId})
-                  </Text>
-                  <Text>{year}</Text>
+                  <Text>{id}</Text>
                 </Stack>
               </HStack>
               <Stack pl="30px">

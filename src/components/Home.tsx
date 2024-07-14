@@ -1,8 +1,7 @@
 import { Box, Flex, VStack, Container, useBreakpointValue } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { getReviews } from "../firebase";
+import { getReviews, getUserById } from "../firebase";
 import Review from "./detail_area/Review";
-import { useState } from "react";
 import { CiBookmark } from "react-icons/ci";
 
 function Home() {
@@ -12,7 +11,16 @@ function Home() {
   useEffect(() => {
     const fetchReviews = async () => {
       const reviewsData = await getReviews();
-      setReviews(reviewsData);
+      const reviewsWithUsernames = await Promise.all(
+        reviewsData.map(async (review) => {
+          const user = await getUserById(review.userId);
+          return {
+            ...review,
+            username: user ? user.name : "",
+          };
+        })
+      );
+      setReviews(reviewsWithUsernames);
     };
 
     fetchReviews();
@@ -25,26 +33,27 @@ function Home() {
           <Box w={isMobile ? "full" : "69%"}>
             <Box p={4} pb={20} borderRadius="3xl" shadow="sm" w="300px">
               <VStack spacing={4} align="stretch">
-                {postContent.map(
+                {reviews.map(
                   ({
                     name,
-                    username,
-                    year,
-                    title,
                     description,
                     id,
                     valueCount,
                     bookmarkCount,
+                    targetType,
+                    bookId,
+                    engineerSkillLevel,
                   }) => (
                     <Review
+                      key={id}
                       name={name}
-                      username={username}
-                      year={year}
-                      title={title}
                       description={description}
                       id={id}
                       valueCount={valueCount}
                       bookmarkCount={bookmarkCount}
+                      targetType={targetType}
+                      bookId={bookId}
+                      engineerSkillLevel={engineerSkillLevel}
                     />
                   )
                 )}
