@@ -7,15 +7,16 @@ import Header from "./detail_area/Header";
 import SearchModal from "./SearchModal";
 import ReviewModal from "./ReviewModal";
 import { User } from "firebase/auth";
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase';
-
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
+import ProfileSetting from "./ProfileSetting";
+import BookmarkPage from "./BookmarkPage";
 
 interface UserData {
   email: string;
 }
 import Comments from "./detail_area/Comments";
-
+import Mypage from "./Mypage";
 
 interface DashBoardProps {
   user: User & UserData;
@@ -55,7 +56,10 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
       />
       <Routes>
         <Route path="" element={<Home currentUserId={currentUserId} />} />
+        <Route path="mypage" element={<Mypage />} />
+        <Route path="mypage/setting" element={<ProfileSetting />} />
         <Route path="mypage/followpage" element={<FollowPage />} />
+        <Route path="mypage/bookmarkpage" element={<BookmarkPage />} />
         <Route path="mypage/mylikepage" element={<MyLikePage />} />
         <Route path="comment/:id" element={<Comments />} />
       </Routes>

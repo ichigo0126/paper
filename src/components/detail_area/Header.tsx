@@ -18,7 +18,6 @@ import { MdOutlineNoteAdd } from "react-icons/md";
 import { IoMdOptions } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 
-
 type ModalProp = {
   setIsReviewOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsSearchOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -101,16 +100,17 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen }: ModalProp) => {
               >
                 <MdOutlineNoteAdd />
               </Button>
-              <Button
-                w="40px"
-                h="40px"
-                p="5px"
-                border="1px"
-                borderColor="whiteAlpha.900"
-                // onClick={handleSignOut}
-              >
-                <IoBookmarks />
-              </Button>
+              <Link to="./mypage/bookmarkpage">
+                <Button
+                  w="40px"
+                  h="40px"
+                  p="5px"
+                  border="1px"
+                  borderColor="whiteAlpha.900"
+                >
+                  <IoBookmarks />
+                </Button>
+              </Link>
               <Link to="./mypage/mylikepage">
                 <Button
                   w="40px"
@@ -133,7 +133,7 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen }: ModalProp) => {
                 <GrLogout />
               </Button>
             </HStack>
-            <Link to="./mypage/followpage">
+            <Link to="./mypage">
               <Image
                 src="https://via.placeholder.com/65"
                 w="65px"

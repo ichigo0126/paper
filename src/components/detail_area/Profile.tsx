@@ -12,6 +12,7 @@ import { CloseButton } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 type ContentType = {
   name: string;
@@ -89,9 +90,11 @@ function Profile({
           </Text>
         </VStack>
         <VStack align="flex-end" flex={1}>
+          <Link to="./setting">
          <Button>
          <SettingsIcon boxSize={8}/>
          </Button>
+          </Link>
           <Text fontSize="lg" color="gray.600">
             評価数: {valueCount}
           </Text>
