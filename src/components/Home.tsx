@@ -2,6 +2,8 @@ import { Box, Flex, VStack, Container, useBreakpointValue } from "@chakra-ui/rea
 import { useEffect, useState } from "react";
 import { getReviews } from "../firebase";
 import Review from "./detail_area/Review";
+import { useState } from "react";
+import { CiBookmark } from "react-icons/ci";
 
 function Home() {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -23,17 +25,29 @@ function Home() {
           <Box w={isMobile ? "full" : "69%"}>
             <Box p={4} pb={20} borderRadius="3xl" shadow="sm" w="300px">
               <VStack spacing={4} align="stretch">
-                {reviews.map(({ userId, description, stars, targetType, bookId, engineerSkillLevel, id }) => (
-                  <Review
-                    key={id}
-                    userId={userId}
-                    description={description}
-                    targetType={targetType}
-                    bookId={bookId}
-                    engineerSkillLevel={engineerSkillLevel}
-                    id={id}
-                  />
-                ))}
+                {postContent.map(
+                  ({
+                    name,
+                    username,
+                    year,
+                    title,
+                    description,
+                    id,
+                    valueCount,
+                    bookmarkCount,
+                  }) => (
+                    <Review
+                      name={name}
+                      username={username}
+                      year={year}
+                      title={title}
+                      description={description}
+                      id={id}
+                      valueCount={valueCount}
+                      bookmarkCount={bookmarkCount}
+                    />
+                  )
+                )}
               </VStack>
             </Box>
           </Box>

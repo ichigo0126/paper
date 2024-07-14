@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import Home from "./Home";
 import FollowPage from "./FollowPage";
 import MyLikePage from "./MyLikePage";
@@ -11,6 +11,8 @@ import { User } from "firebase/auth";
 interface UserData {
   email: string;
 }
+import Comments from "./detail_area/Comments";
+
 
 interface DashBoardProps {
   user: User & UserData;
@@ -19,7 +21,6 @@ interface DashBoardProps {
 const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
   return (
     <>
       <SearchModal
@@ -37,10 +38,12 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
       />
       <Routes>
         <Route path="" element={<Home />} />
-        <Route path="followpage" element={<FollowPage />} />
-        <Route path="mylikepage" element={<MyLikePage />} />
+        <Route path="mypage/followpage" element={<FollowPage />} />
+        <Route path="mypage/mylikepage" element={<MyLikePage />} />
+        <Route path="comment/:id" element={<Comments />} />
       </Routes>
     </>
   );
 };
+
 export default Dashboard;
