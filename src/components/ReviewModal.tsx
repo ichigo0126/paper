@@ -18,7 +18,8 @@ import {
   Image,
   useToast,
 } from "@chakra-ui/react";
-import { createReview } from "../firebase"; // createReview関数をインポート
+import Select from 'react-select'; // react-select をインポート
+import { createReview } from "../firebase"; // createReview 関数をインポート
 import { User } from "firebase/auth"; // Firebaseの認証ユーザー型をインポート
 
 type ModalProp = {
@@ -34,6 +35,13 @@ type Book = {
   thumbnail: string;
 };
 
+const tags = [
+  "Python", "AWS", "TypeScript", "React", "JavaScript", "Next.js", "Flutter", "Docker", "Go", "Rails", "Ruby", "GitHub", 
+  "Rust", "iOS", "PHP", "Linux", "HTML", "Swift", "Android", "Git", "VS code", "Unity", "Node.js", "Dart", "CSS", "Azure", 
+  "Laravel", "Java", "ChatGPT", "AI", "Firebase", "AtCorder", "C#", "Vue.js", "MySQL", "Kotlin", "Ubuntu", "OpenAI", 
+  "C++", "Terraform"
+];
+
 const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) => {
   const [mediaType, setMediaType] = useState<"BOOK" | "ARTICLE">("BOOK");
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,6 +50,7 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [stars, setStars] = useState(0);
+  const [selectedTags, setSelectedTags] = useState<{ value: string, label: string }[]>([]);
   const toast = useToast();
 
   const searchBooks = async () => {
@@ -100,7 +109,7 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
         targetType: mediaType,
         bookId: selectedBook.id,
         engineerSkillLevel: difficulty,
-        tags: [], // タグ機能を実装する場合はここに追加
+        tags: selectedTags.map(tag => tag.value),
       };
 
       const reviewId = await createReview(reviewData);
@@ -118,6 +127,7 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
       setSelectedBook(null);
       setBooks([]);
       setStars(0);
+      setSelectedTags([]);
     } catch (error) {
       console.error("Error submitting review:", error);
       toast({
@@ -129,6 +139,12 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
       });
     }
   };
+
+  const handleTagChange = (selectedOptions: any) => {
+    setSelectedTags(selectedOptions || []);
+  };
+
+  const tagOptions = tags.map(tag => ({ value: tag, label: tag }));
 
   return (
     <Modal isOpen={isReviewOpen} onClose={() => setIsReviewOpen(false)}>
@@ -199,6 +215,16 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
                   <Radio value="ADVANCED">Hard</Radio>
                 </HStack>
               </RadioGroup>
+            </HStack>
+            <HStack>
+              <Text>タグ：</Text>
+              <Select
+                isMulti
+                placeholder="タグを選択"
+                options={tagOptions}
+                onChange={handleTagChange}
+                value={selectedTags}
+              />
             </HStack>
           </VStack>
         </ModalBody>
