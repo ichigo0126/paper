@@ -73,6 +73,8 @@
         ...userData,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
+        // profileImageUrl: user.photoURL // Googleアカウントの画像URLを追加
+
       });
       console.log("New user document created with ID:", user.uid);
     } else {
@@ -80,6 +82,8 @@
       await setDoc(userDocRef, {
         ...userData,
         updatedAt: serverTimestamp(),
+        // profileImageUrl: user.photoURL // Googleアカウントの画像URLを追加
+
       }, { merge: true });
       console.log("Existing user document updated with ID:", user.uid);
     }

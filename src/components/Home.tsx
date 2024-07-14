@@ -10,6 +10,10 @@ import { getReviews, getUserById } from "../firebase";
 import Review from "./detail_area/Review";
 import { CiBookmark } from "react-icons/ci";
 
+interface HomeProps {
+  currentUserId: string | null;
+}
+
 function Home({ currentUserId }: HomeProps) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [reviews, setReviews] = useState([]);
