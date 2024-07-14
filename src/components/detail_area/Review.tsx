@@ -20,7 +20,6 @@ import { Link, useLocation } from "react-router-dom";
 type ReviewProps = {
   userId: string;
   description: string;
-  stars: number;
   targetType: string;
   bookId: string;
   engineerSkillLevel: string;
