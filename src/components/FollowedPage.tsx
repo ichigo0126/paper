@@ -104,7 +104,7 @@ const profile = {
   followedCount: 3.0,
 };
 
-function FollowPage() {
+function FollowedPage() {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
@@ -126,7 +126,7 @@ function FollowPage() {
                 <Text fontSize="lg" fontWeight="light">
                   フォロー 1,301
                 </Text>
-                <Link to="/home/mypage">
+                <Link  to="/home/mypage">
                   <CloseButton />
                 </Link>
               </Flex>
@@ -163,4 +163,4 @@ function FollowPage() {
   );
 }
 
-export default FollowPage;
+export default FollowedPage;

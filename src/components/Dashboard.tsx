@@ -1,6 +1,7 @@
 import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import Home from "./Home";
 import FollowPage from "./FollowPage";
+import FollowedPage from "./FollowedPage";
 import MyLikePage from "./MyLikePage";
 import { SetStateAction, useEffect, useState } from "react";
 import Header from "./detail_area/Header";
@@ -59,6 +60,7 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
         <Route path="mypage" element={<Mypage />} />
         <Route path="mypage/setting" element={<ProfileSetting />} />
         <Route path="mypage/followpage" element={<FollowPage />} />
+        <Route path="mypage/followedpage" element={<FollowedPage />} />
         <Route path="mypage/bookmarkpage" element={<BookmarkPage />} />
         <Route path="mypage/mylikepage" element={<MyLikePage />} />
         <Route path="comment/:id" element={<Comments />} />
