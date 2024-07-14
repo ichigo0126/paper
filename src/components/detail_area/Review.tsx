@@ -10,6 +10,7 @@ import {
   Container,
   Stack,
   IconButton,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { CiBookmark, CiHeart } from "react-icons/ci";
@@ -63,10 +64,24 @@ export default function Review({
     return `${year}/${month}/${day}`;
   };
 
+  // ブレークポイントに応じて幅を動的に設定
+  const boxWidth = useBreakpointValue({
+    base: "90%", // モバイルデバイス
+    md: "80%", // タブレットデバイス
+    lg: "80%", // デスクトップデバイスのデフォルト
+  });
+
+  // 特定のパスに基づいて幅を変更
+  const specificBoxWidth = () => {
+    if (pathname.includes("/mypage")) return "150%";
+    if (pathname.includes("/")) return "500%";
+    return boxWidth; // デフォルトの幅
+  };
+
   return (
     <Container centerContent>
       <Box
-        w={pathname.includes("mylikepage") ? "1000px" : "1180px"}
+        w={specificBoxWidth()}
         bg="gray.50"
         border="1px"
         borderColor="gray.300"
@@ -88,7 +103,7 @@ export default function Review({
                   borderRadius="full"
                 />
                 <Stack pl="16px">
-                  <Text>{username}</Text> {/* Change this line */}
+                  <Text>{username}</Text>
                 </Stack>
               </HStack>
               <Stack pl="30px">
@@ -114,7 +129,6 @@ export default function Review({
                   w="80px"
                   h="100px"
                 />
-                {/* <Text as="p">{bookDetails.title}</Text> */}
               </>
             )}
           </HStack>
@@ -130,17 +144,17 @@ export default function Review({
                   aria-label="like-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={(pre) => setIsLike(!pre)}
+                  onClick={() => setIsLike(!isLike)}
                   icon={isLike ? <FaHeart /> : <CiHeart />}
                 />
                 <Text>{valueCount}</Text>
               </HStack>
               <HStack pl="20px">
                 <IconButton
-                  aria-label="like-button"
+                  aria-label="bookmark-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={(pre) => setIsBookmark(!pre)}
+                  onClick={() => setIsBookmark(!isbookmark)}
                   icon={isbookmark ? <IoBookmarks /> : <CiBookmark />}
                 />
                 <Text>{bookmarkCount}</Text>

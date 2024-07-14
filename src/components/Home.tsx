@@ -8,15 +8,34 @@ import {
 import { useEffect, useState } from "react";
 import { getReviews, getUserById } from "../firebase";
 import Review from "./detail_area/Review";
-import { CiBookmark } from "react-icons/ci";
 
 interface HomeProps {
   currentUserId: string | null;
 }
 
+interface ReviewData {
+  userId: string;
+  name: string;
+  description: string;
+  targetType: string;
+  bookId: string;
+  engineerSkillLevel: string;
+  id: number;
+  valueCount: number;
+  bookmarkCount: number;
+  bookDetails: {
+    title: string;
+    thumbnail: string;
+  };
+  createdAt: {
+    toDate: () => Date;
+  };
+  username: string;
+}
+
 function Home({ currentUserId }: HomeProps) {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -29,12 +48,10 @@ function Home({ currentUserId }: HomeProps) {
           if (userData) {
             username = userData.username;
           }
-          console.log("Review object:", review);
-          console.log("User ID from review:", review.userId);
           return {
             ...review,
             bookDetails: bookDetails,
-            username
+            username,
           };
         })
       );
@@ -44,7 +61,7 @@ function Home({ currentUserId }: HomeProps) {
     fetchReviews();
   }, [currentUserId]);
 
-  const getBookDetails = async (bookId: any) => {
+  const getBookDetails = async (bookId: string) => {
     try {
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes/${bookId}`
@@ -83,7 +100,7 @@ function Home({ currentUserId }: HomeProps) {
                   }) => (
                     <Review
                       key={id}
-                      currentUsername={currentUserId} // 現在のユーザーIDを渡す
+                      currentUsername={currentUserId || ""} // 現在のユーザーIDを渡す
                       username={username} // 投稿者のユーザー名を渡す
                       description={description}
                       id={id}
@@ -94,6 +111,7 @@ function Home({ currentUserId }: HomeProps) {
                       engineerSkillLevel={engineerSkillLevel}
                       bookDetails={bookDetails}
                       createdAt={createdAt}
+                      name={""}
                     />
                   )
                 )}
