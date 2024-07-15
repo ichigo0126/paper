@@ -25,7 +25,7 @@ const profile = {
   followedCount: 3.0,
 };
 
-function FollowPage() {
+function ProfileSetting() {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
@@ -60,4 +60,4 @@ function FollowPage() {
   );
 }
 
-export default FollowPage;
+export default ProfileSetting;

@@ -3,6 +3,7 @@ import {
   Flex,
   Divider,
   VStack,
+  Text,
   Container,
   useBreakpointValue,
 } from "@chakra-ui/react";
@@ -109,47 +110,18 @@ const profile = {
   followedCount: 3.0,
 };
 
-function FollowPage() {
+function BookmarkPage() {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
     <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal">
       <Container maxW="1587px" mt={6}>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
-          <Profile
-            name={profile.name}
-            username={profile.username}
-            reviewCount={profile.reviewCount}
-            valueCount={profile.valueCount}
-            description={profile.description}
-            followCount={profile.followCount}
-            followedCount={profile.followedCount}
-          />
-          <Box w={isMobile ? "full" : "69%"}>
-            <Box p={4} pb={20} bg="gray.50" borderRadius="3xl" shadow="sm">
-              <Divider my={2} borderWidth="2px" borderColor="gray.500" />
-              <VStack spacing={6} align="stretch">
-                {postContent.map(
-                  ({ name, username, year, title, description, id, valueCount, bookmarkCount }) => (
-                    <Review
-                      name={name}
-                      username={username}
-                      year={year}
-                      title={title}
-                      description={description}
-                      id={id}
-                      valueCount={valueCount}
-                      bookmarkCount={bookmarkCount}
-                    />
-                  )
-                )}
-              </VStack>
-            </Box>
-          </Box>
+          <Text>a</Text>
         </Flex>
       </Container>
     </Box>
   );
 }
 
-export default FollowPage;
+export default BookmarkPage;
