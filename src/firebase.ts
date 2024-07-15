@@ -547,7 +547,7 @@
     targetType: "BOOK" | "ARTICLE";
     bookId?: string;
     articleId?: string;
-    engineerSkillLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+    engineerSkillLevel: "Easy" | "Normal" | "Hard";
     tags: string[];
   }) => {
     // 'reviews'コレクションへの参照を取得します。
@@ -797,11 +797,11 @@ export const getReviews = async () => {
 
   /**
    * エンジニアスキルレベルでレビューを検索する
-   * @param engineerSkillLevel - 検索するエンジニアスキルレベル ("BEGINNER"、"INTERMEDIATE"、または "ADVANCED")
+   * @param engineerSkillLevel - 検索するエンジニアスキルレベル ("Easy"、"Normal"、または "Hard")
    * @returns レビューデータを含むオブジェクトのリスト
    */
   export const searchReviewsBySkillLevel = async (
-    engineerSkillLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED"
+    engineerSkillLevel: "Easy" | "Normal" | "Hard"
   ) => {
     // 'reviews'コレクションへの参照を取得します。
     const reviewsRef = collection(db, "reviews");

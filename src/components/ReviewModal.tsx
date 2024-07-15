@@ -46,7 +46,7 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
   const [mediaType, setMediaType] = useState<"BOOK" | "ARTICLE">("BOOK");
   const [searchQuery, setSearchQuery] = useState("");
   const [reviewContent, setReviewContent] = useState("");
-  const [difficulty, setDifficulty] = useState<"BEGINNER" | "INTERMEDIATE" | "ADVANCED">("INTERMEDIATE");
+  const [difficulty, setDifficulty] = useState<"Easy" | "Normal" | "Hard">();
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [stars, setStars] = useState(0);
@@ -233,11 +233,11 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
             </Stack>
             <HStack>
               <Text>難易度：</Text>
-              <RadioGroup value={difficulty} onChange={(value) => setDifficulty(value as "BEGINNER" | "INTERMEDIATE" | "ADVANCED")}>
+              <RadioGroup value={difficulty} onChange={(value) => setDifficulty(value as "Easy" | "Normal" | "Hard")}>
                 <HStack direction="row">
-                  <Radio value="BEGINNER">Easy</Radio>
-                  <Radio value="INTERMEDIATE">Normal</Radio>
-                  <Radio value="ADVANCED">Hard</Radio>
+                  <Radio value="Easy">Easy</Radio>
+                  <Radio value="Normal">Normal</Radio>
+                  <Radio value="Hard">Hard</Radio>
                 </HStack>
               </RadioGroup>
             </HStack>
