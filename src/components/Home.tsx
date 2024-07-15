@@ -11,6 +11,11 @@ import Review from "./detail_area/Review";
 
 interface HomeProps {
   currentUserId: string | null;
+  searchParams: {
+    tags: string[];
+    mediaType: string;
+    difficulty: string;
+  };
 }
 
 interface ReviewData {
@@ -23,7 +28,7 @@ interface ReviewData {
   id: number;
   valueCount: number;
   bookmarkCount: number;
-  tags: string[]; // タグフィールドを追加
+  tags: string[];
   bookDetails: {
     title: string;
     thumbnail: string;
@@ -34,9 +39,10 @@ interface ReviewData {
   username: string;
 }
 
-function Home({ currentUserId }: HomeProps) {
+function Home({ currentUserId, searchParams }: HomeProps) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [reviews, setReviews] = useState<ReviewData[]>([]);
+  const [filteredReviews, setFilteredReviews] = useState<ReviewData[]>([]);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -57,10 +63,22 @@ function Home({ currentUserId }: HomeProps) {
         })
       );
       setReviews(reviewsWithUsernames);
+      setFilteredReviews(reviewsWithUsernames);
     };
 
     fetchReviews();
   }, [currentUserId]);
+
+  useEffect(() => {
+    const { tags, mediaType, difficulty } = searchParams;
+    const filtered = reviews.filter((review) => {
+      const hasMatchingTags = tags.length === 0 || tags.some(tag => review.tags.includes(tag));
+      const matchesMediaType = mediaType === "" || review.targetType === mediaType;
+      const matchesDifficulty = difficulty === "" || review.engineerSkillLevel === difficulty;
+      return hasMatchingTags && matchesMediaType && matchesDifficulty;
+    });
+    setFilteredReviews(filtered);
+  }, [searchParams, reviews]);
 
   const getBookDetails = async (bookId: string) => {
     try {
@@ -85,7 +103,7 @@ function Home({ currentUserId }: HomeProps) {
           <Box w={isMobile ? "full" : "69%"}>
             <Box p={4} pb={20} borderRadius="3xl" shadow="sm" w="300px">
               <VStack spacing={4} align="stretch">
-                {reviews.map(
+                {filteredReviews.map(
                   ({
                     name,
                     description,
@@ -98,7 +116,7 @@ function Home({ currentUserId }: HomeProps) {
                     bookDetails,
                     createdAt,
                     username,
-                    tags, // タグを追加
+                    tags,
                   }) => (
                     <Review
                       key={id}
@@ -113,7 +131,7 @@ function Home({ currentUserId }: HomeProps) {
                       engineerSkillLevel={engineerSkillLevel}
                       bookDetails={bookDetails}
                       createdAt={createdAt}
-                      tags={tags} // タグを渡す
+                      tags={tags}
                       name={""}
                     />
                   )
