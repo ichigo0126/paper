@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
@@ -33,7 +33,8 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
     tags: string[];
     mediaType: string;
     difficulty: string;
-  }>({ tags: [], mediaType: "", difficulty: "" });
+    searchText: string;
+  }>({ tags: [], mediaType: "", difficulty: "", searchText: "" });
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -47,25 +48,30 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
     return () => unsubscribe();
   }, []);
 
-  const handleSearch = (tags: string[], mediaType: string, difficulty: string) => {
-    setSearchParams({ tags, mediaType, difficulty });
+  const handleSearch = (searchText: string) => {
+    setSearchParams(prev => ({ ...prev, searchText }));
+  };
+
+  const handleAdvancedSearch = (tags: string[], mediaType: string, difficulty: string) => {
+    setSearchParams(prev => ({ ...prev, tags, mediaType, difficulty }));
   };
 
   return (
     <>
+      <Header
+        setIsReviewOpen={setIsReviewOpen}
+        setIsSearchOpen={setIsSearchOpen}
+        onSearch={handleSearch}
+      />
       <SearchModal
         isSearchOpen={isSearchOpen}
         setIsSearchOpen={setIsSearchOpen}
-        onSearch={handleSearch}
+        onSearch={handleAdvancedSearch}
       />
       <ReviewModal
         isReviewOpen={isReviewOpen}
         setIsReviewOpen={setIsReviewOpen}
         currentUser={user}
-      />
-      <Header
-        setIsReviewOpen={setIsReviewOpen}
-        setIsSearchOpen={setIsSearchOpen}
       />
       <Routes>
         <Route 

@@ -10,32 +10,44 @@ import {
 } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
-import { auth } from "../../firebase"; // firebaseの初期化ファイルからauthをインポート
+import { auth } from "../../firebase";
 import { GrLogout } from "react-icons/gr";
 import { FaHeart } from "react-icons/fa";
 import { IoBookmarks } from "react-icons/io5";
 import { MdOutlineNoteAdd } from "react-icons/md";
 import { IoMdOptions } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
+import { useState } from "react";
 
-type ModalProp = {
+type HeaderProps = {
   setIsReviewOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsSearchOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onSearch: (searchText: string) => void;
 };
 
-const Header = ({ setIsReviewOpen, setIsSearchOpen }: ModalProp) => {
+const Header = ({ setIsReviewOpen, setIsSearchOpen, onSearch }: HeaderProps) => {
   const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const [searchText, setSearchText] = useState("");
 
   async function handleSignOut() {
     try {
       await signOut(auth);
-      // ログアウト後の処理（例：ログインページへのリダイレクト）をここに追加
       navigate("/");
     } catch (error) {
       console.error("Error signing out:", error);
     }
   }
+
+  const handleSearch = () => {
+    onSearch(searchText);
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   return (
     <div>
@@ -81,8 +93,14 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen }: ModalProp) => {
                 <Button onClick={() => setIsSearchOpen(true)}>
                   <IoMdOptions />
                 </Button>
-                <Input placeholder="search" bg="gray.100" />
-                <Button>
+                <Input 
+                  placeholder="search" 
+                  bg="gray.100" 
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                />
+                <Button onClick={handleSearch}>
                   <CiSearch />
                 </Button>
               </HStack>
