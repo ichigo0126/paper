@@ -14,13 +14,14 @@ import {
   Tag,
   TagLabel,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { CiBookmark, CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import { IoBookmarks } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
+import { useLike } from '../LikeContext';
+import { useBookmark } from '../BookmarkContext';
 
-type ReviewProps = {
+export interface ReviewProps {
   name: string;
   description: string;
   targetType: string;
@@ -33,13 +34,11 @@ type ReviewProps = {
     title: string;
     thumbnail: string;
   };
-  createdAt: {
-    toDate: () => Date;
-  };
+  createdAt: Date | { toDate: () => Date } | string;
   username: string;
   currentUsername: string;
   tags?: string[];
-};
+}
 
 export default function Review({
   username,
@@ -55,14 +54,29 @@ export default function Review({
   tags = [],
 }: ReviewProps) {
   const location = useLocation();
-  const pathname = useLocation().pathname;
+  const { likedReviews, toggleLike } = useLike();
+  const { bookmarkedReviews, toggleBookmark } = useBookmark();
+  const isLiked = likedReviews.some(r => r.id === id);
+  const isBookmarked = bookmarkedReviews.some(r => r.id === id);
 
-  const [isLike, setIsLike] = useState(false);
-  const [isbookmark, setIsBookmark] = useState(false);
+  const formatDate = (timestamp: Date | { toDate: () => Date } | string) => {
+    let date: Date;
+    if (timestamp instanceof Date) {
+      date = timestamp;
+    } else if (typeof timestamp === 'object' && 'toDate' in timestamp) {
+      date = timestamp.toDate();
+    } else if (typeof timestamp === 'string') {
+      date = new Date(timestamp);
+    } else {
+      console.error('Invalid timestamp format', timestamp);
+      return 'Invalid Date';
+    }
 
-  // タイムスタンプを日付文字列に変換する関数
-  const formatDate = (timestamp: { toDate: () => Date }) => {
-    const date = timestamp.toDate();
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date', date);
+      return 'Invalid Date';
+    }
+
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -71,14 +85,12 @@ export default function Review({
     return `${year}/${month}/${day} ${hour}:${minute}`;
   };
 
-  // ブレークポイントに応じて幅を動的に設定
   const boxWidth = useBreakpointValue({
-    base: "90%", // モバイルデバイス
-    md: "80%", // タブレットデバイス
-    lg: "80%", // デスクトップデバイスのデフォルト
+    base: "90%",
+    md: "80%",
+    lg: "80%",
   });
 
-  // 特定のパスに基づいて幅を変更
   const specificBoxWidth = () => {
     if (/^\/home\/[^/]+/.test(location.pathname)) return "150%";
     if (/^\/mypage/.test(location.pathname)) return "150%";
@@ -95,7 +107,6 @@ export default function Review({
         borderColor="gray.300"
         borderRadius="30px"
       >
-        {/* ヘッダー */}
         <Box textAlign="right">
           <Box pt="8px" pr="24px">
             <Button>DELETE</Button>
@@ -157,8 +168,8 @@ export default function Review({
                   aria-label="like-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={() => setIsLike(!isLike)}
-                  icon={isLike ? <FaHeart /> : <CiHeart />}
+                  onClick={() => toggleLike({ id, username, description, targetType, bookId, engineerSkillLevel, valueCount, bookmarkCount, bookDetails, createdAt, tags })}
+                  icon={isLiked ? <FaHeart /> : <CiHeart />}
                 />
                 <Text>{valueCount}</Text>
               </HStack>
@@ -167,8 +178,8 @@ export default function Review({
                   aria-label="bookmark-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={() => setIsBookmark(!isbookmark)}
-                  icon={isbookmark ? <IoBookmarks /> : <CiBookmark />}
+                  onClick={() => toggleBookmark({ id, username, description, targetType, bookId, engineerSkillLevel, valueCount, bookmarkCount, bookDetails, createdAt, tags })}
+                  icon={isBookmarked ? <IoBookmarks /> : <CiBookmark />}
                 />
                 <Text>{bookmarkCount}</Text>
               </HStack>
