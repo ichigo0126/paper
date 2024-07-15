@@ -15,6 +15,7 @@ interface HomeProps {
     tags: string[];
     mediaType: string;
     difficulty: string;
+    searchText: string;
   };
 }
 
@@ -70,12 +71,15 @@ function Home({ currentUserId, searchParams }: HomeProps) {
   }, [currentUserId]);
 
   useEffect(() => {
-    const { tags, mediaType, difficulty } = searchParams;
+    const { tags, mediaType, difficulty, searchText } = searchParams;
     const filtered = reviews.filter((review) => {
       const hasMatchingTags = tags.length === 0 || tags.some(tag => review.tags.includes(tag));
       const matchesMediaType = mediaType === "" || review.targetType === mediaType;
       const matchesDifficulty = difficulty === "" || review.engineerSkillLevel === difficulty;
-      return hasMatchingTags && matchesMediaType && matchesDifficulty;
+      const matchesSearchText = searchText === "" || 
+        review.description.toLowerCase().includes(searchText.toLowerCase()) ||
+        review.bookDetails.title.toLowerCase().includes(searchText.toLowerCase());
+      return hasMatchingTags && matchesMediaType && matchesDifficulty && matchesSearchText;
     });
     setFilteredReviews(filtered);
   }, [searchParams, reviews]);
