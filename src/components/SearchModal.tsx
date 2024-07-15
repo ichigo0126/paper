@@ -1,3 +1,10 @@
+const tags = [
+  "Python", "AWS", "TypeScript", "React", "JavaScript", "Next.js", "Flutter", "Docker", "Go", "Rails", "Ruby", "GitHub", 
+  "Rust", "iOS", "PHP", "Linux", "HTML", "Swift", "Android", "Git", "VS code", "Unity", "Node.js", "Dart", "CSS", "Azure", 
+  "Laravel", "Java", "ChatGPT", "AI", "Firebase", "AtCorder", "C#", "Vue.js", "MySQL", "Kotlin", "Ubuntu", "OpenAI", 
+  "C++", "Terraform"
+];
+
 import {
   Modal,
   ModalContent,
@@ -5,16 +12,17 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Stack,
   HStack,
   Text,
-  Input,
-  Textarea,
   Divider,
-  Flex,
+  Wrap,
+  WrapItem,
+  Box,
+  RadioGroup,
+  Radio,
+  VStack
 } from "@chakra-ui/react";
-import React from "react";
-import { Radio, RadioGroup } from "@chakra-ui/react";
+import React, { useState } from "react";
 
 type ModalProp = {
   isSearchOpen: boolean;
@@ -22,13 +30,21 @@ type ModalProp = {
 };
 
 const SearchModal = ({ isSearchOpen, setIsSearchOpen }: ModalProp) => {
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const handleTagClick = (tag: string) => {
+    setSelectedTags((prevTags) => 
+      prevTags.includes(tag) ? prevTags.filter(t => t !== tag) : [...prevTags, tag]
+    );
+  };
+
   return (
-    <>
-      <Modal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)}>
-        <ModalContent maxWidth="400px">
-          <ModalHeader textAlign="center">詳細検索</ModalHeader>
-          <Divider />
-          <ModalBody>
+    <Modal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)}>
+      <ModalContent maxWidth="400px">
+        <ModalHeader textAlign="center">詳細検索</ModalHeader>
+        <Divider />
+        <ModalBody>
+          <VStack spacing={4} align="stretch">
             <HStack>
               <Text>媒体の種類：</Text>
               <RadioGroup>
@@ -38,8 +54,8 @@ const SearchModal = ({ isSearchOpen, setIsSearchOpen }: ModalProp) => {
                 </HStack>
               </RadioGroup>
             </HStack>
-            <Divider pb="10px" />
-            <HStack pt="10px">
+            <Divider />
+            <HStack>
               <Text>難易度：</Text>
               <RadioGroup>
                 <HStack direction="row">
@@ -49,23 +65,29 @@ const SearchModal = ({ isSearchOpen, setIsSearchOpen }: ModalProp) => {
                 </HStack>
               </RadioGroup>
             </HStack>
-            <Divider pb="10px" />
-            <HStack pt="10px">
-              <Flex>
-                <Button>Python</Button>
-                <Button>React</Button>
-                <Button>Golang</Button>
-                <Button>Svelte</Button>
-                <Button>AWS</Button>
-              </Flex>
-            </HStack>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={() => setIsSearchOpen(false)}>閉じる</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+            <Divider />
+            <Text>タグ：</Text>
+            <Wrap spacing={2}>
+              {tags.map((tag) => (
+                <WrapItem key={tag}>
+                  <Button
+                    size="sm"
+                    variant={selectedTags.includes(tag) ? "solid" : "outline"}
+                    onClick={() => handleTagClick(tag)}
+                    colorScheme={selectedTags.includes(tag) ? "blue" : "gray"}
+                  >
+                    {tag}
+                  </Button>
+                </WrapItem>
+              ))}
+            </Wrap>
+          </VStack>
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={() => setIsSearchOpen(false)}>閉じる</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
