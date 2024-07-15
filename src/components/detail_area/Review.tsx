@@ -14,12 +14,12 @@ import {
   Tag,
   TagLabel,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { CiBookmark, CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import { IoBookmarks } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 import { useLike } from '../LikeContext';
+import { useBookmark } from '../BookmarkContext';
 
 export interface ReviewProps {
   name: string;
@@ -55,8 +55,9 @@ export default function Review({
 }: ReviewProps) {
   const location = useLocation();
   const { likedReviews, toggleLike } = useLike();
+  const { bookmarkedReviews, toggleBookmark } = useBookmark();
   const isLiked = likedReviews.some(r => r.id === id);
-  const [isbookmark, setIsBookmark] = useState(false);
+  const isBookmarked = bookmarkedReviews.some(r => r.id === id);
 
   const formatDate = (timestamp: Date | { toDate: () => Date } | string) => {
     let date: Date;
@@ -167,19 +168,7 @@ export default function Review({
                   aria-label="like-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={() => toggleLike({
-                    id,
-                    username,
-                    description,
-                    targetType,
-                    bookId,
-                    engineerSkillLevel,
-                    valueCount,
-                    bookmarkCount,
-                    bookDetails,
-                    createdAt,
-                    tags
-                  })}
+                  onClick={() => toggleLike({ id, username, description, targetType, bookId, engineerSkillLevel, valueCount, bookmarkCount, bookDetails, createdAt, tags })}
                   icon={isLiked ? <FaHeart /> : <CiHeart />}
                 />
                 <Text>{valueCount}</Text>
@@ -189,8 +178,8 @@ export default function Review({
                   aria-label="bookmark-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={() => setIsBookmark(!isbookmark)}
-                  icon={isbookmark ? <IoBookmarks /> : <CiBookmark />}
+                  onClick={() => toggleBookmark({ id, username, description, targetType, bookId, engineerSkillLevel, valueCount, bookmarkCount, bookDetails, createdAt, tags })}
+                  icon={isBookmarked ? <IoBookmarks /> : <CiBookmark />}
                 />
                 <Text>{bookmarkCount}</Text>
               </HStack>

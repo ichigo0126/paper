@@ -6,6 +6,7 @@ import Dashboard from "./components/Dashboard";
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { LikeProvider } from './components/LikeContext';
+import { BookmarkProvider } from './components/BookmarkContext';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -63,21 +64,23 @@ function App() {
 
   return (
     <LikeProvider>
-      <div className="base-color">
-        <Routes>
-          <Route
-            path="/"
-            element={
-              user ? (
-                <Navigate to="/home" replace />
-              ) : (
-                <Auth onSignIn={handleSignIn} />
-              )
-            }
-          />
-          <Route path="/home/*" element={<Dashboard user={user as {email: string}}/>} />
-        </Routes>
-      </div>
+      <BookmarkProvider>
+        <div className="base-color">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                user ? (
+                  <Navigate to="/home" replace />
+                ) : (
+                  <Auth onSignIn={handleSignIn} />
+                )
+              }
+            />
+            <Route path="/home/*" element={<Dashboard user={user as {email: string}}/>} />
+          </Routes>
+        </div>
+      </BookmarkProvider>
     </LikeProvider>
   );
 }
