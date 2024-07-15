@@ -38,7 +38,7 @@ type ReviewProps = {
   };
   username: string;
   currentUsername: string;
-  tags: string[]; // タグを追加
+  tags?: string[];
 };
 
 export default function Review({
@@ -52,7 +52,7 @@ export default function Review({
   bookmarkCount,
   bookDetails,
   createdAt,
-  tags, // タグを追加
+  tags = [],
 }: ReviewProps) {
   const location = useLocation();
   const pathname = useLocation().pathname;
