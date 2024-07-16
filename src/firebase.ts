@@ -4,13 +4,13 @@
 
   // Firebaseの設定
   const firebaseConfig = {
-    apiKey: "AIzaSyBlQIVuvA8BSPcj0mB41_1TzyYYIcGJvw0",
-    authDomain: "paper-427816.firebaseapp.com",
-    projectId: "paper-427816",
-    storageBucket: "paper-427816.appspot.com",
-    messagingSenderId: "666039039325",
-    appId: "1:666039039325:web:8caf04db30eb33026ba4b4",
-    measurementId: "G-EJHXWPHXHV"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
   };
 
   // Firebaseアプリの初期化
