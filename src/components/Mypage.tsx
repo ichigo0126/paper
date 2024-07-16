@@ -38,7 +38,6 @@ interface ReviewData {
 }
 
 interface UserProfile {
-  name: string;
   username: string;
   reviewCount: number;
   valueCount: number;
@@ -62,7 +61,6 @@ function MyPage({ currentUserId }: MyPageProps) {
           const userData = await getUserById(currentUserId);
           if (userData) {
             setUserProfile({
-              name: userData.name || "名前なし",
               username: userData.username || "ユーザー名なし",
               reviewCount: userData.reviewCount || 0,
               valueCount: userData.valueCount || 0,
@@ -135,7 +133,6 @@ function MyPage({ currentUserId }: MyPageProps) {
       <Container maxW="1587px" mt={6}>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <Profile
-            name={userProfile.name}
             username={userProfile.username}
             reviewCount={userProfile.reviewCount}
             valueCount={userProfile.valueCount}

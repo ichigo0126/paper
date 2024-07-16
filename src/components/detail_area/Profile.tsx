@@ -14,7 +14,6 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 type ProfileType = {
-  name: string;
   username: string;
   reviewCount: number;
   valueCount: number;
@@ -24,7 +23,6 @@ type ProfileType = {
 };
 
 function Profile({
-  name,
   username,
   reviewCount,
   valueCount,
@@ -104,11 +102,8 @@ function Profile({
           w="111px"
           alignSelf="center"
         />
-        <Text fontSize="md" textAlign="center">
-          {name}
-        </Text>
         <Text fontSize="md" color="gray.600" textAlign="center">
-          ({username})
+          {username}
         </Text>
         <Text fontSize="md" color="gray.700" textAlign="center">
           {description}
