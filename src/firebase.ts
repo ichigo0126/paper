@@ -1,22 +1,79 @@
-import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { collectionGroup, getFirestore } from "firebase/firestore";
+  import { initializeApp } from "firebase/app";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
+  import { collectionGroup, getFirestore  } from 'firebase/firestore';
 
-// Firebaseの設定
-const firebaseConfig = {
-  apiKey: "AIzaSyBlQIVuvA8BSPcj0mB41_1TzyYYIcGJvw0",
-  authDomain: "paper-427816.firebaseapp.com",
-  projectId: "paper-427816",
-  storageBucket: "paper-427816.appspot.com",
-  messagingSenderId: "666039039325",
-  appId: "1:666039039325:web:8caf04db30eb33026ba4b4",
-  measurementId: "G-EJHXWPHXHV",
-};
+  // Firebaseの設定
+  const firebaseConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  };
+
+  // Firebaseアプリの初期化
+  const app = initializeApp(firebaseConfig);
+
+  // Firestoreの取得
+  const db = getFirestore(app);
+
+  // 認証の取得
+  const auth = getAuth(app);
+
+  // Google認証プロバイダーの作成
+  const googleProvider = new GoogleAuthProvider();
+  import {
+    Timestamp,
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    limit,
+    orderBy,
+    query,
+    serverTimestamp,
+    setDoc,
+    updateDoc,
+    where,
+  } from "firebase/firestore";
+  // User
+
+  /**
+   * 新しいユーザーを作成する
+   * @param userData - 新しいユーザーのユーザー名、メールアドレス、自己紹介、ウェブサイトURLを含むオブジェクト
+   * @returns 新しく作成されたユーザーのID
+   */
+  export const createUser = async (userData: {
+    username: string;
+    email: string;
+    bio?: string;
+    websiteUrl?: string;
+  }) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+  
+    if (!user) {
+      console.error("No authenticated user found");
+      return null;
+    }
+  
+    // ユーザーのuidを使用してドキュメント参照を作成
+    const userDocRef = doc(db, "users", user.uid);
+  
+    // ドキュメントが既に存在するかチェック
+    const userDocSnap = await getDoc(userDocRef);
+  
+    if (!userDocSnap.exists()) {
+      // ドキュメントが存在しない場合、新しく作成
+      await setDoc(userDocRef, {
+        ...userData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        // profileImageUrl: user.photoURL // Googleアカウントの画像URLを追加
 
 // Firebaseアプリの初期化
 const app = initializeApp(firebaseConfig);
