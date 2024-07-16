@@ -9,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth";
+import { signOut, User } from "firebase/auth";
 import { auth } from "../../firebase";
 import { GrLogout } from "react-icons/gr";
 import { FaHeart } from "react-icons/fa";
@@ -17,7 +17,7 @@ import { IoBookmarks } from "react-icons/io5";
 import { MdOutlineNoteAdd } from "react-icons/md";
 import { IoMdOptions } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type HeaderProps = {
   setIsReviewOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,6 +29,15 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen, onSearch }: HeaderProps) => 
   const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [searchText, setSearchText] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   async function handleSignOut() {
     try {
@@ -153,9 +162,11 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen, onSearch }: HeaderProps) => 
             </HStack>
             <Link to="./mypage">
               <Image
-                src="https://via.placeholder.com/65"
+                src={user?.photoURL || "https://via.placeholder.com/65"}
                 w="65px"
+                h="65px"
                 borderRadius="full"
+                objectFit="cover"
               />
             </Link>
           </Flex>
