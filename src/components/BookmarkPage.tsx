@@ -14,7 +14,7 @@ function BookmarkPage() {
   const { bookmarkedReviews } = useBookmark();
 
   return (
-    <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal">
+    <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal" h="100vh">
       <Container maxW="1587px" mt={6}>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <VStack spacing={4} align="stretch" w="full">
