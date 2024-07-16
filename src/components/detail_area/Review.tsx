@@ -125,7 +125,7 @@ export default function Review({
                 </Link>
                 <Stack pl="16px">
                   <Link to={`/home/${username}`}>
-                    <Text>{username} (ユーザ名)</Text>
+                    <Text>{username}</Text>
                   </Link>{" "}
                   <Text>{formatDate(createdAt)}</Text>
                 </Stack>

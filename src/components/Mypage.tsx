@@ -57,12 +57,16 @@ function MyPage({ currentUserId }: MyPageProps) {
       setLoading(true);
       if (currentUserId) {
         try {
+          // レビューの取得
+          const reviewsData = await getReviews();
+          const myReviews = reviewsData.filter(review => review.userId === currentUserId);
+          
           // ユーザープロフィールの取得
           const userData = await getUserById(currentUserId);
           if (userData) {
             setUserProfile({
               username: userData.username || "ユーザー名なし",
-              reviewCount: userData.reviewCount || 0,
+              reviewCount: myReviews.length,
               valueCount: userData.valueCount || 0,
               description: userData.description || "",
               followCount: userData.followCount || 0,
@@ -70,10 +74,8 @@ function MyPage({ currentUserId }: MyPageProps) {
             });
           }
 
-          // レビューの取得
-          const reviewsData = await getReviews();
           const reviewsWithDetails = await Promise.all(
-            reviewsData.map(async (review) => {
+            myReviews.map(async (review) => {
               const bookDetails = await getBookDetails(review.bookId);
               return {
                 ...review,
@@ -108,9 +110,6 @@ function MyPage({ currentUserId }: MyPageProps) {
       return null;
     }
   };
-
-  // 自分の投稿だけをフィルタリング
-  const myPosts = reviews.filter((post) => post.userId === currentUserId);
 
   if (loading) {
     return (
@@ -150,8 +149,8 @@ function MyPage({ currentUserId }: MyPageProps) {
 
               <Divider my={2} borderWidth="2px" borderColor="gray.500" />
               <VStack spacing={6} align="stretch">
-                {myPosts.length > 0 ? (
-                  myPosts.map((review, index) => (
+                {reviews.length > 0 ? (
+                  reviews.map((review, index) => (
                     <Box key={review.id} width="100%" bg="white" borderRadius="md" p={4} shadow="md">
                       <Review
                         currentUsername={userProfile.username}
@@ -167,7 +166,7 @@ function MyPage({ currentUserId }: MyPageProps) {
                         createdAt={review.createdAt}
                         name={review.name}
                       />
-                      {index !== myPosts.length - 1 && (
+                      {index !== reviews.length - 1 && (
                         <Divider mt={6} borderWidth="1px" borderColor="gray.400" />
                       )}
                     </Box>

@@ -8,9 +8,9 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import Profile from "./detail_area/Profile";
-import Review from "./detail_area/Review"; // Reviewコンポーネントをインポート
-import { getReviews, getUserById } from "../firebase"; // レビューを取得するための関数をインポート
+import OtherProfile from "./detail_area/OtherProfile";
+import Review from "./detail_area/Review";
+import { getReviews, getUserByUsername, getUserById } from "../firebase";
 import { useParams } from "react-router-dom";
 
 interface MyPageProps {
@@ -24,7 +24,7 @@ interface ReviewData {
   targetType: string;
   bookId: string;
   engineerSkillLevel: string;
-  id: number;
+  id: string;
   valueCount: number;
   bookmarkCount: number;
   bookDetails: {
@@ -37,47 +37,60 @@ interface ReviewData {
   username: string;
 }
 
-const profile = {
-  name: "杉本大志",
-  username: "kachikachichinko",
-  reviewCount: 2.0,
-  valueCount: 10.0,
-  description: "かちかちちんこ",
-  followCount: 2.0,
-  followedCount: 3.0,
-};
+interface UserProfileData {
+  id: string;
+  name: string;
+  username: string;
+  reviewCount: number;
+  valueCount: number;
+  description: string;
+  followCount: number;
+  followedCount: number;
+}
 
 function OtherMypage({ currentUserId }: MyPageProps) {
-  const {username} = useParams();
-
+  const { username } = useParams<{ username: string }>();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [reviews, setReviews] = useState<ReviewData[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      const reviewsData = await getReviews();
-      console.log("Fetched reviews:", reviewsData); // デバッグ用ログ
-      const reviewsWithUsernames = await Promise.all(
-        reviewsData.map(async (review) => {
-          const bookDetails = await getBookDetails(review.bookId);
-          let username = "Unknown User";
-          const userData = await getUserById(review.userId);
+    const fetchUserDataAndReviews = async () => {
+      if (username) {
+        try {
+          // ユーザー情報を取得
+          const userData = await getUserByUsername(username);
           if (userData) {
-            username = userData.username;
+            setUserProfile(userData as UserProfileData);
           }
-          return {
-            ...review,
-            bookDetails: bookDetails,
-            username,
-          };
-        })
-      );
-      setReviews(reviewsWithUsernames);
-      console.log("Reviews with usernames:", reviewsWithUsernames); // デバッグ用ログ
+
+          // すべてのレビューを取得
+          const reviewsData = await getReviews();
+          console.log("Fetched reviews:", reviewsData);
+          const reviewsWithDetails = await Promise.all(
+            reviewsData.map(async (review) => {
+              const bookDetails = await getBookDetails(review.bookId);
+              let reviewUsername = "Unknown User";
+              const reviewUserData = await getUserById(review.userId);
+              if (reviewUserData) {
+                reviewUsername = reviewUserData.username;
+              }
+              return {
+                ...review,
+                bookDetails: bookDetails,
+                username: reviewUsername,
+              };
+            })
+          );
+          setReviews(reviewsWithDetails);
+        } catch (error) {
+          console.error("Error fetching user data and reviews:", error);
+        }
+      }
     };
 
-    fetchReviews();
-  }, [currentUserId]);
+    fetchUserDataAndReviews();
+  }, [username]);
 
   const getBookDetails = async (bookId: string) => {
     try {
@@ -95,86 +108,59 @@ function OtherMypage({ currentUserId }: MyPageProps) {
     }
   };
 
-  // 自分の投稿だけをフィルタリング
-
-  // TODO: usernameでフィルタリングしているため現実的ではないので、Idとかをpathに入れてuseParamsで抜き取るのがいいかも
-  console.log("Current User ID:", currentUserId); // currentUserIdをログに出力
-  const myPosts = reviews.filter((post) => {
-    console.log("Post User ID(aaaa):", post.username); // 各レビューのuserIdをログに出力
-    return post.username === username;
-  });
-  console.log("Filtered my posts:", myPosts); // デバッグ用ログ
+  // ユーザーのレビューだけをフィルタリング
+  const userReviews = reviews.filter((review) => review.username === username);
+  console.log("Filtered user reviews:", userReviews);
 
   return (
     <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal">
       <Container maxW="1587px" mt={6}>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
-          <Profile
-            name={profile.name}
-            username={profile.username}
-            reviewCount={profile.reviewCount}
-            valueCount={profile.valueCount}
-            description={profile.description}
-            followCount={profile.followCount}
-            followedCount={profile.followedCount}
-          />
+          {userProfile && (
+            <OtherProfile
+              name={userProfile.name}
+              username={userProfile.username}
+              reviewCount={userReviews.length}
+              valueCount={userProfile.valueCount}
+              description={userProfile.description}
+              followCount={userProfile.followCount}
+              followedCount={userProfile.followedCount}
+            />
+          )}
           <Box w={isMobile ? "full" : "69%"}>
             <Box p={4} pb={20} bg="gray.50" borderRadius="3xl" shadow="sm">
               <Flex justifyContent="space-between" alignItems="center">
                 <Text fontSize="lg" fontWeight="light">
-                  フォロー 13
+                  フォロー {userProfile?.followCount || 0}
                 </Text>
               </Flex>
 
               <Divider my={2} borderWidth="2px" borderColor="gray.500" />
               <VStack spacing={6} align="stretch">
-                {myPosts.length > 0 ? (
-                  myPosts.map(
-                    (
-                      {
-                        name,
-                        description,
-                        id,
-                        valueCount,
-                        bookmarkCount,
-                        targetType,
-                        bookId,
-                        engineerSkillLevel,
-                        bookDetails,
-                        createdAt,
-                        username,
-                      },
-                      index
-                    ) => (
-                      <Box key={id} width="100%" bg="white" borderRadius="md" p={4} shadow="md">
-                        <Review
-                          currentUsername={currentUserId || ""} // 現在のユーザーIDを渡す
-                          username={username} // 投稿者のユーザー名を渡す
-                          description={description}
-                          id={id}
-                          valueCount={valueCount}
-                          bookmarkCount={bookmarkCount}
-                          targetType={targetType}
-                          bookId={bookId}
-                          engineerSkillLevel={engineerSkillLevel}
-                          bookDetails={bookDetails}
-                          createdAt={createdAt}
-                          name={name}
-                        />
-                        {index === myPosts.length - 1 ? (
-                          <></>
-                        ) : (
-                          <Divider
-                            mt={6}
-                            borderWidth="1px"
-                            borderColor="gray.400"
-                          />
-                        )}
-                      </Box>
-                    )
-                  )
+                {userReviews.length > 0 ? (
+                  userReviews.map((review, index) => (
+                    <Box key={review.id} width="100%" bg="white" borderRadius="md" p={4} shadow="md">
+                      <Review
+                        currentUsername={currentUserId || ""}
+                        username={review.username}
+                        description={review.description}
+                        id={review.id}
+                        valueCount={review.valueCount}
+                        bookmarkCount={review.bookmarkCount}
+                        targetType={review.targetType}
+                        bookId={review.bookId}
+                        engineerSkillLevel={review.engineerSkillLevel}
+                        bookDetails={review.bookDetails}
+                        createdAt={review.createdAt}
+                        name={review.name}
+                      />
+                      {index !== userReviews.length - 1 && (
+                        <Divider mt={6} borderWidth="1px" borderColor="gray.400" />
+                      )}
+                    </Box>
+                  ))
                 ) : (
-                  <Text>自分のレビューが見つかりませんでした。</Text>
+                  <Text>レビューが見つかりませんでした。</Text>
                 )}
               </VStack>
             </Box>

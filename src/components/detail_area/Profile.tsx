@@ -7,6 +7,7 @@ import {
   VStack,
   HStack,
   useBreakpointValue,
+  Flex,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
@@ -69,22 +70,17 @@ function Profile({
       >
         <HStack fontWeight="semibold">
           <VStack align="flex-start" flex={1}>
-            {pathname.includes("mypage") ? (<></>) : 
-            (
-              isFollowed ? (
-                <Button colorScheme="gray" size="sm" onClick={handleFollow}>
-                  フォロー済
-                </Button>
-              ) : (
-                <Button colorScheme="green" size="sm" onClick={handleFollow}>
-                  フォロー
-                </Button>
-              )
+            {pathname.includes("mypage") ? (
+              <></>
+            ) : isFollowed ? (
+              <Button colorScheme="gray" size="sm" onClick={handleFollow}>
+                フォロー済
+              </Button>
+            ) : (
+              <Button colorScheme="green" size="sm" onClick={handleFollow}>
+                フォロー
+              </Button>
             )}
-
-            <Text ml={4} fontSize="lg" color="gray.600">
-              投稿数: {reviewCount}
-            </Text>
           </VStack>
           <VStack align="flex-end" flex={1}>
             <Link to="/home/mypage/setting">
@@ -92,9 +88,6 @@ function Profile({
                 <SettingsIcon boxSize={8} />
               </Button>
             </Link>
-            <Text fontSize="lg" color="gray.600">
-              評価数: {valueCount}
-            </Text>
           </VStack>
         </HStack>
         <Image
@@ -108,6 +101,14 @@ function Profile({
         <Text fontSize="md" color="gray.700" textAlign="center">
           {description}
         </Text>
+        <Flex justifyContent="space-between" ml={4} mr={4}>
+          <Text ml={4} fontSize="lg" color="gray.600">
+            投稿数: {reviewCount}
+          </Text>
+          <Text fontSize="lg" color="gray.600">
+            評価数: {valueCount}
+          </Text>
+        </Flex>
         <Divider />
         <HStack justifyContent="space-around" w="full">
           <Button w="50%" py="45px" bg="gray.50">

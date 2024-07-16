@@ -49,6 +49,32 @@ import {
 // User
 
 /**
+ * ユーザー名でレビューを取得する
+ * @param username - レビューを取得したいユーザーのユーザー名
+ * @returns レビューデータを含むオブジェクトのリスト
+ */
+export const getReviewsByUsername = async (username: string) => {
+  // まず、ユーザー名からユーザーIDを取得します
+  const userData = await getUserByUsername(username);
+  if (!userData || !userData.id) {
+    console.error("User not found for username:", username);
+    return [];
+  }
+
+  // ユーザーIDを使用してレビューを取得します
+  const reviewsRef = collection(db, "reviews");
+  const q = query(reviewsRef, where("userId", "==", userData.id));
+  const reviewQuerySnapshot = await getDocs(q);
+
+  // 各ドキュメントからレビューデータを抽出し、リストとして返します
+  return reviewQuerySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+};
+
+
+/**
  * 新しいユーザーを作成する
  * @param userData - 新しいユーザーのユーザー名、メールアドレス、自己紹介、ウェブサイトURLを含むオブジェクト
  * @returns 新しく作成されたユーザーのID
@@ -145,8 +171,8 @@ export const getUserByUsername = async (username: string) => {
 
   // 結果が空でないかどうかを確認します。
   if (!userQuerySnapshot.empty) {
-    // 結果が空でない場合は、最初のドキュメントのデータを取得して返します。
-    return userQuerySnapshot.docs[0].data();
+    const userDoc = userQuerySnapshot.docs[0];
+    return { id: userDoc.id, ...userDoc.data() };
   } else {
     // 結果が空の場合は、nullを返します。
     return null;
