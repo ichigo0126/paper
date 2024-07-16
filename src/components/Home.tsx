@@ -101,11 +101,11 @@ function Home({ currentUserId, searchParams }: HomeProps) {
   };
 
   return (
-    <Box pb={4} bg="gray.100" borderRadius="normal">
+    <Box pb={4} bg="gray.100" borderRadius="normal" h="100vh">
       <Container centerContent>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <Box w={isMobile ? "full" : "69%"}>
-            <Box p={4} pb={20} borderRadius="3xl" shadow="sm" w="300px">
+            <Box mt="80px" p={4} pb={20} borderRadius="3xl" shadow="sm" w="300px">
               <VStack spacing={4} align="stretch">
                 {filteredReviews.map(
                   ({

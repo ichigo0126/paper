@@ -14,7 +14,7 @@ import ReviewModal from "./ReviewModal";
 import ProfileSetting from "./ProfileSetting";
 import BookmarkPage from "./BookmarkPage";
 import OtherMypage from "./OtherMypage";
-import Comments from "./detail_area/Comments";
+import Comments from "./Comments";
 import Mypage from "./Mypage";
 
 interface UserData {
@@ -49,11 +49,15 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
   }, []);
 
   const handleSearch = (searchText: string) => {
-    setSearchParams(prev => ({ ...prev, searchText }));
+    setSearchParams((prev) => ({ ...prev, searchText }));
   };
 
-  const handleAdvancedSearch = (tags: string[], mediaType: string, difficulty: string) => {
-    setSearchParams(prev => ({ ...prev, tags, mediaType, difficulty }));
+  const handleAdvancedSearch = (
+    tags: string[],
+    mediaType: string,
+    difficulty: string
+  ) => {
+    setSearchParams((prev) => ({ ...prev, tags, mediaType, difficulty }));
   };
 
   return (
@@ -74,14 +78,11 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
         currentUser={user}
       />
       <Routes>
-        <Route 
-          path="" 
+        <Route
+          path=""
           element={
-            <Home 
-              currentUserId={currentUserId} 
-              searchParams={searchParams}
-            />
-          } 
+            <Home currentUserId={currentUserId} searchParams={searchParams} />
+          }
         />
         <Route
           path="mypage"
