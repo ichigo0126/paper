@@ -5,7 +5,7 @@ import {
   signInWithPopup,
   onAuthStateChanged,
 } from "firebase/auth";
-import { collectionGroup, getFirestore } from "firebase/firestore";
+import { collectionGroup, getFirestore, } from "firebase/firestore";
 
   // Firebaseの設定
 const firebaseConfig = {
@@ -47,6 +47,18 @@ import {
   where,
 } from "firebase/firestore";
 // User
+
+export const saveUserToFirestore = async (user: any) => {
+  if (user) {
+    const userRef = doc(db, 'users', user.uid);
+    await setDoc(userRef, {
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL
+    }, { merge: true });
+  }
+};
 
 /**
  * ユーザー名でレビューを取得する
