@@ -14,7 +14,7 @@ export interface ReviewProps {
   bookDetails: {
     title: string;
     thumbnail: string;
-  };
+  } | null;
   createdAt: Date | { toDate: () => Date } | string;
   tags?: string[];
 }
