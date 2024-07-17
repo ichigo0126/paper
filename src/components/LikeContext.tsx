@@ -17,6 +17,7 @@ export interface ReviewProps {
   } | null;
   createdAt: Date | { toDate: () => Date } | string;
   tags?: string[];
+  photoURL?: string | null;  // この行を追加
 }
 
 interface LikeContextType {
