@@ -4,8 +4,10 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
+  User
 } from "firebase/auth";
 import { collectionGroup, getFirestore, } from "firebase/firestore";
+
 
   // Firebaseの設定
 const firebaseConfig = {
@@ -1734,7 +1736,7 @@ export const getUserFollowers = async (userId: string) => {
 };
 
 // 認証状態の監視
-function onAuthStateChange(callback) {
+function onAuthStateChange(callback: (user: User | null) => void) {
   return onAuthStateChanged(auth, callback);
 }
 

@@ -9,31 +9,40 @@ type GoogleLoginButtonProps = {
 };
 
 interface TypingAnimationProps {
-  text: string;
+  messages: string[];
   speed: number;
 }
 
-const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, speed }) => {
+const TypingAnimation: React.FC<TypingAnimationProps> = ({ messages, speed }) => {
   const [displayedText, setDisplayedText] = useState("");
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
   useEffect(() => {
     let currentIndex = 0;
+    let currentMessage = messages[currentMessageIndex];
+    let timeoutId: NodeJS.Timeout;
 
     const typeCharacter = () => {
-      if (currentIndex < text.length) {
-        setDisplayedText((prev) => prev + text[currentIndex]);
+      if (currentIndex < currentMessage.length) {
+        setDisplayedText(currentMessage.substring(0, currentIndex + 1));
         currentIndex += 1;
-        setTimeout(typeCharacter, speed);
+        timeoutId = setTimeout(typeCharacter, speed);
+      } else {
+        // タイピングが完了したら、次のメッセージに移る前に少し待つ
+        timeoutId = setTimeout(() => {
+          setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
+          setDisplayedText("");
+        }, 5000); // 2秒待つ
       }
     };
 
     typeCharacter();
 
-    // クリーンアップ関数を追加
     return () => {
-      setDisplayedText(""); // コンポーネントがアンマウントされた場合に状態をリセット
+      clearTimeout(timeoutId);
+      setDisplayedText("");
     };
-  }, [text, speed]);
+  }, [messages, speed, currentMessageIndex]);
 
   return <div>{displayedText}</div>;
 };
@@ -69,7 +78,12 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 
 export default function Auth() {
   const [error, setError] = useState<string | null>(null);
-  const [isDisplayMessage, setIsDisplayMessage] = useState<string>("");
+
+  const messages = [
+    "スキルレベルで選べる、エンジニアのための洞察力あふれる書評プラットフォーム",
+    "技術書の深い理解を促進する、エンジニアスキル可視化型レビューサービス",
+    "エンジニアの成長が見える、スキル連動型書籍レビューコミュニティ",
+  ];
 
   async function signInWithGoogle() {
     try {
@@ -109,8 +123,7 @@ export default function Auth() {
         PAPER
       </Text>
       <Text fontWeight="bold" fontSize="30px">
-        スキルレベルで選べる、エンジニアのための洞察力あふれる書評プラットフォーム
-        <TypingAnimation text={isDisplayMessage} speed={100} />
+        <TypingAnimation messages={messages} speed={100} />
       </Text>
 
       <Flex
