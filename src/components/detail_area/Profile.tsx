@@ -9,10 +9,8 @@ import {
   useBreakpointValue,
   Flex,
 } from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 type ProfileType = {
   username: string;
@@ -34,30 +32,6 @@ function Profile({
   photoURL,
 }: ProfileType) {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const [isFollowed, setIsFollow] = useState<boolean>(false);
-  const toast = useToast();
-
-  const handleFollow = () => {
-    setIsFollow((pre) => !pre);
-
-    if (isFollowed == false) {
-      toast({
-        title: "フォローしました",
-        status: "success",
-        duration: 1000,
-        isClosable: true,
-      });
-    } else if (isFollowed == true) {
-      toast({
-        title: "フォローを外しました",
-        status: "warning",
-        duration: 4000,
-        isClosable: true,
-      });
-    }
-  };
-
-  const pathname = useLocation().pathname;
 
   return (
     <Box w={isMobile ? "full" : "25%"}>
