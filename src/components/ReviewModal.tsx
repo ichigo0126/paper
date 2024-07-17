@@ -19,7 +19,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import Select from 'react-select'; // react-select をインポート
-import { createReview } from "../firebase"; // createReview 関数をインポート
+import { createReview, saveUserToFirestore } from "../firebase"; // createReview 関数をインポート
 import { User } from "firebase/auth"; // Firebaseの認証ユーザー型をインポート
 
 type ModalProp = {
@@ -126,12 +126,17 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
     try {
       const reviewData = {
         userId: currentUser.uid,
+        username: currentUser.displayName, // ユーザー名を追加
         description: reviewContent,
         stars: stars,
         targetType: mediaType,
         bookId: selectedBook.id,
         engineerSkillLevel: difficulty,
         tags: selectedTags.map(tag => tag.value),
+        bookDetails: {
+          title: selectedBook.title,
+          thumbnail: selectedBook.thumbnail
+        }  
       };
 
       const reviewId = await createReview(reviewData);
@@ -150,6 +155,7 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
       setBooks([]);
       setStars(0);
       setSelectedTags([]);
+      await saveUserToFirestore(currentUser);
     } catch (error) {
       console.error("Error submitting review:", error);
       toast({

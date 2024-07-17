@@ -5,7 +5,7 @@ import {
   signInWithPopup,
   onAuthStateChanged,
 } from "firebase/auth";
-import { collectionGroup, getFirestore } from "firebase/firestore";
+import { collectionGroup, getFirestore, } from "firebase/firestore";
 
   // Firebaseの設定
 const firebaseConfig = {
@@ -47,6 +47,44 @@ import {
   where,
 } from "firebase/firestore";
 // User
+
+export const saveUserToFirestore = async (user: any) => {
+  if (user) {
+    const userRef = doc(db, 'users', user.uid);
+    await setDoc(userRef, {
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL
+    }, { merge: true });
+  }
+};
+
+/**
+ * ユーザー名でレビューを取得する
+ * @param username - レビューを取得したいユーザーのユーザー名
+ * @returns レビューデータを含むオブジェクトのリスト
+ */
+export const getReviewsByUsername = async (username: string) => {
+  // まず、ユーザー名からユーザーIDを取得します
+  const userData = await getUserByUsername(username);
+  if (!userData || !userData.id) {
+    console.error("User not found for username:", username);
+    return [];
+  }
+
+  // ユーザーIDを使用してレビューを取得します
+  const reviewsRef = collection(db, "reviews");
+  const q = query(reviewsRef, where("userId", "==", userData.id));
+  const reviewQuerySnapshot = await getDocs(q);
+
+  // 各ドキュメントからレビューデータを抽出し、リストとして返します
+  return reviewQuerySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+};
+
 
 /**
  * 新しいユーザーを作成する
@@ -145,8 +183,8 @@ export const getUserByUsername = async (username: string) => {
 
   // 結果が空でないかどうかを確認します。
   if (!userQuerySnapshot.empty) {
-    // 結果が空でない場合は、最初のドキュメントのデータを取得して返します。
-    return userQuerySnapshot.docs[0].data();
+    const userDoc = userQuerySnapshot.docs[0];
+    return { id: userDoc.id, ...userDoc.data() };
   } else {
     // 結果が空の場合は、nullを返します。
     return null;

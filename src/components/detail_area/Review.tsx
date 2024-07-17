@@ -18,11 +18,15 @@ import { CiBookmark, CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import { IoBookmarks } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
-import { useLike } from '../LikeContext';
-import { useBookmark } from '../BookmarkContext';
+import { useLike } from "../LikeContext";
+import { useBookmark } from "../BookmarkContext";
+import { useEffect, useState } from "react";
+import { auth } from "../../firebase";
+import { User } from "firebase/auth";
 
 export interface ReviewProps {
   name: string;
+  photoURL: string | null;
   description: string;
   targetType: string;
   bookId: string;
@@ -42,6 +46,7 @@ export interface ReviewProps {
 
 export default function Review({
   username,
+  photoURL,
   description,
   targetType,
   bookId,
@@ -56,25 +61,34 @@ export default function Review({
   const location = useLocation();
   const { likedReviews, toggleLike } = useLike();
   const { bookmarkedReviews, toggleBookmark } = useBookmark();
-  const isLiked = likedReviews.some(r => r.id === id);
-  const isBookmarked = bookmarkedReviews.some(r => r.id === id);
+  const isLiked = likedReviews.some((r) => r.id === id);
+  const isBookmarked = bookmarkedReviews.some((r) => r.id === id);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const formatDate = (timestamp: Date | { toDate: () => Date } | string) => {
     let date: Date;
     if (timestamp instanceof Date) {
       date = timestamp;
-    } else if (typeof timestamp === 'object' && 'toDate' in timestamp) {
+    } else if (typeof timestamp === "object" && "toDate" in timestamp) {
       date = timestamp.toDate();
-    } else if (typeof timestamp === 'string') {
+    } else if (typeof timestamp === "string") {
       date = new Date(timestamp);
     } else {
-      console.error('Invalid timestamp format', timestamp);
-      return 'Invalid Date';
+      console.error("Invalid timestamp format", timestamp);
+      return "Invalid Date";
     }
 
     if (isNaN(date.getTime())) {
-      console.error('Invalid date', date);
-      return 'Invalid Date';
+      console.error("Invalid date", date);
+      return "Invalid Date";
     }
 
     const year = date.getFullYear();
@@ -118,14 +132,16 @@ export default function Review({
               <HStack>
                 <Link to={`/home/${username}`}>
                   <Image
-                    src="https://via.placeholder.com/65"
+                    src={photoURL|| "https://via.placeholder.com/65"}
                     w="65px"
+                    h="65px"
                     borderRadius="full"
+                    objectFit="cover"
                   />
                 </Link>
                 <Stack pl="16px">
                   <Link to={`/home/${username}`}>
-                    <Text>{username} (ユーザ名)</Text>
+                    <Text>{username}</Text>
                   </Link>{" "}
                   <Text>{formatDate(createdAt)}</Text>
                 </Stack>
@@ -168,7 +184,21 @@ export default function Review({
                   aria-label="like-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={() => toggleLike({ id, username, description, targetType, bookId, engineerSkillLevel, valueCount, bookmarkCount, bookDetails, createdAt, tags })}
+                  onClick={() =>
+                    toggleLike({
+                      id,
+                      username,
+                      description,
+                      targetType,
+                      bookId,
+                      engineerSkillLevel,
+                      valueCount,
+                      bookmarkCount,
+                      bookDetails,
+                      createdAt,
+                      tags,
+                    })
+                  }
                   icon={isLiked ? <FaHeart /> : <CiHeart />}
                 />
                 <Text>{valueCount}</Text>
@@ -178,7 +208,21 @@ export default function Review({
                   aria-label="bookmark-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={() => toggleBookmark({ id, username, description, targetType, bookId, engineerSkillLevel, valueCount, bookmarkCount, bookDetails, createdAt, tags })}
+                  onClick={() =>
+                    toggleBookmark({
+                      id,
+                      username,
+                      description,
+                      targetType,
+                      bookId,
+                      engineerSkillLevel,
+                      valueCount,
+                      bookmarkCount,
+                      bookDetails,
+                      createdAt,
+                      tags,
+                    })
+                  }
                   icon={isBookmarked ? <IoBookmarks /> : <CiBookmark />}
                 />
                 <Text>{bookmarkCount}</Text>

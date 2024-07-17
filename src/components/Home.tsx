@@ -38,6 +38,7 @@ interface ReviewData {
     toDate: () => Date;
   };
   username: string;
+  photoURL: string | null;
 }
 
 function Home({ currentUserId, searchParams }: HomeProps) {
@@ -48,23 +49,26 @@ function Home({ currentUserId, searchParams }: HomeProps) {
   useEffect(() => {
     const fetchReviews = async () => {
       const reviewsData = await getReviews();
-      const reviewsWithUsernames = await Promise.all(
+      const reviewsWithUserInfo = await Promise.all(
         reviewsData.map(async (review) => {
           const bookDetails = await getBookDetails(review.bookId);
           let username = "Unknown User";
+          let photoURL = null;
           const userData = await getUserById(review.userId);
           if (userData) {
             username = userData.username;
+            photoURL = userData.photoURL;
           }
           return {
             ...review,
             bookDetails: bookDetails,
             username,
+            photoURL,
           };
         })
       );
-      setReviews(reviewsWithUsernames);
-      setFilteredReviews(reviewsWithUsernames);
+      setReviews(reviewsWithUserInfo);
+      setFilteredReviews(reviewsWithUserInfo);
     };
 
     fetchReviews();
@@ -121,11 +125,13 @@ function Home({ currentUserId, searchParams }: HomeProps) {
                     createdAt,
                     username,
                     tags,
+                    photoURL
                   }) => (
                     <Review
                       key={id}
                       currentUsername={currentUserId || ""}
                       username={username}
+                      photoURL={photoURL}  // この行を追加
                       description={description}
                       id={id}
                       valueCount={valueCount}
