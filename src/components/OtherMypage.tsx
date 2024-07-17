@@ -81,6 +81,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
                 ...review,
                 bookDetails: bookDetails,
                 username: reviewUsername,
+                photoURL: userData?.photoURL || "",
               };
             })
           );
