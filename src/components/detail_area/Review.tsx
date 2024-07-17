@@ -20,9 +20,6 @@ import { IoBookmarks } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 import { useLike } from "../LikeContext";
 import { useBookmark } from "../BookmarkContext";
-import { useEffect, useState } from "react";
-import { auth } from "../../firebase";
-import { User } from "firebase/auth";
 
 export interface ReviewProps {
   name: string;
@@ -63,15 +60,6 @@ export default function Review({
   const { bookmarkedReviews, toggleBookmark } = useBookmark();
   const isLiked = likedReviews.some((r) => r.id === id);
   const isBookmarked = bookmarkedReviews.some((r) => r.id === id);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      setUser(currentUser);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const formatDate = (timestamp: Date | { toDate: () => Date } | string) => {
     let date: Date;
