@@ -19,6 +19,7 @@ interface MyPageProps {
 
 interface ReviewData {
   userId: string;
+  photoURL: string;
   name: string;
   description: string;
   targetType: string;
@@ -46,6 +47,7 @@ interface UserProfileData {
   description: string;
   followCount: number;
   followedCount: number;
+  photoURL: string;
 }
 
 function OtherMypage({ currentUserId }: MyPageProps) {
@@ -79,6 +81,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
                 ...review,
                 bookDetails: bookDetails,
                 username: reviewUsername,
+                photoURL: userData?.photoURL || "",
               };
             })
           );
@@ -125,6 +128,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
               description={userProfile.description}
               followCount={userProfile.followCount}
               followedCount={userProfile.followedCount}
+              photoURL={userProfile.photoURL}
             />
           )}
           <Box w={isMobile ? "full" : "69%"}>
@@ -139,7 +143,14 @@ function OtherMypage({ currentUserId }: MyPageProps) {
               <VStack spacing={6} align="stretch">
                 {userReviews.length > 0 ? (
                   userReviews.map((review, index) => (
-                    <Box key={review.id} width="100%" bg="white" borderRadius="md" p={4} shadow="md">
+                    <Box
+                      key={review.id}
+                      width="100%"
+                      bg="white"
+                      borderRadius="md"
+                      p={4}
+                      shadow="md"
+                    >
                       <Review
                         currentUsername={currentUserId || ""}
                         username={review.username}
@@ -153,9 +164,14 @@ function OtherMypage({ currentUserId }: MyPageProps) {
                         bookDetails={review.bookDetails}
                         createdAt={review.createdAt}
                         name={review.name}
+                        photoURL={review.photoURL}
                       />
                       {index !== userReviews.length - 1 && (
-                        <Divider mt={6} borderWidth="1px" borderColor="gray.400" />
+                        <Divider
+                          mt={6}
+                          borderWidth="1px"
+                          borderColor="gray.400"
+                        />
                       )}
                     </Box>
                   ))

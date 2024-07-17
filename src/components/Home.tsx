@@ -131,7 +131,7 @@ function Home({ currentUserId, searchParams }: HomeProps) {
                       key={id}
                       currentUsername={currentUserId || ""}
                       username={username}
-                      photoURL={photoURL}  // この行を追加
+                      photoURL={photoURL}
                       description={description}
                       id={id}
                       valueCount={valueCount}
