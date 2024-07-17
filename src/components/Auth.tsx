@@ -14,7 +14,7 @@ interface TypingAnimationProps {
 }
 
 const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, speed }) => {
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
 
   useEffect(() => {
     let currentIndex = 0;
@@ -31,7 +31,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, speed }) => {
 
     // クリーンアップ関数を追加
     return () => {
-      setDisplayedText(''); // コンポーネントがアンマウントされた場合に状態をリセット
+      setDisplayedText(""); // コンポーネントがアンマウントされた場合に状態をリセット
     };
   }, [text, speed]);
 
@@ -69,7 +69,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 
 export default function Auth() {
   const [error, setError] = useState<string | null>(null);
-  const [isDisplayMessage, setIsDisplayMessage] = useState<string>("")
+  const [isDisplayMessage, setIsDisplayMessage] = useState<string>("");
 
   async function signInWithGoogle() {
     try {
@@ -98,20 +98,20 @@ export default function Auth() {
       gap={20}
       padding={20}
     >
-        <Text
-          fontFamily="Jomhuria, serif"
-          fontWeight={400}
-          fontSize="200px"
-          color="white"
-          pt="30px"
-          userSelect="none"
-        >
-          PAPER
-        </Text>
-        <Text fontWeight="bold" fontSize="30px">
-          この文章カチカチやね
-          <TypingAnimation text={isDisplayMessage} speed={100}/>
-        </Text>
+      <Text
+        fontFamily="Jomhuria, serif"
+        fontWeight={400}
+        fontSize="200px"
+        color="white"
+        pt="30px"
+        userSelect="none"
+      >
+        PAPER
+      </Text>
+      <Text fontWeight="bold" fontSize="30px">
+        スキルレベルで選べる、エンジニアのための洞察力あふれる書評プラットフォーム
+        <TypingAnimation text={isDisplayMessage} speed={100} />
+      </Text>
 
       <Flex
         as="section"
