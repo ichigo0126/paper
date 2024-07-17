@@ -6,7 +6,7 @@ import {
   onAuthStateChanged,
   User
 } from "firebase/auth";
-import { collectionGroup, getFirestore, } from "firebase/firestore";
+import { collectionGroup, getFirestore,DocumentData } from "firebase/firestore";
 
 
   // Firebaseの設定
@@ -630,23 +630,38 @@ export const createReview = async (reviewData: {
   return newReviewDoc.id;
 };
 
+interface RawReviewData extends DocumentData {
+  name?: string;
+  description?: string;
+  targetType?: string;
+  engineerSkillLevel?: string;
+  valueCount?: number;
+  bookmarkCount?: number;
+  tags?: string[];
+  createdAt?: { toDate: () => Date };
+  userId?: string;
+  // ここに他の可能なフィールドを追加
+}
+
+interface ReviewWithId extends RawReviewData {
+  id: string;
+}
+
 /**
  * すべてのレビューを取得する
  * @returns レビューデータを含むオブジェクトのリスト
  */
-export const getReviews = async () => {
-  // 'reviews'コレクションへの参照を取得します。
-  const reviewsRef = collection(db, "reviews");
 
-  // コレクション内のすべてのドキュメントのスナップショットを取得します。
+export const getReviews = async (): Promise<ReviewWithId[]> => {
+  const reviewsRef = collection(db, "reviews");
   const reviewsSnapshot = await getDocs(reviewsRef);
 
-  // 各ドキュメントからレビューデータを抽出し、リストとして返します。
   return reviewsSnapshot.docs.map((doc) => ({
     id: doc.id,
-    ...doc.data(),
+    ...(doc.data() as RawReviewData),
   }));
 };
+
 
 /**
  * IDでレビューを取得する

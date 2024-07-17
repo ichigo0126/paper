@@ -34,7 +34,7 @@ export interface ReviewProps {
   bookDetails: {
     title: string;
     thumbnail: string;
-  };
+  } | null;
   createdAt: Date | { toDate: () => Date } | string;
   username: string;
   currentUsername: string;
@@ -206,7 +206,7 @@ export default function Review({
                       engineerSkillLevel,
                       valueCount,
                       bookmarkCount,
-                      bookDetails,
+                      bookDetails: bookDetails || { title: "Unknown", thumbnail: "" },
                       createdAt,
                       tags,
                     })
