@@ -19,6 +19,7 @@ interface MyPageProps {
 
 interface ReviewData {
   userId: string;
+  photoURL: string;
   name: string;
   description: string;
   targetType: string;
@@ -44,6 +45,7 @@ interface UserProfile {
   description: string;
   followCount: number;
   followedCount: number;
+  photoURL: string;
 }
 
 function MyPage({ currentUserId }: MyPageProps) {
@@ -57,22 +59,23 @@ function MyPage({ currentUserId }: MyPageProps) {
       setLoading(true);
       if (currentUserId) {
         try {
-          // レビューの取得
-          const reviewsData = await getReviews();
-          const myReviews = reviewsData.filter(review => review.userId === currentUserId);
-          
           // ユーザープロフィールの取得
           const userData = await getUserById(currentUserId);
           if (userData) {
             setUserProfile({
               username: userData.username || "ユーザー名なし",
-              reviewCount: myReviews.length,
+              reviewCount: 0, // この値は後で更新します
               valueCount: userData.valueCount || 0,
               description: userData.description || "",
               followCount: userData.followCount || 0,
               followedCount: userData.followedCount || 0,
+              photoURL: userData.photoURL || "",
             });
           }
+
+          // レビューの取得
+          const reviewsData = await getReviews();
+          const myReviews = reviewsData.filter(review => review.userId === currentUserId);
 
           const reviewsWithDetails = await Promise.all(
             myReviews.map(async (review) => {
@@ -81,10 +84,17 @@ function MyPage({ currentUserId }: MyPageProps) {
                 ...review,
                 bookDetails: bookDetails,
                 username: userData?.username || "Unknown User",
+                photoURL: userData?.photoURL || "",
               };
             })
           );
           setReviews(reviewsWithDetails);
+
+          // ユーザープロフィールのレビュー数を更新
+          setUserProfile(prevProfile => ({
+            ...prevProfile!,
+            reviewCount: reviewsWithDetails.length,
+          }));
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -138,6 +148,7 @@ function MyPage({ currentUserId }: MyPageProps) {
             description={userProfile.description}
             followCount={userProfile.followCount}
             followedCount={userProfile.followedCount}
+            photoURL={userProfile.photoURL}
           />
           <Box w={isMobile ? "full" : "69%"}>
             <Box p={4} pb={20} bg="gray.50" borderRadius="3xl" shadow="sm">
@@ -165,6 +176,7 @@ function MyPage({ currentUserId }: MyPageProps) {
                         bookDetails={review.bookDetails}
                         createdAt={review.createdAt}
                         name={review.name}
+                        photoURL={review.photoURL}
                       />
                       {index !== reviews.length - 1 && (
                         <Divider mt={6} borderWidth="1px" borderColor="gray.400" />

@@ -22,6 +22,7 @@ interface OtherProfileProps {
   description: string;
   followCount: number;
   followedCount: number;
+  photoURL: string;
 }
 
 function OtherProfile({
@@ -32,6 +33,7 @@ function OtherProfile({
   description,
   followCount,
   followedCount,
+  photoURL,
 }: OtherProfileProps) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [isFollowed, setIsFollow] = useState<boolean>(false);
@@ -69,27 +71,28 @@ function OtherProfile({
         borderColor="gray.300"
         shadow="sm"
       >
-        <HStack fontWeight="semibold">
+        <HStack>
           <VStack align="flex-end" flex={1}>
             <Link to="/home/mypage/setting">
               <Button>
-                <SettingsIcon boxSize={8} />
+                <SettingsIcon boxSize={6} />
               </Button>
             </Link>
+            <Image
+              src={photoURL || "https://via.placeholder.com/111"}
+              w="111px"
+              borderRadius="full"
+              alignSelf="center"
+            />
           </VStack>
         </HStack>
-        <Image
-          src="https://via.placeholder.com/111"
-          w="111px"
-          alignSelf="center"
-        />
-        <Text fontSize="md" color="gray.600" textAlign="center">
+        <Text fontSize="sm" color="gray.600" textAlign="center">
           {username}
         </Text>
-        <Text fontSize="md" color="gray.700" textAlign="center">
+        <Text fontSize="sm" color="gray.700" textAlign="center">
           {description}
         </Text>
-        <Flex justifyContent="space-between" ml={4} mr={4}>
+        <Flex justifyContent="space-between" mx={4}>
           <Text fontSize="lg" color="gray.600">
             投稿数: {reviewCount}
           </Text>
@@ -97,21 +100,18 @@ function OtherProfile({
             評価数: {valueCount}
           </Text>
         </Flex>
-        <VStack align="flex-center" flex={1}>
-          {!pathname.includes("mypage") &&
-            (isFollowed ? (
-              <Button colorScheme="blue" size="sm" onClick={handleFollow}>
-                フォロー済
-              </Button>
-            ) : (
-              <Button colorScheme="green" size="sm" onClick={handleFollow}>
-                フォロー
-              </Button>
-            ))}
-        </VStack>
+        {!pathname.includes("mypage") && (
+          <Button
+            colorScheme={isFollowed ? "blue" : "green"}
+            size="sm"
+            onClick={handleFollow}
+          >
+            {isFollowed ? "フォロー済" : "フォロー"}
+          </Button>
+        )}
         <Divider />
         <HStack justifyContent="space-around" w="full">
-          <Button w="50%" py="45px" bg="gray.50">
+          <Button w="50%" py="4" bg="gray.50">
             <Link to="/home/mypage/followpage">
               <VStack>
                 <Text fontSize="sm">フォロー</Text>
@@ -120,7 +120,7 @@ function OtherProfile({
             </Link>
           </Button>
           <Divider orientation="vertical" h="67px" />
-          <Button w="50%" py="45px" bg="gray.50">
+          <Button w="50%" py="4" bg="gray.50">
             <Link to="/home/mypage/followedpage">
               <VStack>
                 <Text fontSize="sm">フォロワー</Text>

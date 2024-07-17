@@ -21,6 +21,7 @@ type ProfileType = {
   description: string;
   followCount: number;
   followedCount: number;
+  photoURL: string;
 };
 
 function Profile({
@@ -30,6 +31,7 @@ function Profile({
   description,
   followCount,
   followedCount,
+  photoURL,
 }: ProfileType) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [isFollowed, setIsFollow] = useState<boolean>(false);
@@ -69,19 +71,6 @@ function Profile({
         shadow="sm"
       >
         <HStack fontWeight="semibold">
-          <VStack align="flex-start" flex={1}>
-            {pathname.includes("mypage") ? (
-              <></>
-            ) : isFollowed ? (
-              <Button colorScheme="gray" size="sm" onClick={handleFollow}>
-                フォロー済
-              </Button>
-            ) : (
-              <Button colorScheme="green" size="sm" onClick={handleFollow}>
-                フォロー
-              </Button>
-            )}
-          </VStack>
           <VStack align="flex-end" flex={1}>
             <Link to="/home/mypage/setting">
               <Button>
@@ -91,9 +80,10 @@ function Profile({
           </VStack>
         </HStack>
         <Image
-          src="https://via.placeholder.com/111"
+          src={photoURL || "https://via.placeholder.com/65"}
           w="111px"
           alignSelf="center"
+          borderRadius="full"
         />
         <Text fontSize="md" color="gray.600" textAlign="center">
           {username}
