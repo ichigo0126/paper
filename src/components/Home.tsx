@@ -22,11 +22,12 @@ interface HomeProps {
 }
 
 interface ReviewData {
-  userId: string | undefined; // ここを変更
+  name: string
+  userId: string | undefined;
   description: string;
   targetType: string;
   id: string;
-  bookId: string; // この行を追加
+  bookId: string;
   engineerSkillLevel: string;
   valueCount: number;
   bookmarkCount: number;
@@ -64,6 +65,7 @@ function Home({ currentUserId, searchParams, currentUsername }: HomeProps) {
       console.log("Raw reviews data:", rawReviewsData); // デバッグ用ログ
 
       const reviewsData: ReviewData[] = rawReviewsData.map((review) => ({
+        name: review.name,
         userId: review.userId || "",
         description: review.description || "",
         targetType: review.targetType || "",
@@ -203,8 +205,10 @@ function Home({ currentUserId, searchParams, currentUsername }: HomeProps) {
                     username,
                     tags,
                     photoURL,
+                    name,
                   }) => (
                     <Review
+                      name={name}
                       key={id}
                       currentUsername={currentUsername}
                       username={username}
@@ -212,7 +216,7 @@ function Home({ currentUserId, searchParams, currentUsername }: HomeProps) {
                       description={description}
                       bookId={bookId}
                       valueCount={valueCount}
-                      id={parseInt(id, 10)} // idを数値に変換
+                      id={id}
                       bookmarkCount={bookmarkCount}
                       targetType={targetType}
                       engineerSkillLevel={engineerSkillLevel}
