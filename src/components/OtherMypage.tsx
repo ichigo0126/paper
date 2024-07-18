@@ -6,12 +6,16 @@ import {
   useBreakpointValue,
   Text,
   Divider,
+  HStack,
+  Image,
+  Button,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import OtherProfile from "./detail_area/OtherProfile";
 import Review from "./detail_area/Review";
 import { getReviews, getUserByUsername, getUserById } from "../firebase";
-import { useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { SettingsIcon } from "@chakra-ui/icons";
 
 interface MyPageProps {
   currentUserId: string | null;
@@ -49,6 +53,16 @@ interface UserProfileData {
   followedCount: number;
   photoURL: string;
 }
+
+type ProfileType = {
+  name: string;
+  reviewCount: number;
+  valueCount: number;
+  description: string;
+  followCount: number;
+  followedCount: number;
+  photoURL: string;
+};
 
 function OtherMypage({ currentUserId }: MyPageProps) {
   const { username } = useParams<{ username: string }>();
@@ -94,6 +108,109 @@ function OtherMypage({ currentUserId }: MyPageProps) {
 
     fetchUserDataAndReviews();
   }, [username]);
+
+  const [isFollowed, setIsFollow] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const OtherProfile = ({
+    name,
+    reviewCount,
+    valueCount,
+    description,
+    followCount,
+    followedCount,
+    photoURL,
+  }: ProfileType) => {
+    const handleFollow = () => {
+      setIsLoading(true);
+      setTimeout(() => {
+        // ここにフォロー処理を記述
+        setIsFollow((prev) => !prev);
+        setIsLoading(false);
+      }, 1000);
+    };
+    return (
+      <Box w={isMobile ? "full" : "25%"}>
+        <VStack
+          align="stretch"
+          p={2.5}
+          bg="gray.50"
+          borderRadius="xl"
+          border="1px"
+          borderColor="gray.300"
+          shadow="sm"
+        >
+          <HStack>
+            <VStack align="flex-end" flex={1}>
+              <Button>
+                <SettingsIcon boxSize={6} />
+              </Button>
+              <Image
+                src={photoURL || "https://via.placeholder.com/111"}
+                w="111px"
+                borderRadius="full"
+                alignSelf="center"
+              />
+            </VStack>
+          </HStack>
+          <Text fontSize="sm" color="gray.600" textAlign="center">
+            {username}
+          </Text>
+          <Text fontSize="sm" color="gray.700" textAlign="center">
+            {description}
+          </Text>
+          <Flex justifyContent="space-between" mx={4}>
+            <Text fontSize="lg" color="gray.600">
+              投稿数: {reviewCount}
+            </Text>
+            <Text fontSize="lg" color="gray.600">
+              評価数: {valueCount}
+            </Text>
+          </Flex>
+          <Button
+            colorScheme={isFollowed ? "blue" : "green"}
+            isLoading={isLoading}
+            size="sm"
+            onClick={handleFollow}
+          >
+            {isFollowed ? "フォロー済" : "フォロー"}
+          </Button>
+          <Divider />
+          <HStack justifyContent="space-around" w="full">
+            <Button
+              w="50%"
+              py="4"
+              bg="gray.50"
+              h="100px"
+              display="inline-block"
+            >
+              <Link to="/home/mypage/followpage">
+                <VStack>
+                  <Text fontSize="sm">フォロー</Text>
+                  <Text fontSize="xl">{followCount}</Text>
+                </VStack>
+              </Link>
+            </Button>
+            <Divider orientation="vertical" h="67px" />
+            <Button
+              w="50%"
+              py="4"
+              bg="gray.50"
+              h="100px"
+              display="inline-block"
+            >
+              <Link to="/home/mypage/followedpage">
+                <VStack>
+                  <Text fontSize="sm">フォロワー</Text>
+                  <Text fontSize="xl">{followedCount}</Text>
+                </VStack>
+              </Link>
+            </Button>
+          </HStack>
+        </VStack>
+      </Box>
+    );
+  };
 
   const getBookDetails = async (bookId: string) => {
     try {

@@ -21,6 +21,11 @@ import { IoBookmarks } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 import { useLike } from "../LikeContext";
 import { useBookmark } from "../BookmarkContext";
+import { User } from "firebase/auth";
+
+interface UserData {
+  email: string;
+}
 
 export interface ReviewProps {
   name: string;
@@ -39,8 +44,10 @@ export interface ReviewProps {
   } | null;
   createdAt: Date | { toDate: () => Date } | string;
   tags?: string[];
+  currentUsername: User & UserData;
 }
 
+// currentUsername追加
 export default function Review({
   username,
   photoURL,
@@ -53,6 +60,7 @@ export default function Review({
   bookmarkCount: initialBookmarkCount,
   bookDetails,
   createdAt,
+  currentUsername,
   tags = [],
 }: ReviewProps) {
   const location = useLocation();
@@ -62,6 +70,7 @@ export default function Review({
   const [localBookmarkCount, setLocalBookmarkCount] = useState(initialBookmarkCount);
   const [isLocalLiked, setIsLocalLiked] = useState(() => isLiked(Number(id)));
   const [isLocalBookmarked, setIsLocalBookmarked] = useState(() => isBookmarked(Number(id)));
+
 
   useEffect(() => {
     setIsLocalLiked(isLiked(Number(id)));
@@ -75,7 +84,9 @@ export default function Review({
 
   const handleLike = () => {
     const newIsLiked = !isLocalLiked;
-    const newValueCount = newIsLiked ? localValueCount + 1 : localValueCount - 1;
+    const newValueCount = newIsLiked
+      ? localValueCount + 1
+      : localValueCount - 1;
     setIsLocalLiked(newIsLiked);
     setLocalValueCount(newValueCount);
     toggleLike({
@@ -95,7 +106,9 @@ export default function Review({
 
   const handleBookmark = () => {
     const newIsBookmarked = !isLocalBookmarked;
-    const newBookmarkCount = newIsBookmarked ? localBookmarkCount + 1 : localBookmarkCount - 1;
+    const newBookmarkCount = newIsBookmarked
+      ? localBookmarkCount + 1
+      : localBookmarkCount - 1;
     setIsLocalBookmarked(newIsBookmarked);
     setLocalBookmarkCount(newBookmarkCount);
     toggleBookmark({
@@ -110,7 +123,7 @@ export default function Review({
       bookDetails,
       createdAt,
       tags,
-      photoURL: null
+      photoURL: null,
     });
   };
 
@@ -153,6 +166,9 @@ export default function Review({
     return boxWidth;
   };
 
+  // console.log("各レビューの投稿者",username);
+  // console.log("現在捜査しているユーザ",currentUsername.displayName);
+
   return (
     <Container centerContent>
       <Box
@@ -171,7 +187,13 @@ export default function Review({
           <Box>
             <VStack>
               <HStack>
-                <Link to={`/home/${username}`}>
+                <Link
+                  to={
+                    username === currentUsername.displayName
+                      ? "/home/mypage"
+                      : `/home/${username}`
+                  }
+                >
                   <Image
                     src={photoURL || "https://via.placeholder.com/65"}
                     w="65px"
@@ -242,7 +264,13 @@ export default function Review({
                   borderRadius="full"
                   backgroundColor="white"
                   onClick={handleBookmark}
-                  icon={isLocalBookmarked ? <IoBookmarks color="blue" /> : <CiBookmark />}
+                  icon={
+                    isLocalBookmarked ? (
+                      <IoBookmarks color="blue" />
+                    ) : (
+                      <CiBookmark />
+                    )
+                  }
                 />
                 <Text>{localBookmarkCount}</Text>
               </HStack>
