@@ -60,6 +60,7 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
     setSearchParams((prev) => ({ ...prev, tags, mediaType, difficulty }));
   };
 
+
   return (
     <>
       <Header
@@ -81,7 +82,7 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
         <Route
           path=""
           element={
-            <Home currentUserId={currentUserId} searchParams={searchParams} />
+            <Home currentUserId={currentUserId} searchParams={searchParams} currentUsername={user}/>
           }
         />
         <Route

@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import { getReviews, getUserById } from "../firebase";
 import Review from "./detail_area/Review";
+import { User } from "firebase/auth";
 
 interface HomeProps {
   currentUserId: string | null;
@@ -17,6 +18,7 @@ interface HomeProps {
     difficulty: string;
     searchText: string;
   };
+  currentUsername: User & UserData;
 }
 
 interface ReviewData {
@@ -24,7 +26,7 @@ interface ReviewData {
   description: string;
   targetType: string;
   id: string;
-  bookId: string;  // この行を追加
+  bookId: string; // この行を追加
   engineerSkillLevel: string;
   valueCount: number;
   bookmarkCount: number;
@@ -51,7 +53,7 @@ interface BookDetails {
   thumbnail: string;
 }
 
-function Home({ currentUserId, searchParams }: HomeProps) {
+function Home({ currentUserId, searchParams, currentUsername }: HomeProps) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [filteredReviews, setFilteredReviews] = useState<ReviewData[]>([]);
@@ -59,7 +61,7 @@ function Home({ currentUserId, searchParams }: HomeProps) {
   useEffect(() => {
     const fetchReviews = async () => {
       const rawReviewsData = await getReviews();
-      console.log("Raw reviews data:", rawReviewsData);  // デバッグ用ログ
+      console.log("Raw reviews data:", rawReviewsData); // デバッグ用ログ
 
       const reviewsData: ReviewData[] = rawReviewsData.map((review) => ({
         userId: review.userId || "",
@@ -79,8 +81,8 @@ function Home({ currentUserId, searchParams }: HomeProps) {
 
       const reviewsWithUserInfo = await Promise.all(
         reviewsData.map(async (review) => {
-          const bookDetails = await getBookDetails(review.bookId);  // bookIdを使用
-            let username = "Unknown User";
+          const bookDetails = await getBookDetails(review.bookId); // bookIdを使用
+          let username = "Unknown User";
           let photoURL = null;
           if (review.userId) {
             const userData: UserData | null = await getUserById(review.userId);
@@ -130,7 +132,9 @@ function Home({ currentUserId, searchParams }: HomeProps) {
     setFilteredReviews(filtered);
   }, [searchParams, reviews]);
 
-  const getBookDetails = async (bookId: string): Promise<BookDetails | null> => {
+  const getBookDetails = async (
+    bookId: string
+  ): Promise<BookDetails | null> => {
     if (!bookId) {
       console.error("Invalid bookId:", bookId);
       return null;
@@ -145,15 +149,17 @@ function Home({ currentUserId, searchParams }: HomeProps) {
       }
       const data = await response.json();
       console.log("Book API response:", JSON.stringify(data, null, 2));
-  
+
       if (!data.volumeInfo) {
         console.error("volumeInfo not found in API response");
         return null;
       }
-  
+
       const bookDetails = {
         title: data.volumeInfo.title || "Unknown Title",
-        thumbnail: data.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x196?text=No+Image",
+        thumbnail:
+          data.volumeInfo.imageLinks?.thumbnail ||
+          "https://via.placeholder.com/128x196?text=No+Image",
       };
       console.log("Processed book details:", bookDetails);
       return bookDetails;
@@ -164,7 +170,13 @@ function Home({ currentUserId, searchParams }: HomeProps) {
   };
 
   return (
-    <Box pb={4} bg="gray.100" borderRadius="normal" h="100vh">
+    <Box
+      pb={4}
+      bg="gray.100"
+      borderRadius="normal"
+      // 高さを100%に固定すると要素を増やすときに中途半端に背景の白が見えるため変更
+      h={filteredReviews.length == 0 ? "100%" : ""}
+    >
       <Container centerContent>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <Box w={isMobile ? "full" : "69%"}>
@@ -194,6 +206,7 @@ function Home({ currentUserId, searchParams }: HomeProps) {
                   }) => (
                     <Review
                       key={id}
+                      currentUsername={currentUsername}
                       username={username}
                       photoURL={photoURL}
                       description={description}
@@ -203,7 +216,9 @@ function Home({ currentUserId, searchParams }: HomeProps) {
                       bookmarkCount={bookmarkCount}
                       targetType={targetType}
                       engineerSkillLevel={engineerSkillLevel}
-                      bookDetails={bookDetails || { title: "Unknown", thumbnail: "" }}
+                      bookDetails={
+                        bookDetails || { title: "Unknown", thumbnail: "" }
+                      }
                       createdAt={createdAt.toDate()}
                       tags={tags}
                     />
