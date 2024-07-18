@@ -5,8 +5,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 
 import Home from "./Home";
-// import FollowPage from "./FollowPage";
-// import FollowedPage from "./FollowedPage";
+import FollowPage from "./FollowPage";
+import FollowedPage from "./FollowedPage";
 import MyLikePage from "./MyLikePage";
 import Header from "./detail_area/Header";
 import SearchModal from "./SearchModal";
@@ -90,8 +90,8 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
           element={<Mypage currentUserId={currentUserId} />}
         />
         <Route path="mypage/setting" element={<ProfileSetting />} />
-        {/* <Route path="mypage/followpage" element={<FollowPage />} />
-        <Route path="mypage/followedpage" element={<FollowedPage />} /> */}
+        <Route path="mypage/followpage" element={<FollowPage />} />
+        <Route path="mypage/followedpage" element={<FollowedPage />} />
         <Route path="mypage/bookmarkpage" element={<BookmarkPage />} />
         <Route path="mypage/mylikepage" element={<MyLikePage />} />
         <Route path="comment/:id" element={<Comments />} />
