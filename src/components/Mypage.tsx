@@ -35,7 +35,7 @@ interface ReviewData {
   createdAt: {
     toDate: () => Date;
   };
-  username: string;
+  username: string | null;
 }
 
 interface UserProfile {
