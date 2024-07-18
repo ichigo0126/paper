@@ -12,12 +12,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { signOut, User } from "firebase/auth";
 import { auth } from "../../firebase";
 import { GrLogout } from "react-icons/gr";
-import { FaHeart } from "react-icons/fa";
-import { IoBookmarks } from "react-icons/io5";
 import { MdOutlineNoteAdd } from "react-icons/md";
 import { IoMdOptions } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { useState, useEffect } from "react";
+import { CiBookmark, CiHeart } from "react-icons/ci";
 
 type HeaderProps = {
   setIsReviewOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,7 +24,11 @@ type HeaderProps = {
   onSearch: (searchText: string) => void;
 };
 
-const Header = ({ setIsReviewOpen, setIsSearchOpen, onSearch }: HeaderProps) => {
+const Header = ({
+  setIsReviewOpen,
+  setIsSearchOpen,
+  onSearch,
+}: HeaderProps) => {
   const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [searchText, setSearchText] = useState("");
@@ -53,7 +56,7 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen, onSearch }: HeaderProps) => 
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       handleSearch();
     }
   };
@@ -102,9 +105,9 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen, onSearch }: HeaderProps) => 
                 <Button onClick={() => setIsSearchOpen(true)}>
                   <IoMdOptions />
                 </Button>
-                <Input 
-                  placeholder="search" 
-                  bg="gray.100" 
+                <Input
+                  placeholder="search"
+                  bg="gray.100"
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   onKeyPress={handleKeyPress}
@@ -135,7 +138,7 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen, onSearch }: HeaderProps) => 
                   border="1px"
                   borderColor="whiteAlpha.900"
                 >
-                  <IoBookmarks />
+                  <CiBookmark />
                 </Button>
               </Link>
               <Link to="./mypage/mylikepage">
@@ -146,7 +149,7 @@ const Header = ({ setIsReviewOpen, setIsSearchOpen, onSearch }: HeaderProps) => 
                   border="1px"
                   borderColor="whiteAlpha.900"
                 >
-                  <FaHeart />
+                  <CiHeart />
                 </Button>
               </Link>
               <Button
