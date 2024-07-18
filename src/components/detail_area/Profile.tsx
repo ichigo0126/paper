@@ -13,7 +13,7 @@ import { SettingsIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 
 type ProfileType = {
-  username: string;
+  name: string;
   reviewCount: number;
   valueCount: number;
   description: string;
@@ -23,7 +23,7 @@ type ProfileType = {
 };
 
 function Profile({
-  username,
+  name,
   reviewCount,
   valueCount,
   description,
@@ -60,7 +60,7 @@ function Profile({
           borderRadius="full"
         />
         <Text fontSize="md" color="gray.600" textAlign="center">
-          {username}
+          {name}
         </Text>
         <Text fontSize="md" color="gray.700" textAlign="center">
           {description}

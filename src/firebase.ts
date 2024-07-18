@@ -631,16 +631,16 @@ export const createReview = async (reviewData: {
 };
 
 interface RawReviewData extends DocumentData {
-  name?: string;
-  description?: string;
-  targetType?: string;
-  engineerSkillLevel?: string;
-  valueCount?: number;
-  bookmarkCount?: number;
-  tags?: string[];
-  createdAt?: { toDate: () => Date };
-  userId?: string;
-  // ここに他の可能なフィールドを追加
+  userId: string;
+  description: string;
+  targetType: string;
+  bookId: string;  // この行が重要です
+  engineerSkillLevel: string;
+  valueCount: number;
+  bookmarkCount: number;
+  tags: string[];
+  createdAt: Timestamp;
+
 }
 
 interface ReviewWithId extends RawReviewData {

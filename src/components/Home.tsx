@@ -20,11 +20,11 @@ interface HomeProps {
 }
 
 interface ReviewData {
-  userId: string;
-  name: string;
+  userId: string | undefined; // ここを変更
   description: string;
   targetType: string;
   id: string;
+  bookId: string;  // この行を追加
   engineerSkillLevel: string;
   valueCount: number;
   bookmarkCount: number;
@@ -59,31 +59,35 @@ function Home({ currentUserId, searchParams }: HomeProps) {
   useEffect(() => {
     const fetchReviews = async () => {
       const rawReviewsData = await getReviews();
-      const reviewsData: ReviewData[] = rawReviewsData.map(review => ({
-        userId: review.id, // id を userId として使用
-        name: review.name || '',
-        description: review.description || '',
-        targetType: review.targetType || '',
+      console.log("Raw reviews data:", rawReviewsData);  // デバッグ用ログ
+
+      const reviewsData: ReviewData[] = rawReviewsData.map((review) => ({
+        userId: review.userId || "",
+        description: review.description || "",
+        targetType: review.targetType || "",
         id: review.id,
-        engineerSkillLevel: review.engineerSkillLevel || '',
+        bookId: review.bookId,
+        engineerSkillLevel: review.engineerSkillLevel || "",
         valueCount: review.valueCount || 0,
         bookmarkCount: review.bookmarkCount || 0,
         tags: review.tags || [],
         bookDetails: null,
         createdAt: review.createdAt || { toDate: () => new Date() },
-        username: '',
+        username: "",
         photoURL: null,
       }));
 
       const reviewsWithUserInfo = await Promise.all(
         reviewsData.map(async (review) => {
-          const bookDetails = await getBookDetails(review.id);
-          let username = "Unknown User";
+          const bookDetails = await getBookDetails(review.bookId);  // bookIdを使用
+            let username = "Unknown User";
           let photoURL = null;
-          const userData: UserData | null = await getUserById(review.userId);
-          if (userData) {
-            username = userData.displayName || "Unknown User";
-            photoURL = userData.photoURL || null;
+          if (review.userId) {
+            const userData: UserData | null = await getUserById(review.userId);
+            if (userData) {
+              username = userData.displayName || "Unknown User";
+              photoURL = userData.photoURL || null;
+            }
           }
           return {
             ...review,
@@ -112,9 +116,10 @@ function Home({ currentUserId, searchParams }: HomeProps) {
       const matchesSearchText =
         searchText === "" ||
         review.description.toLowerCase().includes(searchText.toLowerCase()) ||
-        (review.bookDetails && review.bookDetails.title
-          .toLowerCase()
-          .includes(searchText.toLowerCase()));
+        (review.bookDetails &&
+          review.bookDetails.title
+            .toLowerCase()
+            .includes(searchText.toLowerCase()));
       return (
         hasMatchingTags &&
         matchesMediaType &&
@@ -126,15 +131,32 @@ function Home({ currentUserId, searchParams }: HomeProps) {
   }, [searchParams, reviews]);
 
   const getBookDetails = async (bookId: string): Promise<BookDetails | null> => {
+    if (!bookId) {
+      console.error("Invalid bookId:", bookId);
+      return null;
+    }
+    console.log(`Fetching book details for ID: ${bookId}`);
     try {
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes/${bookId}`
       );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
-      return {
-        title: data.volumeInfo.title || "Unknown",
-        thumbnail: data.volumeInfo.imageLinks?.thumbnail || "",
+      console.log("Book API response:", JSON.stringify(data, null, 2));
+  
+      if (!data.volumeInfo) {
+        console.error("volumeInfo not found in API response");
+        return null;
+      }
+  
+      const bookDetails = {
+        title: data.volumeInfo.title || "Unknown Title",
+        thumbnail: data.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x196?text=No+Image",
       };
+      console.log("Processed book details:", bookDetails);
+      return bookDetails;
     } catch (error) {
       console.error("Error fetching book details:", error);
       return null;
@@ -157,9 +179,9 @@ function Home({ currentUserId, searchParams }: HomeProps) {
               <VStack spacing={4} align="stretch">
                 {filteredReviews.map(
                   ({
-                    name,
                     description,
                     id,
+                    bookId,
                     valueCount,
                     bookmarkCount,
                     targetType,
@@ -172,20 +194,18 @@ function Home({ currentUserId, searchParams }: HomeProps) {
                   }) => (
                     <Review
                       key={id}
-                      currentUsername={currentUserId || ""}
                       username={username}
                       photoURL={photoURL}
                       description={description}
-                      id={Number(id)}
+                      bookId={bookId}
                       valueCount={valueCount}
+                      id={parseInt(id, 10)} // idを数値に変換
                       bookmarkCount={bookmarkCount}
                       targetType={targetType}
-                      bookId={id}
                       engineerSkillLevel={engineerSkillLevel}
                       bookDetails={bookDetails || { title: "Unknown", thumbnail: "" }}
-                      createdAt={createdAt}
+                      createdAt={createdAt.toDate()}
                       tags={tags}
-                      name={name}
                     />
                   )
                 )}
