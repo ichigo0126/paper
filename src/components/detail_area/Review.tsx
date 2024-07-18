@@ -42,7 +42,6 @@ export interface ReviewProps {
   currentUsername: string;
 }
 
-// currentUsername追加
 export default function Review({
   username,
   photoURL,

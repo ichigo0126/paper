@@ -8,7 +8,6 @@ import {
 import { useEffect, useState } from "react";
 import { getReviews, getUserById } from "../firebase";
 import Review from "./detail_area/Review";
-import { User } from "firebase/auth";
 
 interface HomeProps {
   currentUserId: string | null;
@@ -18,7 +17,7 @@ interface HomeProps {
     difficulty: string;
     searchText: string;
   };
-  currentUsername: User & UserData;
+  currentUsername: string;
 }
 
 interface ReviewData {
