@@ -1,21 +1,21 @@
-// import {
-//   Box,
+import {
+  Box,
 //   Flex,
 //   Image,
-//   Text,
+  Text,
 //   Button,
 //   Divider,
 //   VStack,
 //   HStack,
 //   Container,
-//   useBreakpointValue,
-// } from "@chakra-ui/react";
+  useBreakpointValue,
+} from "@chakra-ui/react";
 // import { CloseButton } from "@chakra-ui/react";
 // import Header from "./detail_area/Header";
 // import Profile from "./detail_area/Profile";
 // import { Link } from "react-router-dom";
 
-// type ContentType = {
+// // type ContentType = {
 //   name: string;
 //   username: string;
 //   description: string;
@@ -104,63 +104,64 @@
 //   followedCount: 3.0,
 // };
 
-// function FollowPage() {
+function FollowPage() {
 //   const isMobile = useBreakpointValue({ base: true, md: false });
 
-//   return (
-//     <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal">
-//       <Container maxW="1587px" mt={6}>
-//         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
-//           <Profile
-//             name={profile.name}
-//             username={profile.username}
-//             reviewCount={profile.reviewCount}
-//             valueCount={profile.valueCount}
-//             description={profile.description}
-//             followCount={profile.followCount}
-//             followedCount={profile.followedCount}
-//           />
-//           <Box w={isMobile ? "full" : "69%"}>
-//             <Box p={4} pb={20} bg="gray.50" borderRadius="3xl" shadow="sm">
-//               <Flex justifyContent="space-between" alignItems="center">
-//                 <Text fontSize="lg" fontWeight="light">
-//                   フォロー 1,301
-//                 </Text>
-//                 <Link to="/home/mypage">
-//                   <CloseButton />
-//                 </Link>
-//               </Flex>
+  return (
+    <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal">
+      {/* <Container maxW="1587px" mt={6}>
+        <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
+          <Profile
+            name={profile.name}
+            username={profile.username}
+            reviewCount={profile.reviewCount}
+            valueCount={profile.valueCount}
+            description={profile.description}
+            followCount={profile.followCount}
+            followedCount={profile.followedCount}
+          />
+          <Box w={isMobile ? "full" : "69%"}>
+            <Box p={4} pb={20} bg="gray.50" borderRadius="3xl" shadow="sm">
+              <Flex justifyContent="space-between" alignItems="center">
+                <Text fontSize="lg" fontWeight="light">
+                  フォロー 1,301
+                </Text>
+                <Link to="/home/mypage">
+                  <CloseButton />
+                </Link>
+              </Flex>
 
-//               <Divider my={2} borderWidth="2px" borderColor="gray.500" />
-//               <VStack spacing={6} align="stretch">
-//                 {postContents.map(
-//                   ({ name, username, description, isFollowing }, index) => (
-//                     <div>
-//                       <UserCard
-//                         name={name}
-//                         username={username}
-//                         description={description}
-//                         isFollowing={isFollowing}
-//                       />
-//                       {index === postContents.length - 1 ? (
-//                         <></>
-//                       ) : (
-//                         <Divider
-//                           mt={6}
-//                           borderWidth="1px"
-//                           borderColor="gray.400"
-//                         />
-//                       )}
-//                     </div>
-//                   )
-//                 )}
-//               </VStack>
-//             </Box>
-//           </Box>
-//         </Flex>
-//       </Container>
-//     </Box>
-//   );
-// }
+              <Divider my={2} borderWidth="2px" borderColor="gray.500" />
+              <VStack spacing={6} align="stretch">
+                {postContents.map(
+                  ({ name, username, description, isFollowing }, index) => (
+                    <div>
+                      <UserCard
+                        name={name}
+                        username={username}
+                        description={description}
+                        isFollowing={isFollowing}
+                      />
+                      {index === postContents.length - 1 ? (
+                        <></>
+                      ) : (
+                        <Divider
+                          mt={6}
+                          borderWidth="1px"
+                          borderColor="gray.400"
+                        />
+                      )}
+                    </div>
+                  )
+                )}
+              </VStack>
+            </Box>
+          </Box>
+        </Flex>
+      </Container> */}
+      <Text>comming soon...</Text>
+    </Box>
+  );
+}
 
-// export default FollowPage;
+export default FollowPage;
