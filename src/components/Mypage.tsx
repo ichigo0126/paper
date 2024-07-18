@@ -18,6 +18,7 @@ interface MyPageProps {
 }
 
 interface ReviewData {
+  currentUsername?: string; 
   userId: string;
   photoURL: string;
   username: string;
@@ -177,6 +178,7 @@ function MyPage({ currentUserId }: MyPageProps) {
                         {...review}
                         name={review.username || ""}
                         id={review.id}
+                        currentUsername={userProfile.username}
                         />
                       {index !== reviews.length - 1 && (
                         <Divider mt={6} borderWidth="1px" borderColor="gray.400" />

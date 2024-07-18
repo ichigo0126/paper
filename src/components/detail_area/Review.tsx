@@ -21,11 +21,6 @@ import { IoBookmarks } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 import { useLike } from "../LikeContext";
 import { useBookmark } from "../BookmarkContext";
-import { User } from "firebase/auth";
-
-interface UserData {
-  email: string;
-}
 
 export interface ReviewProps {
   name: string;
@@ -44,7 +39,7 @@ export interface ReviewProps {
   } | null;
   createdAt: Date | { toDate: () => Date } | string;
   tags?: string[];
-  currentUsername: User & UserData;
+  currentUsername: string;
 }
 
 // currentUsername追加
@@ -189,7 +184,7 @@ export default function Review({
               <HStack>
                 <Link
                   to={
-                    username === currentUsername.displayName
+                    username === currentUsername
                       ? "/home/mypage"
                       : `/home/${username}`
                   }
