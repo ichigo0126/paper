@@ -22,7 +22,7 @@ export interface ReviewProps {
 
 interface LikeContextType {
   likedReviews: ReviewProps[];
-  toggleLike: (review: ReviewProps) => void;
+  toggleLike: (review: Partial<ReviewProps>) => Promise<void>;
   isLiked: (reviewId: number) => boolean;
 }
 
@@ -45,7 +45,7 @@ export const LikeProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => unsubscribe();
   }, []);
 
-  const toggleLike = async (review: ReviewProps) => {
+  const toggleLike = async (review: Partial<ReviewProps>) => {
     const user = auth.currentUser;
     if (!user) return;
   
@@ -58,7 +58,7 @@ export const LikeProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const reviewIndex = currentLikedReviews.findIndex((r: ReviewProps) => r.id === review.id);
       
       if (reviewIndex !== -1) {
-          updatedLikedReviews = [
+        updatedLikedReviews = [
           ...currentLikedReviews.slice(0, reviewIndex),
           ...currentLikedReviews.slice(reviewIndex + 1)
         ];
@@ -66,7 +66,7 @@ export const LikeProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updatedLikedReviews = [...currentLikedReviews, review];
       }
     } else {
-      updatedLikedReviews = [review];
+      updatedLikedReviews = [review as ReviewProps];
     }
   
     const cleanUpdatedLikedReviews = updatedLikedReviews.map(cleanReview);

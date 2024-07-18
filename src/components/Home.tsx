@@ -20,11 +20,12 @@ interface HomeProps {
 }
 
 interface ReviewData {
-  userId: string | undefined; // ここを変更
+  name: string
+  userId: string | undefined;
   description: string;
   targetType: string;
   id: string;
-  bookId: string;  // この行を追加
+  bookId: string;
   engineerSkillLevel: string;
   valueCount: number;
   bookmarkCount: number;
@@ -59,9 +60,10 @@ function Home({ currentUserId, searchParams }: HomeProps) {
   useEffect(() => {
     const fetchReviews = async () => {
       const rawReviewsData = await getReviews();
-      console.log("Raw reviews data:", rawReviewsData);  // デバッグ用ログ
+      console.log("Raw reviews data:", rawReviewsData); // デバッグ用ログ
 
       const reviewsData: ReviewData[] = rawReviewsData.map((review) => ({
+        name: review.name,
         userId: review.userId || "",
         description: review.description || "",
         targetType: review.targetType || "",
@@ -79,8 +81,8 @@ function Home({ currentUserId, searchParams }: HomeProps) {
 
       const reviewsWithUserInfo = await Promise.all(
         reviewsData.map(async (review) => {
-          const bookDetails = await getBookDetails(review.bookId);  // bookIdを使用
-            let username = "Unknown User";
+          const bookDetails = await getBookDetails(review.bookId); // bookIdを使用
+          let username = "Unknown User";
           let photoURL = null;
           if (review.userId) {
             const userData: UserData | null = await getUserById(review.userId);
@@ -130,7 +132,9 @@ function Home({ currentUserId, searchParams }: HomeProps) {
     setFilteredReviews(filtered);
   }, [searchParams, reviews]);
 
-  const getBookDetails = async (bookId: string): Promise<BookDetails | null> => {
+  const getBookDetails = async (
+    bookId: string
+  ): Promise<BookDetails | null> => {
     if (!bookId) {
       console.error("Invalid bookId:", bookId);
       return null;
@@ -145,15 +149,17 @@ function Home({ currentUserId, searchParams }: HomeProps) {
       }
       const data = await response.json();
       console.log("Book API response:", JSON.stringify(data, null, 2));
-  
+
       if (!data.volumeInfo) {
         console.error("volumeInfo not found in API response");
         return null;
       }
-  
+
       const bookDetails = {
         title: data.volumeInfo.title || "Unknown Title",
-        thumbnail: data.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x196?text=No+Image",
+        thumbnail:
+          data.volumeInfo.imageLinks?.thumbnail ||
+          "https://via.placeholder.com/128x196?text=No+Image",
       };
       console.log("Processed book details:", bookDetails);
       return bookDetails;
@@ -191,19 +197,23 @@ function Home({ currentUserId, searchParams }: HomeProps) {
                     username,
                     tags,
                     photoURL,
+                    name,
                   }) => (
                     <Review
+                      name={name}
                       key={id}
                       username={username}
                       photoURL={photoURL}
                       description={description}
                       bookId={bookId}
                       valueCount={valueCount}
-                      id={parseInt(id, 10)} // idを数値に変換
+                      id={id}
                       bookmarkCount={bookmarkCount}
                       targetType={targetType}
                       engineerSkillLevel={engineerSkillLevel}
-                      bookDetails={bookDetails || { title: "Unknown", thumbnail: "" }}
+                      bookDetails={
+                        bookDetails || { title: "Unknown", thumbnail: "" }
+                      }
                       createdAt={createdAt.toDate()}
                       tags={tags}
                     />

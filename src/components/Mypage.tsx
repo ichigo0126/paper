@@ -20,22 +20,22 @@ interface MyPageProps {
 interface ReviewData {
   userId: string;
   photoURL: string;
-  name: string;
+  username: string;
   description: string;
   targetType: string;
   bookId: string;
   engineerSkillLevel: string;
-  id: number;
+  id: string;
   valueCount: number;
   bookmarkCount: number;
   bookDetails: {
     title: string;
     thumbnail: string;
-  };
+  } | null;
   createdAt: {
     toDate: () => Date;
   };
-  username: string | null;
+  tags: string[];
 }
 
 interface UserProfile {
@@ -46,6 +46,16 @@ interface UserProfile {
   followCount: number;
   followedCount: number;
   photoURL: string;
+}
+
+interface UserData {
+  id: string;
+  displayName?: string;
+  valueCount?: number;
+  description?: string;
+  followCount?: number;
+  followedCount?: number;
+  photoURL?: string;
 }
 
 function MyPage({ currentUserId }: MyPageProps) {
@@ -60,10 +70,10 @@ function MyPage({ currentUserId }: MyPageProps) {
       if (currentUserId) {
         try {
           // ユーザープロフィールの取得
-          const userData = await getUserById(currentUserId);
+          const userData: UserData | null = await getUserById(currentUserId);
           if (userData) {
             setUserProfile({
-              username: userData.username || "ユーザー名なし",
+              username: userData.displayName || "ユーザー名なし",
               reviewCount: 0, // この値は後で更新します
               valueCount: userData.valueCount || 0,
               description: userData.description || "",
@@ -83,7 +93,7 @@ function MyPage({ currentUserId }: MyPageProps) {
               return {
                 ...review,
                 bookDetails: bookDetails,
-                username: userData?.username || "Unknown User",
+                username: userData?.displayName || "Unknown User",
                 photoURL: userData?.photoURL || "",
               };
             })
@@ -142,7 +152,7 @@ function MyPage({ currentUserId }: MyPageProps) {
       <Container maxW="1587px" mt={6}>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <Profile
-            username={userProfile.username}
+            name={userProfile.username}
             reviewCount={userProfile.reviewCount}
             valueCount={userProfile.valueCount}
             description={userProfile.description}
@@ -164,20 +174,10 @@ function MyPage({ currentUserId }: MyPageProps) {
                   reviews.map((review, index) => (
                     <Box key={review.id} width="100%" bg="white" borderRadius="md" p={4} shadow="md">
                       <Review
-                        currentUsername={userProfile.username}
-                        username={review.username}
-                        description={review.description}
+                        {...review}
+                        name={review.username || ""}
                         id={review.id}
-                        valueCount={review.valueCount}
-                        bookmarkCount={review.bookmarkCount}
-                        targetType={review.targetType}
-                        bookId={review.bookId}
-                        engineerSkillLevel={review.engineerSkillLevel}
-                        bookDetails={review.bookDetails}
-                        createdAt={review.createdAt}
-                        name={review.name}
-                        photoURL={review.photoURL}
-                      />
+                        />
                       {index !== reviews.length - 1 && (
                         <Divider mt={6} borderWidth="1px" borderColor="gray.400" />
                       )}

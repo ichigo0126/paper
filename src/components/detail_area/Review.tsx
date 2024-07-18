@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -23,13 +23,14 @@ import { useLike } from "../LikeContext";
 import { useBookmark } from "../BookmarkContext";
 
 export interface ReviewProps {
+  name: string;
   username: string;
   photoURL: string | null;
   description: string;
   targetType: string;
   bookId: string;
   engineerSkillLevel: string;
-  id: number;
+  id: string;
   valueCount: number;
   bookmarkCount: number;
   bookDetails: {
@@ -59,16 +60,16 @@ export default function Review({
   const { toggleBookmark, isBookmarked } = useBookmark();
   const [localValueCount, setLocalValueCount] = useState(initialValueCount);
   const [localBookmarkCount, setLocalBookmarkCount] = useState(initialBookmarkCount);
-  const [isLocalLiked, setIsLocalLiked] = useState(() => isLiked(id));
-  const [isLocalBookmarked, setIsLocalBookmarked] = useState(() => isBookmarked(id));
+  const [isLocalLiked, setIsLocalLiked] = useState(() => isLiked(Number(id)));
+  const [isLocalBookmarked, setIsLocalBookmarked] = useState(() => isBookmarked(Number(id)));
 
   useEffect(() => {
-    setIsLocalLiked(isLiked(id));
+    setIsLocalLiked(isLiked(Number(id)));
     setLocalValueCount(initialValueCount);
   }, [isLiked, id, initialValueCount]);
 
   useEffect(() => {
-    setIsLocalBookmarked(isBookmarked(id));
+    setIsLocalBookmarked(isBookmarked(Number(id)));
     setLocalBookmarkCount(initialBookmarkCount);
   }, [isBookmarked, id, initialBookmarkCount]);
 
@@ -78,7 +79,7 @@ export default function Review({
     setIsLocalLiked(newIsLiked);
     setLocalValueCount(newValueCount);
     toggleLike({
-      id,
+      id: Number(id),
       username,
       description,
       targetType,
@@ -98,7 +99,7 @@ export default function Review({
     setIsLocalBookmarked(newIsBookmarked);
     setLocalBookmarkCount(newBookmarkCount);
     toggleBookmark({
-      id,
+      id: Number(id),
       username,
       description,
       targetType,
