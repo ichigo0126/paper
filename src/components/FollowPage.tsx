@@ -96,10 +96,10 @@
 
 // const profile = {
 //   name: "杉本大志",
-//   username: "kachikachichinko",
+//   username: "test",
 //   reviewCount: 2.0,
 //   valueCount: 10.0,
-//   description: "かちかちちんこ",
+//   description: "test",
 //   followCount: 2.0,
 //   followedCount: 3.0,
 // };

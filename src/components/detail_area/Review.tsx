@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -47,17 +48,69 @@ export default function Review({
   bookId,
   engineerSkillLevel,
   id,
-  valueCount,
-  bookmarkCount,
+  valueCount: initialValueCount,
+  bookmarkCount: initialBookmarkCount,
   bookDetails,
   createdAt,
   tags = [],
 }: ReviewProps) {
   const location = useLocation();
-  const { likedReviews, toggleLike } = useLike();
-  const { bookmarkedReviews, toggleBookmark } = useBookmark();
-  const isLiked = likedReviews.some((r) => r.id === id);
-  const isBookmarked = bookmarkedReviews.some((r) => r.id === id);
+  const { toggleLike, isLiked } = useLike();
+  const { toggleBookmark, isBookmarked } = useBookmark();
+  const [localValueCount, setLocalValueCount] = useState(initialValueCount);
+  const [localBookmarkCount, setLocalBookmarkCount] = useState(initialBookmarkCount);
+  const [isLocalLiked, setIsLocalLiked] = useState(isLiked(id));
+  const [isLocalBookmarked, setIsLocalBookmarked] = useState(isBookmarked(id));
+
+  useEffect(() => {
+    setIsLocalLiked(isLiked(id));
+    setLocalValueCount(initialValueCount);
+  }, [isLiked, id, initialValueCount]);
+
+  useEffect(() => {
+    setIsLocalBookmarked(isBookmarked(id));
+    setLocalBookmarkCount(initialBookmarkCount);
+  }, [isBookmarked, id, initialBookmarkCount]);
+
+  const handleLike = () => {
+    const newIsLiked = !isLocalLiked;
+    const newValueCount = newIsLiked ? localValueCount + 1 : localValueCount - 1;
+    setIsLocalLiked(newIsLiked);
+    setLocalValueCount(newValueCount);
+    toggleLike({
+      id,
+      username,
+      description,
+      targetType,
+      bookId,
+      engineerSkillLevel,
+      valueCount: newValueCount,
+      bookmarkCount: localBookmarkCount,
+      bookDetails,
+      createdAt,
+      tags,
+    });
+  };
+
+  const handleBookmark = () => {
+    const newIsBookmarked = !isLocalBookmarked;
+    const newBookmarkCount = newIsBookmarked ? localBookmarkCount + 1 : localBookmarkCount - 1;
+    setIsLocalBookmarked(newIsBookmarked);
+    setLocalBookmarkCount(newBookmarkCount);
+    toggleBookmark({
+      id,
+      username,
+      description,
+      targetType,
+      bookId,
+      engineerSkillLevel,
+      valueCount: localValueCount,
+      bookmarkCount: newBookmarkCount,
+      bookDetails,
+      createdAt,
+      tags,
+    });
+  };
 
   const formatDate = (timestamp: Date | { toDate: () => Date } | string) => {
     let date: Date;
@@ -176,51 +229,20 @@ export default function Review({
                   aria-label="like-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={() =>
-                    toggleLike({
-                      id,
-                      username,
-                      description,
-                      targetType,
-                      bookId,
-                      engineerSkillLevel,
-                      valueCount,
-                      bookmarkCount,
-                      bookDetails,
-                      createdAt,
-                      tags,
-                    })
-                  }
-                  icon={isLiked ? <FaHeart /> : <CiHeart />}
+                  onClick={handleLike}
+                  icon={isLocalLiked ? <FaHeart color="red" /> : <CiHeart />}
                 />
-                <Text>{valueCount}</Text>
+                <Text>{localValueCount}</Text>
               </HStack>
               <HStack pl="20px">
                 <IconButton
                   aria-label="bookmark-button"
                   borderRadius="full"
                   backgroundColor="white"
-                  onClick={() =>
-                    toggleBookmark({
-                      id,
-                      username,
-                      description,
-                      targetType,
-                      bookId,
-                      engineerSkillLevel,
-                      valueCount,
-                      bookmarkCount,
-                      bookDetails: bookDetails || {
-                        title: "Unknown",
-                        thumbnail: "",
-                      },
-                      createdAt,
-                      tags,
-                    })
-                  }
-                  icon={isBookmarked ? <IoBookmarks /> : <CiBookmark />}
+                  onClick={handleBookmark}
+                  icon={isLocalBookmarked ? <IoBookmarks color="blue" /> : <CiBookmark />}
                 />
-                <Text>{bookmarkCount}</Text>
+                <Text>{localBookmarkCount}</Text>
               </HStack>
             </HStack>
             <Link to={`./comment/${id}`}>
