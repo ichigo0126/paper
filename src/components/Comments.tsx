@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import Review from "./detail_area/Review";
-import { Link, useLocation, useParams } from "react-router-dom";
+import  { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import {
   Box,
   Button,
@@ -12,8 +11,6 @@ import {
   Text,
   VStack,
   Image,
-  IconButton,
-  Input,
   Textarea,
 } from "@chakra-ui/react";
 import { getUserReviewsByReviewId } from "../firebase";

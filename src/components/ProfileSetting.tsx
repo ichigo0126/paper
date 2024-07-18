@@ -1,11 +1,9 @@
 import {
   Box,
   Flex,
-  Image,
   Text,
   Button,
   Divider,
-  VStack,
   HStack,
   Container,
   useBreakpointValue,
@@ -13,7 +11,6 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { CloseButton } from "@chakra-ui/react";
-import Header from "./detail_area/Header";
 import Profile from "./detail_area/Profile";
 import { Link } from "react-router-dom";
 
