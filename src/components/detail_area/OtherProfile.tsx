@@ -26,7 +26,6 @@ interface OtherProfileProps {
 }
 
 function OtherProfile({
-  name,
   username,
   reviewCount,
   valueCount,

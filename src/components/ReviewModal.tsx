@@ -18,14 +18,14 @@ import {
   Image,
   useToast,
 } from "@chakra-ui/react";
-import Select from 'react-select'; // react-select をインポート
-import { createReview, saveUserToFirestore } from "../firebase"; // createReview 関数をインポート
-import { User } from "firebase/auth"; // Firebaseの認証ユーザー型をインポート
+import Select from 'react-select';
+import { createReview, saveUserToFirestore } from "../firebase";
+import { User } from "firebase/auth";
 
 type ModalProp = {
   isReviewOpen: boolean;
   setIsReviewOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  currentUser: User | null; // 現在のユーザー情報
+  currentUser: User | null;
 };
 
 type Book = {
@@ -34,6 +34,21 @@ type Book = {
   authors: string[];
   thumbnail: string;
 };
+
+interface ReviewData {
+  userId: string;
+  username: string | null;
+  description: string;
+  stars: number;
+  targetType: "BOOK" | "ARTICLE";
+  bookId: string;
+  engineerSkillLevel: "Easy" | "Normal" | "Hard";
+  tags: string[];
+  bookDetails: {
+    title: string;
+    thumbnail: string;
+  };
+}
 
 const tags = [
   "Python", "AWS", "TypeScript", "React", "JavaScript", "Next.js", "Flutter", "Docker", "Go", "Rails", "Ruby", "GitHub", 
@@ -46,7 +61,7 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
   const [mediaType, setMediaType] = useState<"BOOK" | "ARTICLE">("BOOK");
   const [searchQuery, setSearchQuery] = useState("");
   const [reviewContent, setReviewContent] = useState("");
-  const [difficulty, setDifficulty] = useState<"Easy" | "Normal" | "Hard">();
+  const [difficulty, setDifficulty] = useState<"Easy" | "Normal" | "Hard">("Normal");
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [stars, setStars] = useState(0);
@@ -124,9 +139,9 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
     }
 
     try {
-      const reviewData = {
+      const reviewData: ReviewData = {
         userId: currentUser.uid,
-        username: currentUser.displayName, // ユーザー名を追加
+        username: currentUser.displayName,
         description: reviewContent,
         stars: stars,
         targetType: mediaType,
@@ -136,7 +151,7 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
         bookDetails: {
           title: selectedBook.title,
           thumbnail: selectedBook.thumbnail
-        }  
+        }
       };
 
       const reviewId = await createReview(reviewData);

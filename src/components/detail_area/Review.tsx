@@ -22,7 +22,7 @@ import { useLike } from "../LikeContext";
 import { useBookmark } from "../BookmarkContext";
 
 export interface ReviewProps {
-  name: string;
+  username: string;
   photoURL: string | null;
   description: string;
   targetType: string;
@@ -36,8 +36,6 @@ export interface ReviewProps {
     thumbnail: string;
   } | null;
   createdAt: Date | { toDate: () => Date } | string;
-  username: string;
-  currentUsername: string;
   tags?: string[];
 }
 
@@ -120,7 +118,7 @@ export default function Review({
               <HStack>
                 <Link to={`/home/${username}`}>
                   <Image
-                    src={photoURL|| "https://via.placeholder.com/65"}
+                    src={photoURL || "https://via.placeholder.com/65"}
                     w="65px"
                     h="65px"
                     borderRadius="full"
@@ -146,18 +144,24 @@ export default function Review({
           <HStack align="end">
             <VStack>
               <Text>{formatDate(createdAt)}</Text>
-              {bookDetails && <Text as="p">{bookDetails.title}</Text>}
+              {bookDetails && (
+                <Text as="p" fontWeight="bold">
+                  {bookDetails.title || "Unknown Title"}
+                </Text>
+              )}
             </VStack>
 
             {bookDetails && (
-              <>
-                <Image
-                  src={bookDetails.thumbnail}
-                  alt={bookDetails.title}
-                  w="80px"
-                  h="100px"
-                />
-              </>
+              <Image
+                src={
+                  bookDetails.thumbnail ||
+                  "https://via.placeholder.com/128x196?text=No+Image"
+                }
+                alt={bookDetails.title || "Unknown Title"}
+                w="80px"
+                h="100px"
+                objectFit="cover"
+              />
             )}
           </HStack>
         </Flex>
@@ -206,7 +210,10 @@ export default function Review({
                       engineerSkillLevel,
                       valueCount,
                       bookmarkCount,
-                      bookDetails: bookDetails || { title: "Unknown", thumbnail: "" },
+                      bookDetails: bookDetails || {
+                        title: "Unknown",
+                        thumbnail: "",
+                      },
                       createdAt,
                       tags,
                     })
