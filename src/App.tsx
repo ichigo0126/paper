@@ -20,23 +20,19 @@ function App() {
         setUser(currentUser);
 
         if (currentUser.email) {
-          try {
-            createUser({
-              username: currentUser.displayName || "",
-              email: currentUser.email,
+          createUser({
+            username: currentUser.displayName || "",
+            email: currentUser.email,
+          })
+            .then(() => {
+              console.log("User document checked/initialized");
             })
-              .then(() => {
-                console.log("User document checked/initialized");
-              })
-              .catch((error) => {
-                console.error(
-                  "Error checking/initializing user document:",
-                  error
-                );
-              });
-          } catch (error) {
-            console.error("Error in createUser:", error);
-          }
+            .catch((error) => {
+              console.error(
+                "Error checking/initializing user document:",
+                error
+              );
+            });
         } else {
           console.error("User email is null");
         }
@@ -77,7 +73,16 @@ function App() {
                 )
               }
             />
-            <Route path="/home/*" element={<Dashboard user={user as {email: string}}/>} />
+            <Route 
+              path="/home/*" 
+              element={
+                user ? (
+                  <Dashboard user={user} />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              } 
+            />
           </Routes>
         </div>
       </BookmarkProvider>

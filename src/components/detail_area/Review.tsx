@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -59,8 +59,8 @@ export default function Review({
   const { toggleBookmark, isBookmarked } = useBookmark();
   const [localValueCount, setLocalValueCount] = useState(initialValueCount);
   const [localBookmarkCount, setLocalBookmarkCount] = useState(initialBookmarkCount);
-  const [isLocalLiked, setIsLocalLiked] = useState(isLiked(id));
-  const [isLocalBookmarked, setIsLocalBookmarked] = useState(isBookmarked(id));
+  const [isLocalLiked, setIsLocalLiked] = useState(() => isLiked(id));
+  const [isLocalBookmarked, setIsLocalBookmarked] = useState(() => isBookmarked(id));
 
   useEffect(() => {
     setIsLocalLiked(isLiked(id));
@@ -109,6 +109,7 @@ export default function Review({
       bookDetails,
       createdAt,
       tags,
+      photoURL: null
     });
   };
 
