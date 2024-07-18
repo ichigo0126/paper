@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import OtherProfile from "./detail_area/OtherProfile";
 import Review from "./detail_area/Review";
 import { getReviews, getUserByUsername, getUserById } from "../firebase";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { SettingsIcon } from "@chakra-ui/icons";
 
 interface MyPageProps {
@@ -55,6 +55,7 @@ interface UserProfileData {
 }
 
 type ProfileType = {
+  username: string;
   name: string;
   reviewCount: number;
   valueCount: number;
@@ -86,16 +87,14 @@ function OtherMypage({ currentUserId }: MyPageProps) {
           const reviewsWithDetails = await Promise.all(
             reviewsData.map(async (review) => {
               const bookDetails = await getBookDetails(review.bookId);
-              let reviewUsername = "Unknown User";
               const reviewUserData = await getUserById(review.userId);
-              if (reviewUserData) {
-                reviewUsername = reviewUserData.username;
-              }
+              let reviewUsername = reviewUserData?.username || "Unknown User";
+              let reviewPhotoURL = reviewUserData?.photoURL || "";
               return {
                 ...review,
                 bookDetails: bookDetails,
                 username: reviewUsername,
-                photoURL: userData?.photoURL || "",
+                photoURL: reviewPhotoURL,
               };
             })
           );
@@ -113,6 +112,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const OtherProfile = ({
+    username,
     name,
     reviewCount,
     valueCount,

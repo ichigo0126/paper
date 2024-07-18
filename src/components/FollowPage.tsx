@@ -8,7 +8,7 @@ import {
   //   VStack,
   //   HStack,
   //   Container,
-    useBreakpointValue,
+  // useBreakpointValue,
   } from "@chakra-ui/react";
   // import { CloseButton } from "@chakra-ui/react";
   // import Header from "./detail_area/Header";

@@ -30,7 +30,7 @@ export interface ReviewProps {
   targetType: string;
   bookId: string;
   engineerSkillLevel: string;
-  id: string;
+  id: number;
   valueCount: number;
   bookmarkCount: number;
   bookDetails: {
@@ -62,29 +62,31 @@ export default function Review({
   const { toggleBookmark, isBookmarked } = useBookmark();
   const [localValueCount, setLocalValueCount] = useState(initialValueCount);
   const [localBookmarkCount, setLocalBookmarkCount] = useState(initialBookmarkCount);
-  const [isLocalLiked, setIsLocalLiked] = useState(() => isLiked(Number(id)));
-  const [isLocalBookmarked, setIsLocalBookmarked] = useState(() => isBookmarked(Number(id)));
-
+  const [isLocalLiked, setIsLocalLiked] = useState(() => isLiked(id));
+  const [isLocalBookmarked, setIsLocalBookmarked] = useState(() => isBookmarked(id));
+  const [isLikeButtonDisabled, setIsLikeButtonDisabled] = useState(false);
+  const [isBookmarkButtonDisabled, setIsBookmarkButtonDisabled] = useState(false);
 
   useEffect(() => {
-    setIsLocalLiked(isLiked(Number(id)));
+    setIsLocalLiked(isLiked(id));
     setLocalValueCount(initialValueCount);
   }, [isLiked, id, initialValueCount]);
 
   useEffect(() => {
-    setIsLocalBookmarked(isBookmarked(Number(id)));
+    setIsLocalBookmarked(isBookmarked(id));
     setLocalBookmarkCount(initialBookmarkCount);
   }, [isBookmarked, id, initialBookmarkCount]);
 
-  const handleLike = () => {
+  const handleLike = async () => {
+    setIsLikeButtonDisabled(true);
     const newIsLiked = !isLocalLiked;
     const newValueCount = newIsLiked
       ? localValueCount + 1
       : localValueCount - 1;
     setIsLocalLiked(newIsLiked);
     setLocalValueCount(newValueCount);
-    toggleLike({
-      id: Number(id),
+    await toggleLike({
+      id,
       username,
       description,
       targetType,
@@ -96,17 +98,19 @@ export default function Review({
       createdAt,
       tags,
     });
+    setIsLikeButtonDisabled(false);
   };
 
-  const handleBookmark = () => {
+  const handleBookmark = async () => {
+    setIsBookmarkButtonDisabled(true);
     const newIsBookmarked = !isLocalBookmarked;
     const newBookmarkCount = newIsBookmarked
       ? localBookmarkCount + 1
       : localBookmarkCount - 1;
     setIsLocalBookmarked(newIsBookmarked);
     setLocalBookmarkCount(newBookmarkCount);
-    toggleBookmark({
-      id: Number(id),
+    await toggleBookmark({
+      id,
       username,
       description,
       targetType,
@@ -117,8 +121,9 @@ export default function Review({
       bookDetails,
       createdAt,
       tags,
-      photoURL: null,
+      photoURL,
     });
+    setIsBookmarkButtonDisabled(false);
   };
 
   const formatDate = (timestamp: Date | { toDate: () => Date } | string) => {
@@ -159,9 +164,6 @@ export default function Review({
     if (location.pathname === "/home") return "500%";
     return boxWidth;
   };
-
-  // console.log("各レビューの投稿者",username);
-  // console.log("現在捜査しているユーザ",currentUsername.displayName);
 
   return (
     <Container centerContent>
@@ -249,6 +251,7 @@ export default function Review({
                   backgroundColor="white"
                   onClick={handleLike}
                   icon={isLocalLiked ? <FaHeart color="red" /> : <CiHeart />}
+                  isDisabled={isLikeButtonDisabled}
                 />
                 <Text>{localValueCount}</Text>
               </HStack>
@@ -265,6 +268,7 @@ export default function Review({
                       <CiBookmark />
                     )
                   }
+                  isDisabled={isBookmarkButtonDisabled}
                 />
                 <Text>{localBookmarkCount}</Text>
               </HStack>
