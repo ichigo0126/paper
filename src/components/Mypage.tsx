@@ -59,7 +59,7 @@ interface UserData {
   photoURL?: string;
 }
 
-function MyPage({ currentUserId }: MyPageProps) {
+const MyPage = ({ currentUserId }: MyPageProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);

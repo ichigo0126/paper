@@ -35,7 +35,7 @@ function MyLikePage() {
                 <Review 
                   key={review.id} 
                   {...review} 
-                  id={review.id.toString()} // idをstringに変換
+                  id={review.id.toString()}
                   name={review.username || "Unknown"}
                   username={review.username || "Unknown"}
                   photoURL={review.photoURL || null}
