@@ -18,7 +18,7 @@ interface MyPageProps {
 }
 
 interface ReviewData {
-  currentUsername?: string; 
+  currentUsername?: string;
   userId: string;
   photoURL: string;
   username: string;
@@ -86,7 +86,9 @@ const MyPage = ({ currentUserId }: MyPageProps) => {
 
           // レビューの取得
           const reviewsData = await getReviews();
-          const myReviews = reviewsData.filter(review => review.userId === currentUserId);
+          const myReviews = reviewsData.filter(
+            (review) => review.userId === currentUserId
+          );
 
           const reviewsWithDetails = await Promise.all(
             myReviews.map(async (review) => {
@@ -102,7 +104,7 @@ const MyPage = ({ currentUserId }: MyPageProps) => {
           setReviews(reviewsWithDetails);
 
           // ユーザープロフィールのレビュー数を更新
-          setUserProfile(prevProfile => ({
+          setUserProfile((prevProfile) => ({
             ...prevProfile!,
             reviewCount: reviewsWithDetails.length,
           }));
@@ -134,7 +136,12 @@ const MyPage = ({ currentUserId }: MyPageProps) => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
         <Spinner size="xl" />
       </Box>
     );
@@ -143,7 +150,9 @@ const MyPage = ({ currentUserId }: MyPageProps) => {
   if (!userProfile) {
     return (
       <Box textAlign="center" mt={10}>
-        <Text fontSize="xl">ユーザー情報が見つかりません。ログインしてください。</Text>
+        <Text fontSize="xl">
+          ユーザー情報が見つかりません。ログインしてください。
+        </Text>
       </Box>
     );
   }
@@ -153,6 +162,7 @@ const MyPage = ({ currentUserId }: MyPageProps) => {
       <Container maxW="1587px" mt={6}>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <Profile
+            username={userProfile.username}
             name={userProfile.username}
             reviewCount={userProfile.reviewCount}
             valueCount={userProfile.valueCount}
@@ -173,15 +183,26 @@ const MyPage = ({ currentUserId }: MyPageProps) => {
               <VStack spacing={6} align="stretch">
                 {reviews.length > 0 ? (
                   reviews.map((review, index) => (
-                    <Box key={review.id} width="100%" bg="white" borderRadius="md" p={4} shadow="md">
+                    <Box
+                      key={review.id}
+                      width="100%"
+                      bg="white"
+                      borderRadius="md"
+                      p={4}
+                      shadow="md"
+                    >
                       <Review
                         {...review}
                         name={review.username || ""}
                         id={review.id}
                         currentUsername={userProfile.username}
-                        />
+                      />
                       {index !== reviews.length - 1 && (
-                        <Divider mt={6} borderWidth="1px" borderColor="gray.400" />
+                        <Divider
+                          mt={6}
+                          borderWidth="1px"
+                          borderColor="gray.400"
+                        />
                       )}
                     </Box>
                   ))
@@ -195,6 +216,6 @@ const MyPage = ({ currentUserId }: MyPageProps) => {
       </Container>
     </Box>
   );
-}
+};
 
 export default MyPage;

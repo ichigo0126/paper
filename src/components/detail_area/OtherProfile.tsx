@@ -90,7 +90,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
               let reviewUsername = "Unknown User";
               let reviewPhotoURL = "";
               if (reviewUserData) {
-                reviewUsername = reviewUserData.username;
+                reviewUsername = reviewUserData.username || "";
                 reviewPhotoURL = reviewUserData.photoURL || "";
               }
               return {
@@ -116,7 +116,6 @@ function OtherMypage({ currentUserId }: MyPageProps) {
 
   const OtherProfile = ({
     username,
-    name,
     reviewCount,
     valueCount,
     description,
@@ -248,7 +247,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
               description={userProfile.description}
               followCount={userProfile.followCount}
               followedCount={userProfile.followedCount}
-              photoURL={userProfile.photoURL}
+              photoURL={userProfile.photoURL || ""}
             />
           )}
           <Box w={isMobile ? "full" : "69%"}>
