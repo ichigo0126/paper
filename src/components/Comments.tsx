@@ -30,8 +30,8 @@ const Comments = () => {
       try {
         console.log(id);
         const q = await getUserReviewsByReviewId(id);
-        console.log(q); // レスポンス全体をログに出力して、データの構造を確認
-        setFocusReview(q); // qが実際にレスポンスのデータを含んでいることを確認
+        console.log(q);
+        setFocusReview(q);
       } catch (error) {
         console.error("Error fetching review:", error);
       }
@@ -49,8 +49,6 @@ const Comments = () => {
     { id: 1, text: "First reply" },
     { id: 2, text: "Second reply" },
     { id: 3, text: "Second reply" },
-    // { id: 3, text: "Second reply" },
-    // { id: 3, text: "Second reply" },
   ];
 
   const PostReview = (focusReview: any) => {

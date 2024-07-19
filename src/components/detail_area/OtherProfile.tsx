@@ -11,7 +11,6 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import OtherProfile from "./OtherProfile";
 import Review from "./Review";
 import { getReviews, getUserByUsername, getUserById } from "../../firebase";
 import { Link, useParams } from "react-router-dom";

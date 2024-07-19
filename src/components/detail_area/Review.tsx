@@ -30,7 +30,7 @@ export interface ReviewProps {
   targetType: string;
   bookId: string;
   engineerSkillLevel: string;
-  id: number;
+  id:  number ;
   valueCount: number;
   bookmarkCount: number;
   bookDetails: {
@@ -253,7 +253,7 @@ export default function Review({
                   icon={isLocalLiked ? <FaHeart color="red" /> : <CiHeart />}
                   isDisabled={isLikeButtonDisabled}
                 />
-                <Text>{localValueCount}</Text>
+                  {/* <Text>{localValueCount}</Text> */}
               </HStack>
               <HStack pl="20px">
                 <IconButton
@@ -270,7 +270,7 @@ export default function Review({
                   }
                   isDisabled={isBookmarkButtonDisabled}
                 />
-                <Text>{localBookmarkCount}</Text>
+                {/* <Text>{localBookmarkCount}</Text> */}
               </HStack>
             </HStack>
             <Link to={`./comment/${id}`}>

@@ -36,7 +36,7 @@ const BookmarkPage = () => {
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <VStack spacing={4} align="stretch" w="full">
             {reviews.map((review) => (
-              <Review key={review.id} {...review} />
+              <Review name={review.name} currentUsername={review.currentUsername} key={review.id} {...review} />
             ))}
           </VStack>
         </Flex>
