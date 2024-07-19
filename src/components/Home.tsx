@@ -8,6 +8,8 @@ import {
 import { useEffect, useState } from "react";
 import { getReviews, getUserById } from "../firebase";
 import Review from "./detail_area/Review";
+import { User } from "firebase/auth";
+
 
 interface HomeProps {
   currentUserId: string | null;
@@ -17,7 +19,7 @@ interface HomeProps {
     difficulty: string;
     searchText: string;
   };
-  currentUsername: string;
+  currentUsername: User | null;
 }
 
 interface ReviewData {
@@ -209,7 +211,7 @@ function Home({ currentUserId, searchParams, currentUsername }: HomeProps) {
                     <Review
                       name={name}
                       key={id}
-                      currentUsername={currentUsername}
+                      currentUsername={currentUsername?.displayName || currentUsername?.email || undefined}
                       username={username}
                       photoURL={photoURL}
                       description={description}

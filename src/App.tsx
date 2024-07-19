@@ -8,8 +8,12 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { LikeProvider } from './components/LikeContext';
 import { BookmarkProvider } from './components/BookmarkContext';
 
+interface UserData {
+  email: string;
+}
+
 function App() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<(User & UserData) | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,9 +21,13 @@ function App() {
       console.log("Auth state changed", currentUser);
 
       if (currentUser) {
-        setUser(currentUser);
-
         if (currentUser.email) {
+          const userData: User & UserData = {
+            ...currentUser,
+            email: currentUser.email
+          };
+          setUser(userData);
+
           createUser({
             username: currentUser.displayName || "",
             email: currentUser.email,
@@ -35,6 +43,7 @@ function App() {
             });
         } else {
           console.error("User email is null");
+          setUser(null);
         }
       } else {
         setUser(null);

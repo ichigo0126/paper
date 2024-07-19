@@ -38,7 +38,7 @@ export interface ReviewProps {
   } | null;
   createdAt: Date | { toDate: () => Date } | string;
   tags?: string[];
-  currentUsername: string;
+  currentUsername?: string;
 }
 
 export default function Review({

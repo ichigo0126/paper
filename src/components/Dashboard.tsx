@@ -84,7 +84,11 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
         <Route
           path=""
           element={
-            <Home currentUserId={currentUserId} searchParams={searchParams} currentUsername={user}/>
+            <Home
+              currentUserId={currentUserId}
+              searchParams={searchParams}
+              currentUsername={currentUser}
+            />
           }
         />
         <Route

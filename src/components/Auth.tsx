@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "../firebase"; // Firebaseの初期化ファイルからauthをインポート
 import { Box, Button, Image, Text, Flex } from "@chakra-ui/react";
 
 type GoogleLoginButtonProps = {
@@ -11,6 +9,10 @@ type GoogleLoginButtonProps = {
 interface TypingAnimationProps {
   messages: string[];
   speed: number;
+}
+
+interface AuthProps {
+  onSignIn: () => Promise<void>;
 }
 
 const TypingAnimation: React.FC<TypingAnimationProps> = ({ messages, speed }) => {
@@ -28,11 +30,10 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({ messages, speed }) =>
         currentIndex += 1;
         timeoutId = setTimeout(typeCharacter, speed);
       } else {
-        // タイピングが完了したら、次のメッセージに移る前に少し待つ
         timeoutId = setTimeout(() => {
           setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
           setDisplayedText("");
-        }, 5000); // 2秒待つ
+        }, 5000);
       }
     };
 
@@ -76,7 +77,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
   </Button>
 );
 
-export default function Auth() {
+const Auth: React.FC<AuthProps> = ({ onSignIn }) => {
   const [error, setError] = useState<string | null>(null);
 
   const messages = [
@@ -85,10 +86,9 @@ export default function Auth() {
     "エンジニアの成長が見える、スキル連動型書籍レビューコミュニティ",
   ];
 
-  async function signInWithGoogle() {
+  async function handleSignIn() {
     try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      await onSignIn();
       // ログイン成功時の処理はここに追加（必要に応じて）
     } catch (error) {
       setError((error as Error).message);
@@ -137,10 +137,12 @@ export default function Auth() {
       >
         <GoogleLoginButton
           text="Sign in with Google"
-          onClick={signInWithGoogle}
+          onClick={handleSignIn}
         />
       </Flex>
       {error && <Text color="red.500">{error}</Text>}
     </Box>
   );
-}
+};
+
+export default Auth;

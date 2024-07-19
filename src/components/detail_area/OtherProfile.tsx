@@ -43,7 +43,7 @@ interface ReviewData {
 
 interface UserProfileData {
   id: string;
-  name: string;
+  name?: string;
   username: string;
   reviewCount: number;
   valueCount: number;
@@ -55,7 +55,7 @@ interface UserProfileData {
 
 type ProfileType = {
   username: string;
-  name: string;
+  name?: string;
   reviewCount: number;
   valueCount: number;
   description: string;
@@ -98,10 +98,11 @@ function OtherMypage({ currentUserId }: MyPageProps) {
                 bookDetails: bookDetails,
                 username: reviewUsername,
                 photoURL: reviewPhotoURL,
+                name: reviewUserData?.name || reviewUsername,
               };
             })
           );
-          setReviews(reviewsWithDetails);
+          setReviews(reviewsWithDetails as ReviewData[]);
         } catch (error) {
           console.error("Error fetching user data and reviews:", error);
         }
@@ -116,6 +117,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
 
   const OtherProfile = ({
     username,
+    name,
     reviewCount,
     valueCount,
     description,
@@ -156,7 +158,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
             </VStack>
           </HStack>
           <Text fontSize="sm" color="gray.600" textAlign="center">
-            {username}
+            {username} | {name}
           </Text>
           <Text fontSize="sm" color="gray.700" textAlign="center">
             {description}
@@ -214,7 +216,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
     );
   };
 
-  const getBookDetails = async (bookId: string) => {
+  const getBookDetails = async (bookId: string): Promise<{ title: string; thumbnail: string; } | null> => {
     try {
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes/${bookId}`
