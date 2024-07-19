@@ -73,6 +73,7 @@ const BookmarkPage = () => {
               <Review
                 key={review.id}
                 {...review}
+                name={review.username}
                 currentUsername={currentUser.displayName || ""}
               />
             ))}
