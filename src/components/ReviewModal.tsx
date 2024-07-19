@@ -42,7 +42,7 @@ interface ReviewData {
   stars: number;
   targetType: "BOOK" | "ARTICLE";
   bookId: string;
-  engineerSkillLevel: "Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expeort";
+  engineerSkillLevel: "Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expert";
   tags: string[];
   bookDetails: {
     title: string;
