@@ -112,7 +112,6 @@ function OtherMypage({ currentUserId }: MyPageProps) {
 
   const OtherProfile = ({
     username,
-    name,
     reviewCount,
     valueCount,
     description,
