@@ -30,7 +30,7 @@ export interface ReviewProps {
   targetType: string;
   bookId: string;
   engineerSkillLevel: string;
-  id:  number ;
+  id: string;
   valueCount: number;
   bookmarkCount: number;
   bookDetails: {
@@ -62,42 +62,49 @@ export default function Review({
   const { toggleBookmark, isBookmarked } = useBookmark();
   const [localValueCount, setLocalValueCount] = useState(initialValueCount);
   const [localBookmarkCount, setLocalBookmarkCount] = useState(initialBookmarkCount);
-  const [isLocalLiked, setIsLocalLiked] = useState(() => isLiked(id));
-  const [isLocalBookmarked, setIsLocalBookmarked] = useState(() => isBookmarked(id));
+  const [isLocalLiked, setIsLocalLiked] = useState(() => isLiked(parseInt(id)));
+  const [isLocalBookmarked, setIsLocalBookmarked] = useState(() => isBookmarked(parseInt(id)));
   const [isLikeButtonDisabled, setIsLikeButtonDisabled] = useState(false);
   const [isBookmarkButtonDisabled, setIsBookmarkButtonDisabled] = useState(false);
 
   useEffect(() => {
-    setIsLocalLiked(isLiked(id));
+    setIsLocalLiked(isLiked(parseInt(id)));
     setLocalValueCount(initialValueCount);
   }, [isLiked, id, initialValueCount]);
 
   useEffect(() => {
-    setIsLocalBookmarked(isBookmarked(id));
+    setIsLocalBookmarked(isBookmarked(parseInt(id)));
     setLocalBookmarkCount(initialBookmarkCount);
   }, [isBookmarked, id, initialBookmarkCount]);
 
   const handleLike = async () => {
     setIsLikeButtonDisabled(true);
     const newIsLiked = !isLocalLiked;
-    const newValueCount = newIsLiked
-      ? localValueCount + 1
-      : localValueCount - 1;
+    const newValueCount = newIsLiked ? localValueCount + 1 : localValueCount - 1;
     setIsLocalLiked(newIsLiked);
     setLocalValueCount(newValueCount);
-    await toggleLike({
-      id,
-      username,
-      description,
-      targetType,
-      bookId,
-      engineerSkillLevel,
-      valueCount: newValueCount,
-      bookmarkCount: localBookmarkCount,
-      bookDetails,
-      createdAt,
-      tags,
-    });
+
+    try {
+      await toggleLike({
+        id: parseInt(id), // idを数値に変換
+        username,
+        description,
+        targetType,
+        bookId,
+        engineerSkillLevel,
+        valueCount: newValueCount,
+        bookmarkCount: localBookmarkCount,
+        bookDetails,
+        createdAt,
+        tags,
+        photoURL,
+      });
+    } catch (error) {
+      // もしエラーが発生した場合、いいね状態を元に戻す
+      setIsLocalLiked(!newIsLiked);
+      setLocalValueCount(localValueCount);
+    }
+
     setIsLikeButtonDisabled(false);
   };
 
@@ -109,20 +116,28 @@ export default function Review({
       : localBookmarkCount - 1;
     setIsLocalBookmarked(newIsBookmarked);
     setLocalBookmarkCount(newBookmarkCount);
-    await toggleBookmark({
-      id,
-      username,
-      description,
-      targetType,
-      bookId,
-      engineerSkillLevel,
-      valueCount: localValueCount,
-      bookmarkCount: newBookmarkCount,
-      bookDetails,
-      createdAt,
-      tags,
-      photoURL,
-    });
+
+    try {
+      await toggleBookmark({
+        id: parseInt(id), // idを数値に変換
+        username,
+        description,
+        targetType,
+        bookId,
+        engineerSkillLevel,
+        valueCount: localValueCount,
+        bookmarkCount: newBookmarkCount,
+        bookDetails,
+        createdAt,
+        tags,
+        photoURL,
+      });
+    } catch (error) {
+      // もしエラーが発生した場合、ブックマーク状態を元に戻す
+      setIsLocalBookmarked(!newIsBookmarked);
+      setLocalBookmarkCount(localBookmarkCount);
+    }
+
     setIsBookmarkButtonDisabled(false);
   };
 
@@ -253,7 +268,6 @@ export default function Review({
                   icon={isLocalLiked ? <FaHeart color="red" /> : <CiHeart />}
                   isDisabled={isLikeButtonDisabled}
                 />
-                  {/* <Text>{localValueCount}</Text> */}
               </HStack>
               <HStack pl="20px">
                 <IconButton
@@ -270,7 +284,6 @@ export default function Review({
                   }
                   isDisabled={isBookmarkButtonDisabled}
                 />
-                {/* <Text>{localBookmarkCount}</Text> */}
               </HStack>
             </HStack>
             <Link to={`./comment/${id}`}>
