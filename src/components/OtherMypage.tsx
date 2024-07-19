@@ -23,7 +23,7 @@ interface MyPageProps {
 interface ReviewData {
   userId: string;
   photoURL: string;
-  name: string;
+  name?: string;
   description: string;
   targetType: string;
   bookId: string;
@@ -34,7 +34,7 @@ interface ReviewData {
   bookDetails: {
     title: string;
     thumbnail: string;
-  };
+  } | null;
   createdAt: {
     toDate: () => Date;
   };
@@ -94,6 +94,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
                 bookDetails: bookDetails,
                 username: reviewUsername,
                 photoURL: reviewPhotoURL,
+                name: reviewUserData?.name || reviewUsername,
               };
             })
           );
@@ -278,7 +279,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
                         engineerSkillLevel={review.engineerSkillLevel}
                         bookDetails={review.bookDetails}
                         createdAt={review.createdAt}
-                        name={review.name}
+                        name={review.name || review.username} // デフォルト値として username を使用
                         photoURL={review.photoURL}
                       />
                       {index !== userReviews.length - 1 && (

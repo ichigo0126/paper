@@ -144,6 +144,8 @@ interface UserData {
   id: string;
   username?: string;
   photoURL?: string;
+  name: string;
+  description: string;
   // 他の必要なプロパティもここに追加
 }
 
@@ -152,24 +154,34 @@ interface UserData {
  * @param userId - 取得するユーザーのID
  * @returns ユーザーデータを含むオブジェクト、ユーザーが存在しない場合はnull
  */
+
 export async function getUserById(userId: string): Promise<UserData | null> {
   console.log("Fetching user with ID:", userId);
-  // `users`コレクション内の特定のユーザーのドキュメントへの参照を取得します。
-  const userDocRef = doc(db, "users", userId);
+  
+  try {
+    const userDocRef = doc(db, "users", userId);
+    const userDocSnap = await getDoc(userDocRef);
 
-  // ドキュメントのスナップショットを取得します。
-  // スナップショットは、特定の時点におけるドキュメントのデータの状態を表します。
-  const userDocSnap = await getDoc(userDocRef);
-
-  // ドキュメントが存在するかどうかを確認します。
-  if (userDocSnap.exists()) {
-    // ドキュメントが存在する場合は、ドキュメントのデータを取得して返します。
-    return { id: userDocSnap.id, ...userDocSnap.data() };
-  } else {
-    // ドキュメントが存在しない場合は、nullを返します。
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      return {
+        id: userDocSnap.id,
+        name: userData.name || "",  // nameプロパティを明示的に追加
+        username: userData.username || "",
+        photoURL: userData.photoURL || "",
+        description: userData.description || "",
+        // その他必要なプロパティをここに追加
+        ...userData  // 他の全てのプロパティも含める
+      };
+    } else {
+      console.log("No user found with ID:", userId);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
     return null;
   }
-};
+}
 
 /**
  * ユーザー名でユーザーを検索する
