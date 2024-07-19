@@ -19,7 +19,7 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
-
+  
 
 // Firebaseアプリの初期化
 const app = initializeApp(firebaseConfig);
@@ -28,7 +28,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // 認証の取得
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
 // Google認証プロバイダーの作成
 const googleProvider = new GoogleAuthProvider();
@@ -1829,4 +1829,4 @@ async function signInWithGoogle() {
   }
 }
 
-export { db, auth, signInWithGoogle, onAuthStateChange };
+export { db, signInWithGoogle, onAuthStateChange };
