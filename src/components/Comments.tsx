@@ -1,10 +1,9 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   Box,
   Button,
   Container,
-  Divider,
   Flex,
   HStack,
   Stack,
@@ -15,14 +14,19 @@ import {
 } from "@chakra-ui/react";
 import { getUserReviewsByReviewId } from "../firebase";
 
+interface ReviewData {
+  username: string;
+  // 他のフィールドもここに追加
+}
+
 const Comments = () => {
   const { id } = useParams<{ id: string }>();
-  const [focusReview, setFocusReview] = useState();
+  const [focusReview, setFocusReview] = useState<ReviewData | undefined>(undefined);
 
   const [displayReplyForm, setDisplayReplyForm] = useState<boolean>(false);
 
   if (!id) {
-    return;
+    return null;
   }
 
   useEffect(() => {
@@ -31,18 +35,17 @@ const Comments = () => {
         console.log(id);
         const q = await getUserReviewsByReviewId(id);
         console.log(q);
-        setFocusReview(q);
+        setFocusReview(q as ReviewData); // ここで適切に型キャスト
       } catch (error) {
         console.error("Error fetching review:", error);
       }
     };
 
     getReviewByReviewId();
-
-
   }, [id]);
+
   if (!focusReview) {
-    return;
+    return null;
   }
 
   const replies = [
@@ -51,10 +54,9 @@ const Comments = () => {
     { id: 3, text: "Second reply" },
   ];
 
-  const PostReview = (focusReview: any) => {
+  const PostReview = ({ focusReview }: { focusReview: ReviewData }) => {
     return (
       <Container centerContent>
-        
         <Box
           bg="gray.50"
           border="1px"
@@ -73,7 +75,6 @@ const Comments = () => {
                       borderRadius="full"
                     />
                   </Link>
-                
                 </HStack>
                 <Stack pl="30px">
                   <HStack>
@@ -103,7 +104,7 @@ const Comments = () => {
     );
   };
 
-  const ReplyComment = ({ text }: any) => {
+  const ReplyComment = ({ text }: { text: string }) => {
     return (
       <Box
         bg="gray.50"
@@ -135,10 +136,9 @@ const Comments = () => {
     );
   };
 
-  const Reply = ({ text }) => (
+  const Reply = ({ text }: { text: string }) => (
     <HStack align="start" spacing={2}>
       <Box borderTop="1px" borderColor="gray.400" width="32px" />
-
       <Box borderLeft="1px" borderColor="gray.400" height="100%" />
       <ReplyComment text={text} />
     </HStack>
@@ -147,12 +147,12 @@ const Comments = () => {
   return (
     <Box bg="gray.100" pt="30px">
       <Container>
-        <PostReview focusReview={focusReview} />
+        {focusReview && <PostReview focusReview={focusReview} />}
         <Box position="relative" right="200px">
           <VStack align="start">
-            {replies.length != 0 ? (
+            {replies.length !== 0 ? (
               replies.map((reply) => (
-                <>
+                <div key={reply.id}>
                   <HStack align="start" spacing={2}>
                     <Box
                       borderLeft="1px"
@@ -161,7 +161,7 @@ const Comments = () => {
                     />
                   </HStack>
                   <Reply key={reply.id} text={reply.text} />
-                </>
+                </div>
               ))
             ) : (
               <Box pt="70px" pl="100px">
