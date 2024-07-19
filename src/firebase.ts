@@ -680,8 +680,15 @@ export const getReviews = async (): Promise<ReviewWithId[]> => {
  * @param reviewId - 取得するレビューのID
  * @returns レビューデータを含むオブジェクト、レビューが存在しない場合はnull
  */
-export const getReviewById = async (reviewId: string) => {
-  try {
+
+export interface ReviewData {
+  id: string;
+  userId: string;
+  // その他のレビューデータのプロパティ
+}
+
+export const getReviewById = async (reviewId: string): Promise<ReviewData | null> => {
+    try {
     // `reviews`コレクション内の特定のレビューのドキュメントへの参照を取得します。
     const reviewDocRef = doc(db, "reviews", reviewId);
 

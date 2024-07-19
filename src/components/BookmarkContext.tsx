@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
 
 export interface ReviewProps {
-  id: number;
+  id: string;
   username: string;
   description: string;
   targetType: string;
@@ -18,7 +18,7 @@ export interface ReviewProps {
 }
 
 interface Review {
-  id: number;
+  id: string;
   username: string;
   photoURL: string | null;
   description: string;
@@ -65,7 +65,7 @@ export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     });
   }, []);
 
-  const isBookmarked = useCallback((reviewId: number) => {
+  const isBookmarked = useCallback((reviewId: string) => {
     return bookmarkedReviews.some((review) => review.id === reviewId);
   }, [bookmarkedReviews]);
 
