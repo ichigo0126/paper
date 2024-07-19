@@ -42,6 +42,7 @@ export interface ReviewProps {
 }
 
 export default function Review({
+  name,
   id,
   username,
   photoURL,
@@ -171,6 +172,7 @@ export default function Review({
                 <Stack pl="16px">
                   <Link to={`/home/${username}`}>
                     <Text>{username}</Text>
+                    <Text>{name}</Text>
                   </Link>{" "}
                   <Text>{formatDate(createdAt)}</Text>
                 </Stack>
