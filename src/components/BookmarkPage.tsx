@@ -5,13 +5,10 @@ import {
   Text,
   Container,
   useBreakpointValue,
-  Divider,
-  Spinner,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Review from "./detail_area/Review";
 import { useBookmark } from "./BookmarkContext";
-import { getReviews, getUserById } from "../firebase";
 
 const BookmarkPage = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -24,19 +21,30 @@ const BookmarkPage = () => {
 
   if (!reviews.length) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box
+        display="flex"
+        bg="gray.100"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
         <Text>ブックマークしたレビューはまだありません。</Text>
       </Box>
     );
   }
 
   return (
-    <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal" h="100vh">
+    <Box pt={2.5} pb={4} borderRadius="normal" h="100vh" bg="gray.100">
       <Container maxW="1587px" mt={6}>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <VStack spacing={4} align="stretch" w="full">
             {reviews.map((review) => (
-              <Review name={review.name} currentUsername={review.currentUsername} key={review.id} {...review} />
+              <Review
+                name={review.name}
+                currentUsername={review.currentUsername}
+                key={review.id}
+                {...review}
+              />
             ))}
           </VStack>
         </Flex>

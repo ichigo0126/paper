@@ -292,6 +292,18 @@ export const getUserReviewsByReviewId = async (reviewId: string) => {
   }
 };
 
+export const getUserLikes = async (userId: string) => {
+  try {
+    const userLikesRef = collection(db, "userLikes", userId, "likedReviews");
+    const querySnapshot = await getDocs(userLikesRef);
+    console.log("Raw user likes data:", querySnapshot.docs.map(doc => doc.data()));
+    return querySnapshot.docs.map(doc => ({ id: doc.id, reviewId: doc.data().reviewId || doc.id }));
+  } catch (error) {
+    console.error("Error in getUserLikes:", error);
+    return [];
+  }
+};
+
 /**
  * 特定のユーザーがいいねしたレビューとコメントを取得する
  * @param userId - いいねを取得したいユーザーのID
