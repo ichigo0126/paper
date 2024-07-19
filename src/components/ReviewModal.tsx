@@ -18,7 +18,7 @@ import {
   Image,
   useToast,
 } from "@chakra-ui/react";
-import Select from 'react-select';
+import Select from "react-select";
 import { createReview, saveUserToFirestore } from "../firebase";
 import { User } from "firebase/auth";
 
@@ -42,7 +42,7 @@ interface ReviewData {
   stars: number;
   targetType: "BOOK" | "ARTICLE";
   bookId: string;
-  engineerSkillLevel: "Easy" | "Normal" | "Hard";
+  engineerSkillLevel: "Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expeort";
   tags: string[];
   bookDetails: {
     title: string;
@@ -51,21 +51,65 @@ interface ReviewData {
 }
 
 const tags = [
-  "Python", "AWS", "TypeScript", "React", "JavaScript", "Next.js", "Flutter", "Docker", "Go", "Rails", "Ruby", "GitHub", 
-  "Rust", "iOS", "PHP", "Linux", "HTML", "Swift", "Android", "Git", "VS code", "Unity", "Node.js", "Dart", "CSS", "Azure", 
-  "Laravel", "Java", "ChatGPT", "AI", "Firebase", "AtCorder", "C#", "Vue.js", "MySQL", "Kotlin", "Ubuntu", "OpenAI", 
-  "C++", "Terraform"
+  "Python",
+  "AWS",
+  "TypeScript",
+  "React",
+  "JavaScript",
+  "Next.js",
+  "Flutter",
+  "Docker",
+  "Go",
+  "Rails",
+  "Ruby",
+  "GitHub",
+  "Rust",
+  "iOS",
+  "PHP",
+  "Linux",
+  "HTML",
+  "Swift",
+  "Android",
+  "Git",
+  "VS code",
+  "Unity",
+  "Node.js",
+  "Dart",
+  "CSS",
+  "Azure",
+  "Laravel",
+  "Java",
+  "ChatGPT",
+  "AI",
+  "Firebase",
+  "AtCorder",
+  "C#",
+  "Vue.js",
+  "MySQL",
+  "Kotlin",
+  "Ubuntu",
+  "OpenAI",
+  "C++",
+  "Terraform",
 ];
 
-const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) => {
+const ReviewModal = ({
+  isReviewOpen,
+  setIsReviewOpen,
+  currentUser,
+}: ModalProp) => {
   const [mediaType, setMediaType] = useState<"BOOK" | "ARTICLE">("BOOK");
   const [searchQuery, setSearchQuery] = useState("");
   const [reviewContent, setReviewContent] = useState("");
-  const [difficulty, setDifficulty] = useState<"Easy" | "Normal" | "Hard">("Normal");
+  const [difficulty, setDifficulty] = useState<"Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expert">(
+    "Beginner"
+  );
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [stars, setStars] = useState(0);
-  const [selectedTags, setSelectedTags] = useState<{ value: string, label: string }[]>([]);
+  const [selectedTags, setSelectedTags] = useState<
+    { value: string; label: string }[]
+  >([]);
   const toast = useToast();
 
   const searchBooks = async () => {
@@ -147,11 +191,11 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
         targetType: mediaType,
         bookId: selectedBook.id,
         engineerSkillLevel: difficulty,
-        tags: selectedTags.map(tag => tag.value),
+        tags: selectedTags.map((tag) => tag.value),
         bookDetails: {
           title: selectedBook.title,
-          thumbnail: selectedBook.thumbnail
-        }
+          thumbnail: selectedBook.thumbnail,
+        },
       };
 
       const reviewId = await createReview(reviewData);
@@ -187,7 +231,7 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
     setSelectedTags(selectedOptions || []);
   };
 
-  const tagOptions = tags.map(tag => ({ value: tag, label: tag }));
+  const tagOptions = tags.map((tag) => ({ value: tag, label: tag }));
 
   return (
     <Modal isOpen={isReviewOpen} onClose={() => setIsReviewOpen(false)}>
@@ -197,7 +241,10 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
           <VStack spacing={4} align="stretch">
             <HStack>
               <Text>媒体の種類：</Text>
-              <RadioGroup value={mediaType} onChange={(value) => setMediaType(value as "BOOK" | "ARTICLE")}>
+              <RadioGroup
+                value={mediaType}
+                onChange={(value) => setMediaType(value as "BOOK" | "ARTICLE")}
+              >
                 <HStack direction="row">
                   <Radio value="BOOK">本</Radio>
                   <Radio value="ARTICLE">記事</Radio>
@@ -231,7 +278,11 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
                     bg={selectedBook?.id === book.id ? "blue.100" : "white"}
                   >
                     <HStack>
-                      <Image src={book.thumbnail} alt={book.title} boxSize="50px" />
+                      <Image
+                        src={book.thumbnail}
+                        alt={book.title}
+                        boxSize="50px"
+                      />
                       <VStack align="start">
                         <Text fontWeight="bold">{book.title}</Text>
                         <Text>{book.authors.join(", ")}</Text>
@@ -248,17 +299,27 @@ const ReviewModal = ({ isReviewOpen, setIsReviewOpen, currentUser }: ModalProp) 
                 value={reviewContent}
                 onChange={(e) => setReviewContent(e.target.value)}
               />
-              <Text fontSize="sm" color={reviewContent.length > 200 ? "red.500" : "gray.500"}>
+              <Text
+                fontSize="sm"
+                color={reviewContent.length > 200 ? "red.500" : "gray.500"}
+              >
                 {reviewContent.length}/200文字
               </Text>
             </Stack>
             <HStack>
               <Text>難易度：</Text>
-              <RadioGroup value={difficulty} onChange={(value) => setDifficulty(value as "Easy" | "Normal" | "Hard")}>
+              <RadioGroup
+                value={difficulty}
+                onChange={(value) =>
+                  setDifficulty(value as "Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expert")
+                }
+              >
                 <HStack direction="row">
-                  <Radio value="Easy">Easy</Radio>
-                  <Radio value="Normal">Normal</Radio>
-                  <Radio value="Hard">Hard</Radio>
+                  <Radio value="Beginner">1年未満</Radio>
+                  <Radio value="Junior">1〜2年</Radio>
+                  <Radio value="Mid-Level">3〜5年</Radio>
+                  <Radio value="Senior">5〜10年</Radio>
+                  <Radio value="Expert">10年以上</Radio>
                 </HStack>
               </RadioGroup>
             </HStack>

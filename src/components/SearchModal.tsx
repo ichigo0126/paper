@@ -76,9 +76,11 @@ const SearchModal = ({ isSearchOpen, setIsSearchOpen, onSearch }: ModalProp) => 
               <Text>難易度：</Text>
               <RadioGroup onChange={setDifficulty} value={difficulty}>
                 <HStack direction="row">
-                  <Radio value="Easy">Easy</Radio>
-                  <Radio value="Normal">Normal</Radio>
-                  <Radio value="Hard">Hard</Radio>
+                  <Radio value="Beginner">1年未満</Radio>
+                  <Radio value="Junior">1〜2年</Radio>
+                  <Radio value="Mid-Level">3〜5年</Radio>
+                  <Radio value="Senior">5〜10年</Radio>
+                  <Radio value="Expert">10年以上</Radio>
                 </HStack>
               </RadioGroup>
             </HStack>
