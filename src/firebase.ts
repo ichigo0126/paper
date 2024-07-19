@@ -642,7 +642,7 @@ export const createReview = async (reviewData: {
   targetType: "BOOK" | "ARTICLE";
   bookId?: string;
   articleId?: string;
-  engineerSkillLevel: "Easy" | "Normal" | "Hard";
+  engineerSkillLevel: "Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expert";
   tags: string[];
 }) => {
   // 'reviews'コレクションへの参照を取得します。
@@ -925,11 +925,11 @@ export const searchReviewsByStars = async (stars: number) => {
 
 /**
  * エンジニアスキルレベルでレビューを検索する
- * @param engineerSkillLevel - 検索するエンジニアスキルレベル ("Easy"、"Normal"、または "Hard")
+ * @param engineerSkillLevel - 検索するエンジニアスキルレベル ("Beginner"、"Junior"、"Mid-Level"、 "Senior"、または "Expert")
  * @returns レビューデータを含むオブジェクトのリスト
  */
 export const searchReviewsBySkillLevel = async (
-  engineerSkillLevel: "Easy" | "Normal" | "Hard"
+  engineerSkillLevel: "Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expert"
 ) => {
   // 'reviews'コレクションへの参照を取得します。
   const reviewsRef = collection(db, "reviews");
