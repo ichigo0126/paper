@@ -42,7 +42,7 @@ interface ReviewData {
   stars: number;
   targetType: "BOOK" | "ARTICLE";
   bookId: string;
-  engineerSkillLevel: "Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expert";
+  engineerSkillLevel: "1年未満" | "1~2年" | "3~5年" | "5~10年" | "10年以上";
   tags: string[];
   bookDetails: {
     title: string;
@@ -101,9 +101,9 @@ const ReviewModal = ({
   const [mediaType, setMediaType] = useState<"BOOK" | "ARTICLE">("BOOK");
   const [searchQuery, setSearchQuery] = useState("");
   const [reviewContent, setReviewContent] = useState("");
-  const [difficulty, setDifficulty] = useState<"Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expert">(
-    "Beginner"
-  );
+  const [difficulty, setDifficulty] = useState<
+    "1年未満" | "1~2年" | "3~5年" | "5~10年" | "10年以上"
+  >("1年未満");
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [stars, setStars] = useState(0);
@@ -311,15 +311,22 @@ const ReviewModal = ({
               <RadioGroup
                 value={difficulty}
                 onChange={(value) =>
-                  setDifficulty(value as "Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expert")
+                  setDifficulty(
+                    value as
+                      | "1年未満"
+                      | "1~2年"
+                      | "3~5年"
+                      | "5~10年"
+                      | "10年以上"
+                  )
                 }
               >
                 <HStack direction="row">
-                  <Radio value="Beginner">1年未満</Radio>
-                  <Radio value="Junior">1〜2年</Radio>
-                  <Radio value="Mid-Level">3〜5年</Radio>
-                  <Radio value="Senior">5〜10年</Radio>
-                  <Radio value="Expert">10年以上</Radio>
+                  <Radio value="1年未満">1年未満</Radio>
+                  <Radio value="1〜2年">1〜2年</Radio>
+                  <Radio value="3〜5年">3〜5年</Radio>
+                  <Radio value="5〜10年">5〜10年</Radio>
+                  <Radio value="10年以上">10年以上</Radio>
                 </HStack>
               </RadioGroup>
             </HStack>

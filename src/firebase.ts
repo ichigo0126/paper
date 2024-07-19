@@ -642,7 +642,7 @@ export const createReview = async (reviewData: {
   targetType: "BOOK" | "ARTICLE";
   bookId?: string;
   articleId?: string;
-  engineerSkillLevel: "Beginner" | "Junior" | "Mid-Level" | "Senior" | "Expert";
+  engineerSkillLevel: "1年未満" | "1~2年" | "3~5年" | "5~10年" | "10年以上";
   tags: string[];
 }) => {
   // 'reviews'コレクションへの参照を取得します。
