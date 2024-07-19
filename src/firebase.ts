@@ -669,18 +669,24 @@ export const getReviews = async (): Promise<ReviewWithId[]> => {
  * @returns レビューデータを含むオブジェクト、レビューが存在しない場合はnull
  */
 export const getReviewById = async (reviewId: string) => {
-  // `reviews`コレクション内の特定のレビューのドキュメントへの参照を取得します。
-  const reviewDocRef = doc(db, "reviews", reviewId);
+  try {
+    // `reviews`コレクション内の特定のレビューのドキュメントへの参照を取得します。
+    const reviewDocRef = doc(db, "reviews", reviewId);
 
-  // ドキュメントのスナップショットを取得します。
-  const reviewDocSnap = await getDoc(reviewDocRef);
+    // ドキュメントのスナップショットを取得します。
+    const reviewDocSnap = await getDoc(reviewDocRef);
 
-  // ドキュメントが存在するかどうかを確認します。
-  if (reviewDocSnap.exists()) {
-    // ドキュメントが存在する場合は、ドキュメントのデータを取得して返します。
-    return reviewDocSnap.data();
-  } else {
-    // ドキュメントが存在しない場合は、nullを返します。
+    // ドキュメントが存在するかどうかを確認します。
+    if (reviewDocSnap.exists()) {
+      // ドキュメントが存在する場合は、ドキュメントのデータとIDを含むオブジェクトを返します。
+      return { id: reviewDocSnap.id, ...reviewDocSnap.data() };
+    } else {
+      // ドキュメントが存在しない場合は、nullを返します。
+      console.log(`Review with ID ${reviewId} not found`);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching review:", error);
     return null;
   }
 };

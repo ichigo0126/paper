@@ -37,7 +37,6 @@ function Profile({
 
   return (
     <Box w={isMobile ? "full" : "25%"}>
-      {/* {location.pathname} */}
       <VStack
         align="stretch"
         p={2.5}
