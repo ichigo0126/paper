@@ -12,8 +12,8 @@ import {
 import { SettingsIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 
-
 type ProfileType = {
+  username: string;
   name: string;
   reviewCount: number;
   valueCount: number;
@@ -26,14 +26,13 @@ type ProfileType = {
 function Profile({
   name,
   reviewCount,
-  valueCount,
   description,
   followCount,
   followedCount,
   photoURL,
+  valueCount,
 }: ProfileType) {
   const isMobile = useBreakpointValue({ base: true, md: false });
-
 
   return (
     <Box w={isMobile ? "full" : "25%"}>
@@ -47,7 +46,6 @@ function Profile({
         shadow="sm"
       >
         <HStack fontWeight="semibold">
-
           <VStack align="flex-end" flex={1}>
             <Link to="/home/mypage/setting">
               <Button>
@@ -55,7 +53,6 @@ function Profile({
               </Button>
             </Link>
           </VStack>
-
         </HStack>
         <Image
           src={photoURL || "https://via.placeholder.com/65"}

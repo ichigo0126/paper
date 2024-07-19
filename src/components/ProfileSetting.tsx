@@ -13,33 +13,30 @@ import {
 import { CloseButton } from "@chakra-ui/react";
 import Profile from "./detail_area/Profile";
 import { Link } from "react-router-dom";
+import { User } from "firebase/auth";
 
-const profile = {
-  name: "杉本大志",
-  username: "test",
-  reviewCount: 2.0,
-  valueCount: 10.0,
-  description: "test",
-  followCount: 2.0,
-  followedCount: 3.0,
-};
+interface ProfileSettingProps {
+  currentUser: User | null;
+}
 
-function ProfileSetting() {
+const ProfileSetting: React.FC<ProfileSettingProps> = ({ currentUser }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
     <Box pt={2.5} pb={4} bg="gray.100" borderRadius="normal" h="100vh">
       <Container maxW="1587px" mt={6}>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
-          <Profile
-            name={profile.name}
-            username={profile.username}
-            reviewCount={profile.reviewCount}
-            valueCount={profile.valueCount}
-            description={profile.description}
-            followCount={profile.followCount}
-            followedCount={profile.followedCount}
-          />
+          {currentUser && (
+            <Profile
+              name={currentUser.displayName || "Unknown"}
+              username={currentUser.email || "Unknown"}
+              description=""
+              followCount={0}
+              followedCount={0}
+              photoURL="" 
+              reviewCount={0} 
+              valueCount={0}            />
+          )}
           <Box w={isMobile ? "full" : "69%"}>
             <Box p={4} pb={20} bg="gray.50" borderRadius="3xl" shadow="sm">
               <Flex justifyContent="space-between" alignItems="center">
@@ -56,7 +53,7 @@ function ProfileSetting() {
                     <Input
                       ml="20px"
                       width="auto"
-                      placeholder="現在のユーザ名"
+                      placeholder={currentUser?.displayName || "現在のユーザ名"}
                     />
                     <Button ml="20px">変更</Button>
                   </Flex>
@@ -67,7 +64,7 @@ function ProfileSetting() {
                     <Input
                       ml="20px"
                       width="auto"
-                      placeholder="現在のユーザID"
+                      placeholder={currentUser?.email || "現在のユーザID"}
                     />
                     <Button ml="20px">変更</Button>
                   </Flex>

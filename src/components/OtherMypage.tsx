@@ -11,7 +11,6 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import OtherProfile from "./detail_area/OtherProfile";
 import Review from "./detail_area/Review";
 import { getReviews, getUserByUsername, getUserById } from "../firebase";
 import { Link, useParams } from "react-router-dom";
@@ -117,7 +116,7 @@ function OtherMypage({ currentUserId }: MyPageProps) {
     reviewCount,
     valueCount,
     description,
-    followCount,
+    followCount,  
     followedCount,
     photoURL,
   }: ProfileType) => {
