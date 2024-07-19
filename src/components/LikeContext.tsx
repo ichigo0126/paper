@@ -73,7 +73,7 @@ export const LikeProvider: React.FC<{ children: ReactNode }> = ({
           ...currentLikedReviews.slice(reviewIndex + 1),
         ];
       } else {
-        updatedLikedReviews = [...currentLikedReviews, review];
+        updatedLikedReviews = [...currentLikedReviews, review as ReviewProps];
       }
     } else {
       updatedLikedReviews = [review as ReviewProps];

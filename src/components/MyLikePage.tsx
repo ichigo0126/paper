@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -37,14 +37,14 @@ const MyLikePage = () => {
           console.log("Fetching likes for user:", currentUser.uid);
           const userLikes = await getUserLikes(currentUser.uid);
           console.log("User likes:", userLikes);
-    
+
           if (userLikes.length === 0) {
             console.log("No likes found for user");
             setReviewsWithUserInfo([]);
             setIsLoading(false);
             return;
           }
-    
+
           const updatedReviews = await Promise.all(
             userLikes.map(async (likeData) => {
               console.log("Fetching review:", likeData.reviewId);
@@ -68,7 +68,7 @@ const MyLikePage = () => {
               return null;
             })
           );
-    
+
           const filteredReviews = updatedReviews.filter((review) => review !== null);
           console.log("Filtered reviews:", filteredReviews);
           setReviewsWithUserInfo(filteredReviews);
@@ -83,11 +83,7 @@ const MyLikePage = () => {
       }
     };
 
-    if (currentUser) {
-      fetchUserLikes();
-    } else {
-      setIsLoading(false);
-    }
+    fetchUserLikes();
   }, [currentUser, likedReviews]);
 
   console.log("Rendering. reviewsWithUserInfo:", reviewsWithUserInfo);
