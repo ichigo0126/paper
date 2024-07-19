@@ -41,7 +41,7 @@ interface Review {
 interface BookmarkContextType {
   bookmarkedReviews: Review[];
   toggleBookmark: (review: Review) => void;
-  isBookmarked: (reviewId: number) => boolean;
+  isBookmarked: (reviewId: string) => boolean;
 }
 
 

@@ -29,6 +29,7 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [searchParams, setSearchParams] = useState<{
     tags: string[];
     mediaType: string;
@@ -40,8 +41,10 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUserId(user.uid);
+        setCurrentUser(user);
       } else {
         setCurrentUserId(null);
+        setCurrentUser(null);
       }
     });
 
@@ -59,7 +62,6 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
   ) => {
     setSearchParams((prev) => ({ ...prev, tags, mediaType, difficulty }));
   };
-
 
   return (
     <>
@@ -89,7 +91,10 @@ const Dashboard: React.FC<DashBoardProps> = ({ user }) => {
           path="mypage"
           element={<Mypage currentUserId={currentUserId} />}
         />
-        <Route path="mypage/setting" element={<ProfileSetting />} />
+        <Route
+          path="mypage/setting"
+          element={<ProfileSetting currentUser={currentUser} />}
+        />
         <Route path="mypage/followpage" element={<FollowPage />} />
         <Route path="mypage/followedpage" element={<FollowedPage />} />
         <Route path="mypage/bookmarkpage" element={<BookmarkPage />} />

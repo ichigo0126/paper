@@ -140,12 +140,19 @@ export const createUser = async (userData: {
   return user.uid;
 };
 
+interface UserData {
+  id: string;
+  username?: string;
+  photoURL?: string;
+  // 他の必要なプロパティもここに追加
+}
+
 /**
  * IDでユーザーを取得する
  * @param userId - 取得するユーザーのID
  * @returns ユーザーデータを含むオブジェクト、ユーザーが存在しない場合はnull
  */
-export const getUserById = async (userId: string) => {
+export async function getUserById(userId: string): Promise<UserData | null> {
   console.log("Fetching user with ID:", userId);
   // `users`コレクション内の特定のユーザーのドキュメントへの参照を取得します。
   const userDocRef = doc(db, "users", userId);
@@ -698,8 +705,13 @@ export const getReviewById = async (reviewId: string): Promise<ReviewData | null
     // ドキュメントが存在するかどうかを確認します。
     if (reviewDocSnap.exists()) {
       // ドキュメントが存在する場合は、ドキュメントのデータとIDを含むオブジェクトを返します。
-      return { id: reviewDocSnap.id, ...reviewDocSnap.data() };
-    } else {
+      const data = reviewDocSnap.data();
+      return {
+        id: reviewDocSnap.id,
+        userId: data.userId, // ここでuserIdを明示的に取得
+        ...data
+      } as ReviewData;
+      } else {
       // ドキュメントが存在しない場合は、nullを返します。
       console.log(`Review with ID ${reviewId} not found`);
       return null;

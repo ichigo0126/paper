@@ -22,6 +22,7 @@ import { useLike } from "../LikeContext";
 import { useBookmark } from "../BookmarkContext";
 
 export interface ReviewProps {
+  name: string;
   id: string;
   username: string;
   photoURL: string | null;

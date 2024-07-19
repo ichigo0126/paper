@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -9,7 +9,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import Review from "./detail_area/Review";
-import { Auth, User } from "firebase/auth";
+import { User } from "firebase/auth";
 import { auth } from "../firebase";
 import { useLike } from "../components/LikeContext";
 
@@ -57,7 +57,7 @@ const MyLikePage = () => {
                   id={review.id}
                   name={review.username}
                   username={review.username}
-                  photoURL={review.photoURL}
+                  photoURL={review.photoURL || null}
                   currentUsername={currentUser.displayName || ""}
                 />
               ))
