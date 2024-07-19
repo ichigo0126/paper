@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -5,21 +6,51 @@ import {
   Text,
   Container,
   useBreakpointValue,
+  Spinner,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import Review from "./detail_area/Review";
 import { useBookmark } from "./BookmarkContext";
+import { auth } from "../firebase";
+import { User } from "firebase/auth";
 
 const BookmarkPage = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { bookmarkedReviews } = useBookmark();
-  const [reviews, setReviews] = useState(bookmarkedReviews);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setReviews(bookmarkedReviews);
-  }, [bookmarkedReviews]);
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+      setIsLoading(false);
+    });
 
-  if (!reviews.length) {
+    return () => unsubscribe();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <Box
+        display="flex"
+        bg="gray.100"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Text>ログインしてください。</Text>
+      </Box>
+    );
+  }
+
+  if (!bookmarkedReviews.length) {
     return (
       <Box
         display="flex"
@@ -34,16 +65,15 @@ const BookmarkPage = () => {
   }
 
   return (
-    <Box pt={2.5} pb={4} borderRadius="normal" h="100vh" bg="gray.100">
+    <Box pt={2.5} pb={4} borderRadius="normal" minH="100vh" bg="gray.100">
       <Container maxW="1587px" mt={6}>
         <Flex gap={5} flexDirection={isMobile ? "column" : "row"}>
           <VStack spacing={4} align="stretch" w="full">
-            {reviews.map((review) => (
+            {bookmarkedReviews.map((review) => (
               <Review
-                name={review.name}
-                currentUsername={review.currentUsername}
                 key={review.id}
                 {...review}
+                currentUsername={currentUser.displayName || ""}
               />
             ))}
           </VStack>

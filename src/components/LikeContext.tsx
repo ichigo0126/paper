@@ -1,15 +1,9 @@
-import React, {
-  createContext,
-  useState,
-  useContext,
-  ReactNode,
-  useEffect,
-} from "react";
-import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../firebase";
 
 export interface ReviewProps {
-  id: number;
+  id: string;
   username: string;
   description: string;
   targetType: string;
@@ -28,112 +22,62 @@ export interface ReviewProps {
 
 interface LikeContextType {
   likedReviews: ReviewProps[];
-  toggleLike: (review: Partial<ReviewProps>) => Promise<void>;
-  isLiked: (reviewId: number) => boolean;
+  toggleLike: (review: ReviewProps) => Promise<void>;
+  isLiked: (reviewId: string) => boolean;
 }
 
 const LikeContext = createContext<LikeContextType | undefined>(undefined);
 
-export const LikeProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const LikeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [likedReviews, setLikedReviews] = useState<ReviewProps[]>([]);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const userLikesRef = doc(db, "userLikes", user.uid);
-    const unsubscribe = onSnapshot(userLikesRef, (doc) => {
-      if (doc.exists()) {
-        setLikedReviews(doc.data().likedReviews || []);
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setCurrentUser(user.uid);
+        const userLikesRef = doc(db, "userLikes", user.uid);
+        const likesUnsubscribe = onSnapshot(userLikesRef, (doc) => {
+          if (doc.exists()) {
+            setLikedReviews(doc.data().likedReviews || []);
+          } else {
+            setLikedReviews([]);
+          }
+        });
+        return () => likesUnsubscribe();
+      } else {
+        setCurrentUser(null);
+        setLikedReviews([]);
       }
     });
 
     return () => unsubscribe();
   }, []);
 
-  const toggleLike = async (review: Partial<ReviewProps>) => {
-    const user = auth.currentUser;
-    if (!user) return;
+  const toggleLike = async (review: ReviewProps) => {
+    if (!currentUser) return;
 
-    const userLikesRef = doc(db, "userLikes", user.uid);
-    const userLikesDoc = await getDoc(userLikesRef);
-
-    let updatedLikedReviews: ReviewProps[];
-    if (userLikesDoc.exists()) {
-      const currentLikedReviews = userLikesDoc.data().likedReviews || [];
-      const reviewIndex = currentLikedReviews.findIndex(
-        (r: ReviewProps) => r.id === review.id
-      );
-
-      if (reviewIndex !== -1) {
-        updatedLikedReviews = [
-          ...currentLikedReviews.slice(0, reviewIndex),
-          ...currentLikedReviews.slice(reviewIndex + 1),
-        ];
+    const userLikesRef = doc(db, "userLikes", currentUser);
+    
+    setLikedReviews(prevLikedReviews => {
+      const isAlreadyLiked = prevLikedReviews.some(r => r.id === review.id);
+      let updatedLikedReviews;
+      
+      if (isAlreadyLiked) {
+        updatedLikedReviews = prevLikedReviews.filter(r => r.id !== review.id);
       } else {
-        updatedLikedReviews = [...currentLikedReviews, review as ReviewProps];
+        updatedLikedReviews = [...prevLikedReviews, review];
       }
-    } else {
-      updatedLikedReviews = [review as ReviewProps];
-    }
 
-    const cleanUpdatedLikedReviews = updatedLikedReviews.map(cleanReview);
+      setDoc(userLikesRef, { likedReviews: updatedLikedReviews }, { merge: true })
+        .catch(error => console.error("Error updating likes:", error));
 
-    await setDoc(
-      userLikesRef,
-      { likedReviews: cleanUpdatedLikedReviews },
-      { merge: true }
-    );
-    setLikedReviews(updatedLikedReviews);
+      return updatedLikedReviews;
+    });
   };
 
-  const isLiked = (reviewId: number): boolean => {
+  const isLiked = (reviewId: string): boolean => {
     return likedReviews.some((review) => review.id === reviewId);
-  };
-
-  const cleanReview = (review: ReviewProps): ReviewProps => {
-    const cleanReview: Partial<ReviewProps> = {};
-
-    if (review.id !== undefined) cleanReview.id = review.id;
-    if (review.username) cleanReview.username = review.username;
-    if (review.description) cleanReview.description = review.description;
-    if (review.targetType) cleanReview.targetType = review.targetType;
-    if (review.bookId) cleanReview.bookId = review.bookId;
-    if (review.engineerSkillLevel)
-      cleanReview.engineerSkillLevel = review.engineerSkillLevel;
-    if (review.valueCount !== undefined)
-      cleanReview.valueCount = review.valueCount;
-    if (review.bookmarkCount !== undefined)
-      cleanReview.bookmarkCount = review.bookmarkCount;
-    if (review.bookDetails) cleanReview.bookDetails = review.bookDetails;
-    if (review.tags) cleanReview.tags = review.tags;
-    if (review.photoURL) cleanReview.photoURL = review.photoURL;
-
-    if (review.createdAt) {
-      let date: Date;
-      if (
-        typeof review.createdAt === "object" &&
-        "toDate" in review.createdAt
-      ) {
-        date = review.createdAt.toDate();
-      } else if (review.createdAt instanceof Date) {
-        date = review.createdAt;
-      } else if (typeof review.createdAt === "string") {
-        date = new Date(review.createdAt);
-      } else {
-        date = new Date();
-      }
-
-      if (isNaN(date.getTime())) {
-        date = new Date();
-      }
-
-      cleanReview.createdAt = date.toISOString();
-    }
-
-    return cleanReview as ReviewProps;
   };
 
   return (

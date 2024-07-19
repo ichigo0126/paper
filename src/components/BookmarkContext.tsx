@@ -1,7 +1,10 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
+import { db, auth } from "../firebase";
+
 
 export interface ReviewProps {
-  id: number;
+  id: string;
   username: string;
   description: string;
   targetType: string;
@@ -18,7 +21,7 @@ export interface ReviewProps {
 }
 
 interface Review {
-  id: number;
+  id: string;
   username: string;
   photoURL: string | null;
   description: string;
@@ -41,6 +44,7 @@ interface BookmarkContextType {
   isBookmarked: (reviewId: number) => boolean;
 }
 
+
 const BookmarkContext = createContext<BookmarkContextType | undefined>(undefined);
 
 export const useBookmark = () => {
@@ -53,21 +57,55 @@ export const useBookmark = () => {
 
 export const BookmarkProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [bookmarkedReviews, setBookmarkedReviews] = useState<Review[]>([]);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
 
-  const toggleBookmark = useCallback((review: Review) => {
-    setBookmarkedReviews((prevBookmarks) => {
-      const isAlreadyBookmarked = prevBookmarks.some((r) => r.id === review.id);
-      if (isAlreadyBookmarked) {
-        return prevBookmarks.filter((r) => r.id !== review.id);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setCurrentUser(user.uid);
+        const userBookmarksRef = doc(db, "userBookmarks", user.uid);
+        const bookmarksUnsubscribe = onSnapshot(userBookmarksRef, (doc) => {
+          if (doc.exists()) {
+            setBookmarkedReviews(doc.data().bookmarkedReviews || []);
+          } else {
+            setBookmarkedReviews([]);
+          }
+        });
+        return () => bookmarksUnsubscribe();
       } else {
-        return [...prevBookmarks, review];
+        setCurrentUser(null);
+        setBookmarkedReviews([]);
       }
     });
+
+    return () => unsubscribe();
   }, []);
 
-  const isBookmarked = useCallback((reviewId: number) => {
+  const toggleBookmark = async (review: Review) => {
+    if (!currentUser) return;
+
+    const userBookmarksRef = doc(db, "userBookmarks", currentUser);
+    
+    setBookmarkedReviews(prevBookmarks => {
+      const isAlreadyBookmarked = prevBookmarks.some(r => r.id === review.id);
+      let updatedBookmarks;
+      
+      if (isAlreadyBookmarked) {
+        updatedBookmarks = prevBookmarks.filter(r => r.id !== review.id);
+      } else {
+        updatedBookmarks = [...prevBookmarks, review];
+      }
+
+      setDoc(userBookmarksRef, { bookmarkedReviews: updatedBookmarks }, { merge: true })
+        .catch(error => console.error("Error updating bookmarks:", error));
+
+      return updatedBookmarks;
+    });
+  };
+
+  const isBookmarked = (reviewId: string): boolean => {
     return bookmarkedReviews.some((review) => review.id === reviewId);
-  }, [bookmarkedReviews]);
+  };
 
   const value = {
     bookmarkedReviews,
