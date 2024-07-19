@@ -146,7 +146,11 @@ export default function Review({
       >
         <Box textAlign="right">
           <Box pt="8px" pr="24px">
-            <Button>DELETE</Button>
+            {bookDetails && (
+              <Text as="p" fontWeight="bold">
+                {bookDetails.title || "Unknown Title"}
+              </Text>
+            )}
           </Box>
         </Box>
         <Flex alignItems="center" justifyContent="space-between" padding="20px">
@@ -185,15 +189,6 @@ export default function Review({
           </Box>
 
           <HStack align="end">
-            <VStack>
-              <Text>{formatDate(createdAt)}</Text>
-              {bookDetails && (
-                <Text as="p" fontWeight="bold">
-                  {bookDetails.title || "Unknown Title"}
-                </Text>
-              )}
-            </VStack>
-
             {bookDetails && (
               <Image
                 src={
@@ -241,9 +236,7 @@ export default function Review({
                 <Text>{bookmarkCount}</Text>
               </HStack>
             </HStack>
-            <Link to={`./comment/${id}`}>
-              <Button mt="2">返信</Button>
-            </Link>
+            <Button mt="2">Reply</Button>
           </Flex>
           <HStack mt="4">
             {tags.map((tag) => (
