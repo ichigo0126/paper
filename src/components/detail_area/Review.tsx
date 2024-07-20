@@ -161,7 +161,7 @@ export default function Review({
                   }
                 >
                   <Image
-                    src={photoURL || "https://via.placeholder.com/65"}
+                    src={"https://placehold.jp/65x65.png"|| photoURL} 
                     w="65px"
                     h="65px"
                     borderRadius="full"
@@ -197,8 +197,8 @@ export default function Review({
             {bookDetails && (
               <Image
                 src={
-                  bookDetails.thumbnail ||
-                  "https://via.placeholder.com/128x196?text=No+Image"
+                  "https://placehold.jp/128x196.png" ||
+                  bookDetails.thumbnail
                 }
                 alt={bookDetails.title || "Unknown Title"}
                 w="80px"
