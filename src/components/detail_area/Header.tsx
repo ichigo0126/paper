@@ -175,7 +175,6 @@ const Header = ({
         </HStack>
         {isMobile ? (
           <HStack>
-
             <IconButton
               aria-label="Menu"
               icon={<HamburgerIcon />}
