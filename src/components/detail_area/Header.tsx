@@ -165,7 +165,7 @@ const Header = ({
             </HStack>
             <Link to="./mypage">
               <Image
-                src={user?.photoURL || "https://via.placeholder.com/65"}
+                src={"https://placehold.jp/65x65.png" || user?.photoURL }
                 w="65px"
                 h="65px"
                 borderRadius="full"
