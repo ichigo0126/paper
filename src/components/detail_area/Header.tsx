@@ -7,6 +7,15 @@ import {
   Button,
   Input,
   Text,
+  VStack,
+  IconButton,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import { signOut, User } from "firebase/auth";
@@ -17,6 +26,7 @@ import { IoMdOptions } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { useState, useEffect } from "react";
 import { CiBookmark, CiHeart } from "react-icons/ci";
+import { HamburgerIcon } from "@chakra-ui/icons";
 
 type HeaderProps = {
   setIsReviewOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,6 +43,7 @@ const Header = ({
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [searchText, setSearchText] = useState("");
   const [user, setUser] = useState<User | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
@@ -61,108 +72,123 @@ const Header = ({
     }
   };
 
-  return (
-    <div>
-      <Box w="full" borderRadius="normal">
-        <Flex
-          zIndex={10}
-          gap={5}
-          justifyContent="space-between"
-          alignItems="flex-start"
-          px={10}
-          pb={2}
-          w="full"
-          bg="blue.400"
-          borderRadius="normal"
-          flexWrap={isMobile ? "wrap" : "nowrap"}
+  const NavButtons = () => (
+    <>
+      <Button
+        w="40px"
+        h="40px"
+        p="5px"
+        border="1px"
+        borderColor="whiteAlpha.900"
+        onClick={() => setIsReviewOpen(true)}
+      >
+        <MdOutlineNoteAdd />
+      </Button>
+      <Link to="./mypage/bookmarkpage">
+        <Button
+          w="40px"
+          h="40px"
+          p="5px"
+          border="1px"
+          borderColor="whiteAlpha.900"
         >
-          <HStack>
-            <Link to="/">
-              <Box
-                mt="4px"
-                border="1px"
-                borderColor="whiteAlpha.900"
-                h="67px"
-                borderRadius="normal"
-                w="183px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
+          <CiBookmark />
+        </Button>
+      </Link>
+      <Link to="./mypage/mylikepage">
+        <Button
+          w="40px"
+          h="40px"
+          p="5px"
+          border="1px"
+          borderColor="whiteAlpha.900"
+        >
+          <CiHeart />
+        </Button>
+      </Link>
+      <Button
+        w="40px"
+        h="40px"
+        p="4px"
+        border="1px"
+        borderColor="whiteAlpha.900"
+        onClick={handleSignOut}
+      >
+        <GrLogout />
+      </Button>
+    </>
+  );
+
+  return (
+    <Box w="full" borderRadius="normal">
+      <Flex
+        zIndex={10}
+        gap={5}
+        justifyContent="space-between"
+        alignItems="center"
+        px={[2, 5, 10]}
+        py={2}
+        w="full"
+        bg="blue.400"
+        borderRadius="normal"
+        flexWrap="wrap"
+      >
+        <HStack spacing={[2, 4]}>
+          <Link to="/">
+            <Box
+              border="1px"
+              borderColor="whiteAlpha.900"
+              h={["50px", "67px"]}
+              borderRadius="normal"
+              w={["140px", "183px"]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Text
+                fontFamily="Jomhuria, serif"
+                color="white"
+                userSelect="none"
+                fontSize={["70px", "100px"]}
               >
-                <Text
-                  pt="14px"
-                  fontFamily="Jomhuria, serif"
-                  color="white"
-                  userSelect="none"
-                  fontSize="100px"
-                >
-                  PAPER
-                </Text>
-              </Box>
-            </Link>
-            <Box>
-              <HStack pl="20px">
-                <Button onClick={() => setIsSearchOpen(true)}>
-                  <IoMdOptions />
-                </Button>
-                <Input
-                  placeholder="search"
-                  bg="gray.100"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                />
-                <Button onClick={handleSearch}>
-                  <CiSearch />
-                </Button>
-              </HStack>
+                PAPER
+              </Text>
             </Box>
-          </HStack>
-          <Flex gap={5} justifyContent="space-between" mt={1.5}>
-            <HStack gap={5} my="auto">
-              <Button
-                w="40px"
-                h="40px"
-                p="5px"
-                border="1px"
-                borderColor="whiteAlpha.900"
-                onClick={() => setIsReviewOpen(true)}
-              >
-                <MdOutlineNoteAdd />
+          </Link>
+          {!isMobile && (
+            <HStack>
+              <Button onClick={() => setIsSearchOpen(true)}>
+                <IoMdOptions />
               </Button>
-              <Link to="./mypage/bookmarkpage">
-                <Button
-                  w="40px"
-                  h="40px"
-                  p="5px"
-                  border="1px"
-                  borderColor="whiteAlpha.900"
-                >
-                  <CiBookmark />
-                </Button>
-              </Link>
-              <Link to="./mypage/mylikepage">
-                <Button
-                  w="40px"
-                  h="40px"
-                  p="5px"
-                  border="1px"
-                  borderColor="whiteAlpha.900"
-                >
-                  <CiHeart />
-                </Button>
-              </Link>
-              <Button
-                w="40px"
-                h="40px"
-                p="4px"
-                border="1px"
-                borderColor="whiteAlpha.900"
-                onClick={handleSignOut}
-              >
-                <GrLogout />
+              <Input
+                placeholder="search"
+                bg="gray.100"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyPress={handleKeyPress}
+              />
+              <Button onClick={handleSearch}>
+                <CiSearch />
               </Button>
             </HStack>
+          )}
+        </HStack>
+        {isMobile ? (
+          <HStack>
+            <IconButton
+              aria-label="Search"
+              icon={<CiSearch />}
+              onClick={handleSearch}
+            />
+            <IconButton
+              aria-label="Menu"
+              icon={<HamburgerIcon />}
+              onClick={onOpen}
+            />
+          </HStack>
+        ) : (
+          <HStack spacing={4}>
+            <NavButtons />
             <Link to="./mypage">
               <Image
                 src={"https://placehold.jp/65x65.png" || user?.photoURL }
@@ -172,10 +198,52 @@ const Header = ({
                 objectFit="cover"
               />
             </Link>
-          </Flex>
-        </Flex>
-      </Box>
-    </div>
+          </HStack>
+        )}
+      </Flex>
+      {isMobile && (
+        <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerHeader>Menu</DrawerHeader>
+            <DrawerBody>
+              <VStack spacing={4} align="stretch">
+                <NavButtons />
+                <Link to="./mypage" onClick={onClose}>
+                  <Image
+                    src={"https://placehold.jp/65x65.png" || user?.photoURL}
+                    w="65px"
+                    h="65px"
+                    borderRadius="full"
+                    objectFit="cover"
+                  />
+                </Link>
+              </VStack>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      )}
+      {isMobile && (
+        <Box px={2} py={2} bg="blue.400">
+          <HStack>
+            <Button onClick={() => setIsSearchOpen(true)}>
+              <IoMdOptions />
+            </Button>
+            <Input
+              placeholder="search"
+              bg="gray.100"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+            <Button onClick={handleSearch}>
+              <CiSearch />
+            </Button>
+          </HStack>
+        </Box>
+      )}
+    </Box>
   );
 };
 
