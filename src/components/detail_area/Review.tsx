@@ -123,17 +123,26 @@ export default function Review({
   };
 
   const boxWidth = useBreakpointValue({
-    base: "90%",
-    md: "80%",
+    base: "95%",
+    sm: "10%",
+    md: "70%",
     lg: "80%",
   });
 
   const specificBoxWidth = () => {
-    if (/^\/home\/[^/]+/.test(location.pathname)) return "150%";
-    if (/^\/mypage/.test(location.pathname)) return "150%";
-    if (location.pathname === "/home") return "500%";
+    if (/^\/home\/[^/]+/.test(location.pathname))
+      return { base: "95%", md: "100%" };
+    if (/^\/mypage/.test(location.pathname))
+      return { base: "180%", sm: "200%", md: "350%" };
+    if (location.pathname === "/home")
+      return { base: "180%", sm: "200%", md: "350%" };
     return boxWidth;
   };
+
+  // const flexDirection = useBreakpointValue({ base: "column", md: "row" });
+  const imageSize = useBreakpointValue({ base: "50px", md: "65px" });
+  const bookImageSize = useBreakpointValue({ base: "60px", md: "80px" });
+  const fontSize = useBreakpointValue({ base: "sm", md: "md" });
 
   return (
     <Container centerContent>
@@ -143,6 +152,7 @@ export default function Review({
         border="1px"
         borderColor="gray.300"
         borderRadius="30px"
+        p={4}
       >
         <Box textAlign="right">
           <Box pt="8px" pr="24px">
@@ -153,9 +163,13 @@ export default function Review({
             )}
           </Box>
         </Box>
-        <Flex alignItems="center" justifyContent="space-between" padding="20px">
-          <Box>
-            <VStack>
+        <Flex
+          padding="20px"
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
+          <Box mb={{ base: 4, md: 0 }}>
+            <VStack align="start" spacing={2}>
               <HStack>
                 <Link
                   to={
@@ -165,63 +179,76 @@ export default function Review({
                   }
                 >
                   <Image
-                    src={photoURL || "https://via.placeholder.com/65"}
-                    w="65px"
-                    h="65px"
+                    src={"https://placehold.jp/65x65.png" || photoURL}
+                    w={imageSize}
+                    h={imageSize}
                     borderRadius="full"
                     objectFit="cover"
                   />
                 </Link>
-                <Stack pl="16px">
+                <Stack>
                   <Link to={`/home/${username}`}>
-                    <Text>{username}</Text>
-                  </Link>{" "}
-                  <Text>{formatDate(createdAt)}</Text>
+                    <Text fontSize={fontSize}>{username}</Text>
+                  </Link>
+                  <Text fontSize={fontSize}>{formatDate(createdAt)}</Text>
                 </Stack>
               </HStack>
-              <Stack pl="30px">
-                <HStack>
-                  <Button>{targetType}</Button>
-                  <Button>{engineerSkillLevel}</Button>
-                </HStack>
-              </Stack>
+              <HStack>
+                <Button size="sm">{targetType}</Button>
+                <Button size="sm">{engineerSkillLevel}</Button>
+              </HStack>
             </VStack>
           </Box>
 
-          <HStack align="end">
+          <HStack align="center" spacing={2}>
+            <VStack align="end">
+              {bookDetails && (
+                <Text as="p" fontWeight="bold" fontSize={fontSize}>
+                  {bookDetails.title || "Unknown Title"}
+                </Text>
+              )}
+            </VStack>
+
             {bookDetails && (
               <Image
                 src={
-                  bookDetails.thumbnail ||
-                  "https://via.placeholder.com/128x196?text=No+Image"
+                  "https://placehold.jp/128x196.png" || bookDetails.thumbnail
                 }
                 alt={bookDetails.title || "Unknown Title"}
-                w="80px"
-                h="100px"
+                w={bookImageSize}
+                h="100pxx"
                 objectFit="cover"
               />
             )}
           </HStack>
         </Flex>
-        <Divider mb="8px" />
-        <Text px="20px">{description}</Text>
-        <Divider mt="8px" />
-        <Box padding="16px">
-          <Flex justifyContent="space-between">
-            <HStack>
+        <Divider my={4} />
+        <Text px={2} fontSize={fontSize}>
+          {description}
+        </Text>
+        <Divider my={4} />
+        <Box>
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            flexWrap="wrap"
+          >
+            <HStack spacing={4}>
               <HStack>
                 <IconButton
                   aria-label="like-button"
+                  size="sm"
                   borderRadius="full"
                   backgroundColor="white"
                   onClick={handleLike}
                   icon={isReviewLiked ? <FaHeart color="red" /> : <CiHeart />}
                 />
-                <Text>{valueCount}</Text>
+                <Text fontSize={fontSize}>{valueCount}</Text>
               </HStack>
-              <HStack pl="20px">
+              <HStack>
                 <IconButton
                   aria-label="bookmark-button"
+                  size="sm"
                   borderRadius="full"
                   backgroundColor="white"
                   onClick={handleBookmark}
@@ -233,18 +260,22 @@ export default function Review({
                     )
                   }
                 />
-                <Text>{bookmarkCount}</Text>
+                <Text fontSize={fontSize}>{bookmarkCount}</Text>
               </HStack>
             </HStack>
-            <Button mt="2">Reply</Button>
+            <Link to={`./comment/${id}`}>
+              <Button size="sm" mt={{ base: 2, md: 0 }}>
+                Reply
+              </Button>
+            </Link>
           </Flex>
-          <HStack mt="4">
+          <Flex mt={4} flexWrap="wrap">
             {tags.map((tag) => (
-              <Tag key={tag}>
+              <Tag key={tag} size="sm" m={1}>
                 <TagLabel>{tag}</TagLabel>
               </Tag>
             ))}
-          </HStack>
+          </Flex>
         </Box>
       </Box>
     </Container>

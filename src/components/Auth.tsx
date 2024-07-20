@@ -66,10 +66,10 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
     _hover={{ bg: "gray.100" }}
   >
     <Image
-      src="https://cdn.builder.io/api/v1/image/assets/TEMP/a42a6655ec4dd7355c27ca4470b82e9c66e8b42c742357a0879477b5744dedce?apiKey=d597a574c8504c4cb8ec72afd71f5d0f&"
+      src="https://img.icons8.com/fluency/48/google-logo.png"
       w="5"
       h="5"
-      alt="Google logo"
+      alt="google-logo"
     />
     <Text flexGrow={1} textAlign="center">
       {text}

@@ -55,7 +55,7 @@ function Profile({
           </VStack>
         </HStack>
         <Image
-          src={photoURL || "https://via.placeholder.com/65"}
+          src={"https://placehold.jp/65x65.png" || photoURL}
           w="111px"
           alignSelf="center"
           borderRadius="full"

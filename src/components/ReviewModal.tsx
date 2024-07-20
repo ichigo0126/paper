@@ -279,7 +279,7 @@ const ReviewModal = ({
                   >
                     <HStack>
                       <Image
-                        src={book.thumbnail}
+                        src={"https://via.placeholder.com/65" }
                         alt={book.title}
                         boxSize="50px"
                       />
