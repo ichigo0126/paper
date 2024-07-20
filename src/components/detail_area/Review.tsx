@@ -154,15 +154,6 @@ export default function Review({
         borderRadius="30px"
         p={4}
       >
-        <Box textAlign="right">
-          <Box pt="8px" pr="24px">
-            {bookDetails && (
-              <Text as="p" fontWeight="bold">
-                {bookDetails.title || "Unknown Title"}
-              </Text>
-            )}
-          </Box>
-        </Box>
         <Flex
           padding="20px"
           justifyContent="space-between"
@@ -243,7 +234,7 @@ export default function Review({
                   onClick={handleLike}
                   icon={isReviewLiked ? <FaHeart color="red" /> : <CiHeart />}
                 />
-                <Text fontSize={fontSize}>{valueCount}</Text>
+                <Text fontSize={fontSize}>{valueCount}</Text> 
               </HStack>
               <HStack>
                 <IconButton
