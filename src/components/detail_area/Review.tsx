@@ -154,8 +154,14 @@ export default function Review({
         borderRadius="30px"
         p={4}
       >
-        <Box textAlign="right" mb={2}>
-          <Button size="sm">DELETE</Button>
+        <Box textAlign="right">
+          <Box pt="8px" pr="24px">
+            {bookDetails && (
+              <Text as="p" fontWeight="bold">
+                {bookDetails.title || "Unknown Title"}
+              </Text>
+            )}
+          </Box>
         </Box>
         <Flex
           padding="20px"
@@ -259,7 +265,7 @@ export default function Review({
             </HStack>
             <Link to={`./comment/${id}`}>
               <Button size="sm" mt={{ base: 2, md: 0 }}>
-                返信
+                Reply
               </Button>
             </Link>
           </Flex>
