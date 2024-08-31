@@ -170,7 +170,7 @@ export default function Review({
                   }
                 >
                   <Image
-                    src={"https://placehold.jp/65x65.png" || photoURL}
+                    src={photoURL || "https://placehold.jp/65x65.png"}
                     w={imageSize}
                     h={imageSize}
                     borderRadius="full"
@@ -203,7 +203,7 @@ export default function Review({
             {bookDetails && (
               <Image
                 src={
-                  "https://placehold.jp/128x196.png" || bookDetails.thumbnail
+                  bookDetails.thumbnail || "https://placehold.jp/128x196.png"
                 }
                 alt={bookDetails.title || "Unknown Title"}
                 w={bookImageSize}
@@ -234,7 +234,7 @@ export default function Review({
                   onClick={handleLike}
                   icon={isReviewLiked ? <FaHeart color="red" /> : <CiHeart />}
                 />
-                <Text fontSize={fontSize}>{valueCount}</Text> 
+                <Text fontSize={fontSize}>{valueCount}</Text>
               </HStack>
               <HStack>
                 <IconButton

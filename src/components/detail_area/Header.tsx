@@ -25,7 +25,8 @@ import { MdOutlineNoteAdd } from "react-icons/md";
 import { IoMdOptions } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { useState, useEffect } from "react";
-import { CiBookmark, CiHeart } from "react-icons/ci";
+import { IoBookmarks } from "react-icons/io5";
+import { FaHeart } from "react-icons/fa";
 import { HamburgerIcon } from "@chakra-ui/icons";
 
 type HeaderProps = {
@@ -92,7 +93,7 @@ const Header = ({
           border="1px"
           borderColor="whiteAlpha.900"
         >
-          <CiBookmark />
+          <IoBookmarks />
         </Button>
       </Link>
       <Link to="./mypage/mylikepage">
@@ -103,7 +104,7 @@ const Header = ({
           border="1px"
           borderColor="whiteAlpha.900"
         >
-          <CiHeart />
+          <FaHeart />
         </Button>
       </Link>
       <Button
@@ -134,8 +135,9 @@ const Header = ({
         flexWrap="wrap"
       >
         <HStack spacing={[2, 4]}>
-          <Link to="/">
+        <Link to="/">
             <Box
+              mt="4px"
               border="1px"
               borderColor="whiteAlpha.900"
               h={["50px", "67px"]}
@@ -146,6 +148,7 @@ const Header = ({
               justifyContent="center"
             >
               <Text
+                pt="14px"
                 fontFamily="Jomhuria, serif"
                 color="white"
                 userSelect="none"
@@ -186,7 +189,7 @@ const Header = ({
             <NavButtons />
             <Link to="./mypage">
               <Image
-                src={"https://placehold.jp/65x65.png" || user?.photoURL }
+                src={user?.photoURL || "https://placehold.jp/65x65.png"}
                 w="65px"
                 h="65px"
                 borderRadius="full"
@@ -207,7 +210,7 @@ const Header = ({
                 <NavButtons />
                 <Link to="./mypage" onClick={onClose}>
                   <Image
-                    src={"https://placehold.jp/65x65.png" || user?.photoURL}
+                    src={user?.photoURL || "https://placehold.jp/65x65.png"}
                     w="65px"
                     h="65px"
                     borderRadius="full"
