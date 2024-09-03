@@ -194,7 +194,13 @@ export default function Review({
           <HStack align="center" spacing={2}>
             <VStack align="end">
               {bookDetails && (
-                <Text as="p" fontWeight="bold" fontSize={fontSize}>
+                <Text
+                  as="p"
+                  fontWeight="bold"
+                  fontSize={fontSize}
+                  noOfLines={1}
+                  width={["400px"]}
+                >
                   {bookDetails.title || "Unknown Title"}
                 </Text>
               )}
