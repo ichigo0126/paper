@@ -57,7 +57,7 @@ const SearchModal = ({ isSearchOpen, setIsSearchOpen, onSearch }: ModalProp) => 
 
   return (
     <Modal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)}>
-      <ModalContent maxWidth="400px">
+      <ModalContent maxWidth="600px">
         <ModalHeader textAlign="center">詳細検索</ModalHeader>
         <Divider />
         <ModalBody>
